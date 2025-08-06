@@ -20,6 +20,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PatientResource extends Resource
@@ -43,12 +44,15 @@ class PatientResource extends Resource
 
     public static function getQuery()
     {
+        // $user_ids = HospitalUserAttachment::where('hospital_id', self::getHospitalId())
+        // ->where('status', 'approved')
+        // ->pluck('user_id');
+        // User::whereIn('id', $user_ids)->where('account_type', 'patient');
         $query =
-            User::select('users.id', 'users.name', 'users.email', 'users.country_id') // Specify the columns you want to select
+            User::select('users.id', 'users.name', 'users.email', 'users.country_id')
             ->where('account_type', 'patient')
             ->join('hospital_user_attachments', function ($join) {
-                $join->on('users.hospital_id', '=', 'hospital_user_attachments.hospital_id')
-                    ->whereColumn('users.id', 'hospital_user_attachments.user_id'); // Ensures the join on both user_id and hospital_id
+                $join->on('users.id', '=', 'hospital_user_attachments.user_id');
             })
             ->where('hospital_user_attachments.hospital_id', self::getHospitalId())
             ->where('hospital_user_attachments.status', 'approved');
@@ -81,6 +85,11 @@ class PatientResource extends Resource
         return false;
     }
 
+    public static function canEdit(Model $record): bool
+    {
+        return true;
+    }
+
 
 
 
@@ -100,6 +109,8 @@ class PatientResource extends Resource
                     ->label(__('dashboard.country')),
             ])
             ->actions(actions: [
+                Tables\Actions\ViewAction::make('show')
+                    ->label(__('dashboard.view')),
                 Tables\Actions\EditAction::make('edit')
                     ->label(__('dashboard.edit'))
                     ->modalHeading(__('dashboard.edit'))
@@ -163,30 +174,34 @@ class PatientResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label(__('dashboard.name'))
                             ->maxLength(255)
+                            ->readOnly()
                             ->required(),
                         Forms\Components\TextInput::make('email')
                             ->label(__('dashboard.email'))
                             ->required()
                             ->email()
+                            ->readOnly()
+
                             ->maxLength(255)
                             ->unique(ignoreRecord: true),
+
                         Select::make('country_id')
                             ->label(__('dashboard.country'))
                             ->options(Country::all()->pluck('name_ar', 'id'))
-                            ->searchable()
-                            ->hidden(fn(?User $record) => $record === null || $record->account_type !== 'patient'),
-                        Select::make('account_status')
-                            ->label(__('dashboard.account_status'))
-                            ->options([
-                                'active' => __('dashboard.active'),
-                                'cancelled' => __('dashboard.cancelled'),
-                                'banned' => __('dashboard.banned'),
-                            ])
-                            ->searchable(),
-                        Forms\Components\TextInput::make('contact_number')
-                            ->label(__('dashboard.contact_number'))
-                            ->required()
-                            ->maxLength(255),
+                            ->disabled(),
+                        // Select::make('account_status')
+                        //     ->label(__('dashboard.account_status'))
+                        //     ->options([
+                        //         'active' => __('dashboard.active'),
+                        //         'cancelled' => __('dashboard.cancelled'),
+                        //         'banned' => __('dashboard.banned'),
+                        //     ])
+                        //     ->searchable(),
+                        // Forms\Components\TextInput::make('contact_number')
+                        //     ->label(__('dashboard.contact_number'))
+                        //     ->required()
+                        //     ->readOnly()
+                        //     ->maxLength(255),
 
 
                         FileUpload::make('profile_picture')
@@ -215,6 +230,7 @@ class PatientResource extends Resource
                         //     ->maxLength(255),
                         Forms\Components\TextInput::make('hospital_id')
                             ->default(self::getHospitalId())
+                            ->readOnly()
                             ->extraAttributes(['style' => 'display: none;'])
                             ->hiddenLabel(),
 

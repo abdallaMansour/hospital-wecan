@@ -73,22 +73,22 @@ class UserResource extends Resource
                                 'banned' => __('dashboard.banned'),
                             ])
                             ->searchable(),
-                        Forms\Components\TextInput::make('profession_ar')
-                            ->label(__('dashboard.profession_ar'))
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('profession_en')
-                            ->label(__('dashboard.profession_en'))
-                            ->required()
-                            ->maxLength(255),
+                        // Forms\Components\TextInput::make('profession_ar')
+                        //     ->label(__('dashboard.profession_ar'))
+                        //     ->required()
+                        //     ->maxLength(255),
+                        // Forms\Components\TextInput::make('profession_en')
+                        //     ->label(__('dashboard.profession_en'))
+                        //     ->required()
+                        //     ->maxLength(255),
                         Forms\Components\TextInput::make('contact_number')
                             ->label(__('dashboard.contact_number'))
                             ->required()
                             ->maxLength(255),
 
-                        Forms\Components\TextInput::make('experience_years')
-                            ->label(__('dashboard.experience_years'))
-                            ->required()->numeric(),
+                        // Forms\Components\TextInput::make('experience_years')
+                        //     ->label(__('dashboard.experience_years'))
+                        //     ->required()->numeric(),
                         FileUpload::make('profile_picture')
                             ->label(__('dashboard.profile_picture'))
                             ->visibility('public')->image()
@@ -106,7 +106,9 @@ class UserResource extends Resource
                                 'doctor' => __('dashboard.doctor'),
                                 'patient' => __('dashboard.patient'),
                                 'user' => __('dashboard.user'),
-                            ]),
+                            ])
+                            ->reactive()
+                            ->disabled(fn($get) => $get('account_type') === 'user'),
 
                         Forms\Components\TextInput::make('password')
                             ->type('password')
