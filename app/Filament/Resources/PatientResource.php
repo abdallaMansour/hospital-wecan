@@ -50,7 +50,7 @@ class PatientResource extends Resource
         // User::whereIn('id', $user_ids)->where('account_type', 'patient');
         $query =
             User::select('users.id', 'users.name', 'users.email', 'users.country_id')
-            ->where('account_type', 'patient')
+            ->where('users.account_type', 'patient')
             ->join('hospital_user_attachments', function ($join) {
                 $join->on('users.id', '=', 'hospital_user_attachments.user_id');
             })
