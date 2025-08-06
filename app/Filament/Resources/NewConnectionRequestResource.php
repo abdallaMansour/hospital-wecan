@@ -49,8 +49,9 @@ class NewConnectionRequestResource extends Resource
 
     public static function getHospitalId()
     {
-        $currentUser = User::find(auth()->user()->id);
-        return $currentUser->hospital_id;
+        // $currentUser = User::find(auth()->id());
+        // return $currentUser->hospital_id;
+        return auth()->user()->hospital_id;
     }
 
     public static function getQuery()
@@ -175,10 +176,16 @@ class NewConnectionRequestResource extends Resource
                     ->label(__('dashboard.add_connection_request'))
                     ->icon('heroicon-o-plus')
                     ->form([
-                        TextInput::make('email')
-                            ->label('Email')
+                        Select::make('user_id')
+                            ->label(__('dashboard.user'))
+                            ->options(User::where('account_type', 'patient')->get()->pluck('email', 'id'))
+                            ->searchable()
                             ->required()
-                            ->email(),
+                            ->reactive(),
+                        // TextInput::make('email')
+                        //     ->label('Email')
+                        //     ->required()
+                        //     ->email(),
                         Select::make('status')
                             ->label('Status')
                             ->options([
@@ -189,23 +196,24 @@ class NewConnectionRequestResource extends Resource
                             ->required(),
                     ])
                     ->using(function (array $data, $model) {
-                        //
-                        $user = User::where('email', $data['email'])
-                            ->get()->first();
-                        $data['user_id'] = $user->id;
-                        $data['sender_id'] = auth()->user()->id;
+                        $user = User::find($data['user_id']);
+
+                        $data['account_type'] = $user->account_type;
+                        $data['sender_id'] = auth()->id();
                         $data['hospital_id'] = self::getHospitalId();
-                        unset($data['email']);
+
                         $user->update(['hospital_id' => self::getHospitalId()]);
+
                         return $model::create($data);
                     })
+
             ])
 
             // form email status and custom action
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->hidden(fn($record) =>
-                    $record->sender_id == auth()->user()->id)
+                    $record->sender_id == auth()->id())
                     ->modalHeading(__('dashboard.edit_status'))
                     ->beforeFormFilled(function ($record) {
                         // $filePath = storage_path('app/file.txt');

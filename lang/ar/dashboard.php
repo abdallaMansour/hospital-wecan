@@ -2,6 +2,7 @@
 
 return [
     'administrators' => 'المبادرون',
+    'user_not_found' => 'المستخدم غير موجود',
     'administrator' => 'المبادر',
     'cancer_screening_centers' => 'مراكز فحص السرطان',
     'cancer_screening_center' => 'مركز فحص السرطان',

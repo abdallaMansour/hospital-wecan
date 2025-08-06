@@ -2,6 +2,7 @@
 
 return [
     'administrators' => 'Administrators',
+    'user_not_found' => 'User not found',
     'administrator' => 'Administrator',
     'cancer_screening_centers' => 'Cancer Screening Centers',
     'cancer_screening_center' => 'Cancer Screening Center',

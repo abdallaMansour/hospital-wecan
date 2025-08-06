@@ -52,8 +52,8 @@ class DoctorResource extends Resource
     public static function getTableQuery2()
     {
         $query =
-            User::select('users.id', 'users.name', 'users.email', 'users.country_id')
-            ->where('account_type', 'doctor')
+            User::select('users.id', 'users.name', 'users.name_en', 'users.email', 'users.country_id')
+            ->where('users.account_type', 'doctor')
             ->join('hospital_user_attachments', function ($join) {
                 $join->on('users.id', '=', 'hospital_user_attachments.user_id');
             })
@@ -64,17 +64,13 @@ class DoctorResource extends Resource
 
     public static function getQuery()
     {
-        $query =
-            User::select('users.id', 'users.name', 'users.email', 'users.country_id')
-            ->where('account_type', 'doctor')
+        return User::select('users.id', 'users.name', 'users.name_en', 'users.email', 'users.country_id', 'users.profile_picture')
             ->join('hospital_user_attachments', function ($join) {
                 $join->on('users.id', '=', 'hospital_user_attachments.user_id');
             })
+            ->where('users.account_type', 'doctor')
             ->where('hospital_user_attachments.hospital_id', self::getHospitalId())
             ->where('hospital_user_attachments.status', 'approved');
-
-        // dd($query->toSql());
-        return $query;
     }
 
 
@@ -199,7 +195,9 @@ class DoctorResource extends Resource
         return $table
             ->query(self::getQuery())
             ->columns([
-                TextColumn::make('name')
+                Tables\Columns\ImageColumn::make('profile_picture')
+                    ->label(__('dashboard.profile_picture')),
+                TextColumn::make(app()->getLocale() === 'ar' ? 'name' : 'name_en')
                     ->label(__('dashboard.name'))
                     ->searchable(isIndividual: true)
                     ->sortable(),
@@ -263,6 +261,6 @@ class DoctorResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'email'];
+        return ['name', 'name_en', 'email'];
     }
 }
