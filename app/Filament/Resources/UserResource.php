@@ -2,24 +2,26 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\Country;
+use Filament\Forms;
 use App\Models\User;
+use Filament\Tables;
+use App\Models\Country;
 use App\Models\Hospital;
 
-use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
+use App\Filament\Resources\UserResource\RelationManagers;
 
 class UserResource extends Resource
 {
@@ -50,6 +52,13 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\Section::make()
                     ->schema([
+
+                        FileUpload::make('profile_picture')
+                            ->label(__('dashboard.profile_picture'))
+                            ->columnSpan('full')
+                            ->visibility('public')->image()
+                            ->imageEditor()
+                            ->maxSize(2048),
                         Forms\Components\TextInput::make('name')
                             ->label(__('dashboard.name'))
                             ->maxLength(255)
@@ -89,26 +98,29 @@ class UserResource extends Resource
                         // Forms\Components\TextInput::make('experience_years')
                         //     ->label(__('dashboard.experience_years'))
                         //     ->required()->numeric(),
-                        FileUpload::make('profile_picture')
-                            ->label(__('dashboard.profile_picture'))
-                            ->visibility('public')->image()
-                            ->imageEditor()
-                            ->maxSize(2048)
-                            ->required()
-                            ->hidden(fn(?User $record) => $record === null || $record->account_type !== 'doctor'),
+                        // FileUpload::make('profile_picture')
+                        //     ->label(__('dashboard.profile_picture'))
+                        //     ->visibility('public')->image()
+                        //     ->imageEditor()
+                        //     ->maxSize(2048)
+                        //     ->required()
+                        //     ->hidden(fn(?User $record) => $record === null || $record->account_type !== 'doctor'),
                         Toggle::make('show_info_to_patients')
                             ->label(__('dashboard.show_info_to_patients'))
                             ->hidden(fn(?User $record) => $record === null || $record->account_type !== 'doctor'),
-                        Forms\Components\Select::make('account_type')
-                            ->label(__('dashboard.account_type'))
-                            ->options([
-                                'hospitalAdmin' => __('dashboard.hospitalAdmin'),
-                                'doctor' => __('dashboard.doctor'),
-                                'patient' => __('dashboard.patient'),
-                                'user' => __('dashboard.user'),
-                            ])
-                            ->reactive()
-                            ->disabled(fn($get) => $get('account_type') === 'user'),
+
+                        Hidden::make('account_type')
+                            ->default('user'),
+                        // Forms\Components\Select::make('account_type')
+                        //     ->label(__('dashboard.account_type'))
+                        //     ->options([
+                        //         'hospitalAdmin' => __('dashboard.hospitalAdmin'),
+                        //         'doctor' => __('dashboard.doctor'),
+                        //         'patient' => __('dashboard.patient'),
+                        //         'user' => __('dashboard.user'),
+                        //     ])
+                        //     ->reactive()
+                        //     ->disabled(fn($get) => $get('account_type') === 'user'),
 
                         Forms\Components\TextInput::make('password')
                             ->type('password')
@@ -168,6 +180,7 @@ class UserResource extends Resource
                     ->where('account_type', 'not like', 'patient')
             )
             ->columns([
+                ImageColumn::make('profile_picture')->label(__('dashboard.profile_picture')),
                 TextColumn::make('name')
                     ->label(__('dashboard.name'))
                     ->searchable(isIndividual: true)

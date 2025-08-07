@@ -45,8 +45,7 @@ class PatientMedicationsRelationManager extends RelationManager
 
     public static function getHospitalId()
     {
-        $currentUser = User::find(auth()->user()->id);
-        return $currentUser->hospital_id;
+        return auth()->user()->hospital_id;
     }
 
 

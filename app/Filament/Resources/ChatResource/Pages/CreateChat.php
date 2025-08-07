@@ -14,16 +14,16 @@ class CreateChat extends CreateRecord
     protected static string $resource = ChatResource::class;
 
     // Customize the form here (it’s inherited from the resource)
-    protected function getRedirectUrl(): string
-    {
-        return static::getUrl('index'); // Redirect to the index page after creating the chat
-    }
+    // protected function getRedirectUrl(): string
+    // {
+    //     return static::getUrl('index'); // Redirect to the index page after creating the chat
+    // }
 
-    // Optionally, you can add additional actions here, for example, for custom logic after chat creation
-    protected function getActions(): array
-    {
-        return [
-            Actions\SaveAction::make(), // Default save action to save the record
-        ];
-    }
+    // // Optionally, you can add additional actions here, for example, for custom logic after chat creation
+    // protected function getActions(): array
+    // {
+    //     return [
+    //         Actions\SaveAction::make(), // Default save action to save the record
+    //     ];
+    // }
 }
