@@ -66,7 +66,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/health-tips', HealthTipController::class);
     Route::post('/chat/send-message', [ChatController::class, 'sendMessage']);
     Route::get('/chat/room-messages', [ChatController::class, 'getRoomMessages']);
-    Route::get('/chat/user-rooms', [ChatController::class, 'getUserRooms']);
     Route::post('/attach/doctor-to-hospital', [AttachmentController::class, 'attachDoctorToHospital']);
     Route::post('/attach/patient-to-hospital', [AttachmentController::class, 'attachPatientToHospital']);
     Route::post('/attach/patient-to-doctor', [AttachmentController::class, 'attachPatientToDoctor']);

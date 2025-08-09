@@ -20,6 +20,8 @@ return [
     'doctor' => 'Doctor',
     'patients' => 'Patients',
     'patient' => 'Patient',
+    'message' => 'Message',
+    'media' => 'Media',
     'patient_appointments' => 'Patient Appointments',
     'patient_food' => 'Patient Food',
     'patient_health_report' => 'Patient Health Reports',

@@ -4,9 +4,9 @@ namespace App\Filament\Resources\ChatResource\Pages;
 
 use App\Filament\Resources\ChatResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ViewRecord;
 
-class EditChat extends EditRecord
+class ViewChat extends ViewRecord
 {
     protected static string $resource = ChatResource::class;
 
@@ -15,7 +15,7 @@ class EditChat extends EditRecord
         return [];
     }
 
-    protected function getFormActions(): array
+        public function getFormActions(): array
     {
         return [];
     }

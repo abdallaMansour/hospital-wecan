@@ -175,7 +175,7 @@ class AuthController extends Controller
         }
 
         try {
-            Log::info(message: 'Validated data for hospital registration:', $validatedData);
+            Log::info(message: 'Validated data for hospital registration:', context: $validatedData);
 
             $hospital = new Hospital();
             $hospital->hospital_name = $validatedData['hospital_name'];

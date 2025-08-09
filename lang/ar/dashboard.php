@@ -20,6 +20,8 @@ return [
     'doctor' => 'طبيب',
     'patients' => 'المرضى',
     'patient' => 'المريض',
+    'message' => 'الرسالة',
+    'media' => 'الوسائط',
     'patient_appointments' => 'مواعيد المريض',
     'patient_food' => 'طعام المريض',
     'patient_health_report' => 'التقارير الصحية للمريض',
