@@ -2,28 +2,42 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\UserOverview;
-use Filament\FontProviders\GoogleFontProvider;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
+use Filament\Widgets;
+use App\Models\Hospital;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use App\Filament\Widgets\UserOverview;
+use Filament\Http\Middleware\Authenticate;
+use App\Http\Middleware\EnsureHospitalExists;
+use Filament\FontProviders\GoogleFontProvider;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use App\Http\Middleware\EnsureDoctorBelongsToHospital;
+use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $hospital_id = request()->get('hospital') ?? Cookie::get('current_hospital_id');
+
+        $hospital = Hospital::find($hospital_id);
+
+        if (!$hospital) {
+            $hospital = Auth::user()?->hospital;
+        }
+
+
         return $panel
             ->default()
             ->id('admin')
@@ -36,10 +50,10 @@ class AdminPanelProvider extends PanelProvider
                 'gray' => Color::hex('#748187'),
                 'success' => Color::hex('#051349')
             ])
-            ->brandLogo(asset('images/we-can-logo-light.png'))
-            ->darkModeBrandLogo(asset('images/we-can-logo-dark.png'))
+            ->brandLogo(env('ADMIN_DASHBOARD_URL') . '/storage/' . $hospital?->hospital_logo)
+            ->darkModeBrandLogo(env('ADMIN_DASHBOARD_URL') . '/storage/' . $hospital?->hospital_logo)
             ->brandLogoHeight('3rem')
-            ->favicon(asset('images/favicon.png'))
+            ->favicon(env('ADMIN_DASHBOARD_URL') . '/storage/' . $hospital?->hospital_logo)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -59,6 +73,8 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                EnsureHospitalExists::class,
+                EnsureDoctorBelongsToHospital::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

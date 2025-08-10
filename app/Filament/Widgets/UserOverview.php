@@ -3,8 +3,9 @@
 namespace App\Filament\Widgets;
 
 use App\Models\User;
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Illuminate\Support\Facades\Auth;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 
 class UserOverview extends BaseWidget
@@ -12,8 +13,7 @@ class UserOverview extends BaseWidget
 
     public static function getHospitalId()
     {
-        $currentUser = User::find(auth()->user()->id);
-        return $currentUser->hospital_id;
+        return Auth::user()->hospital_id;
     }
     protected function getStats(): array
     {
