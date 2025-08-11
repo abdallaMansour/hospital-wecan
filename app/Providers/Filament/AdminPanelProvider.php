@@ -35,7 +35,7 @@ class AdminPanelProvider extends PanelProvider
 
         if (!$hospital) {
             $hospital = Auth::user()?->hospital;
-        }
+        } 
 
 
         return $panel
