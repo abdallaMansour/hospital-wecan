@@ -34,7 +34,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->account_type == 'admin' || $this->account_type == 'hospital';
+        return $this->account_type == 'admin' || $this->account_type == 'hospital' || $this->account_type == 'doctor';
     }
 
     public function healthTips(): HasMany
