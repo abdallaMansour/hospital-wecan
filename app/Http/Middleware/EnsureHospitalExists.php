@@ -44,12 +44,14 @@ class EnsureHospitalExists
 
             if (!$hospital) {
                 Auth::logout();
-                abort(404);
+                return redirect()->url(env('APP_URL') . '/login?hospital=' . $hospital_id);
+                // abort(404);
             }
 
             if ($hospital->account_status != 'active') {
                 Auth::logout();
-                abort(403);
+                return redirect()->url(env('APP_URL') . '/login?hospital=' . $hospital_id);
+                // abort(403);
             }
 
             // make it with cookie

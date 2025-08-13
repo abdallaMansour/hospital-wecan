@@ -29,15 +29,6 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $hospital_id = request()->get('hospital') ?? Cookie::get('current_hospital_id');
-
-        $hospital = Hospital::find($hospital_id);
-
-        if (!$hospital) {
-            $hospital = Auth::user()?->hospital;
-        } 
-
-
         return $panel
             ->default()
             ->id('admin')
@@ -50,10 +41,6 @@ class AdminPanelProvider extends PanelProvider
                 'gray' => Color::hex('#748187'),
                 'success' => Color::hex('#051349')
             ])
-            ->brandLogo(env('ADMIN_DASHBOARD_URL') . '/storage/' . $hospital?->hospital_logo)
-            ->darkModeBrandLogo(env('ADMIN_DASHBOARD_URL') . '/storage/' . $hospital?->hospital_logo)
-            ->brandLogoHeight('3rem')
-            ->favicon(env('ADMIN_DASHBOARD_URL') . '/storage/' . $hospital?->hospital_logo)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
