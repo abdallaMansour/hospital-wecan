@@ -11,7 +11,7 @@ class ChatRoom extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'doctor_id', 'patient_id', 'hospital_id']; // Added hospital_id
+    protected $fillable = ['name', 'doctor_id', 'patient_id', 'hospital_id'];
 
     public function messages(): HasMany
     {

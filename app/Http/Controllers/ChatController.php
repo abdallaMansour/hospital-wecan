@@ -24,7 +24,7 @@ class ChatController extends Controller
             'name' => 'required|string|max:255',
             'doctor_id' => 'required|exists:users,id',
             'patient_id' => 'required|exists:users,id',
-            'hospital_id' => 'nullable|exists:hospitals,id',
+            'hospital_id' => 'required|exists:hospitals,id',
         ]);
 
         $chatRoom = ChatRoom::create($validated);
