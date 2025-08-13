@@ -44,13 +44,13 @@ class EnsureHospitalExists
 
             if (!$hospital) {
                 Auth::logout();
-                return redirect()->url(env('APP_URL') . '/login?hospital=' . $hospital_id);
+                return redirect()->to(env('APP_URL') . '/login?hospital=' . $hospital_id);
                 // abort(404);
             }
 
             if ($hospital->account_status != 'active') {
                 Auth::logout();
-                return redirect()->url(env('APP_URL') . '/login?hospital=' . $hospital_id);
+                return redirect()->to(env('APP_URL') . '/login?hospital=' . $hospital_id);
                 // abort(403);
             }
 
