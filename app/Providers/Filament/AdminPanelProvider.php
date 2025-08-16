@@ -37,6 +37,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('')
             ->profile()
             ->login()
+            ->renderHook(
+                'panels::auth.login.form.after',
+                fn (): string => view('filament.pages.auth.custom-login')->render(),
+            )
             ->brandLogo(asset('images/we-can-logo-light.png'))
             ->darkModeBrandLogo(asset('images/we-can-logo-dark.png'))
             ->brandLogoHeight('3rem')
