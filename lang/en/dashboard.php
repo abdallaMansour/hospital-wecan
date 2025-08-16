@@ -128,6 +128,8 @@ return [
     'edit_status' => 'Edit Status',
     'save' => 'Save',
     'chats' => 'Chats',
+    'chat' => 'Chat',
+    'chat_with' => 'Chat With',
     'hospitalAdmin' => 'Hospital Admin',
     'cancel' => 'Cancel',
     'unlink' => 'Unlink',

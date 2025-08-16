@@ -128,6 +128,8 @@ return [
     'edit_status' => 'تعديل الحالة',
     'save' => 'حفظ',
     'chats' => 'الدردشة',
+    'chat' => 'دردشة',
+    'chat_with' => 'الدردشة مع',
     'hospitalAdmin' => 'مدير المستشفى',
     'cancel' => 'الغاء',
     'unlink' => 'الغاء ارتباط',

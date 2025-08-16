@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Filament\Widgets\UserOverview;
 use Illuminate\Support\Facades\Cookie;
 use App\Filament\Pages\Auth\CustomLogin;
+use App\Filament\Resources\ChatResource\Pages\CustomChatPage;
 use Filament\Http\Middleware\Authenticate;
 use App\Http\Middleware\EnsureHospitalExists;
 use Filament\FontProviders\GoogleFontProvider;
@@ -50,6 +51,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+                CustomChatPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

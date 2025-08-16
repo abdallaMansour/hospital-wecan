@@ -207,6 +207,13 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('chat')
+                    ->label(__('dashboard.chat'))
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('success')
+                    ->url(fn (User $record): string => '/custom-chat?other_user_id=' . $record->id . '&hospital_id=' . Auth::user()->hospital_id)
+                    ->openUrlInNewTab()
+                    ->visible(fn (User $record): bool => $record->id !== Auth::id()),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

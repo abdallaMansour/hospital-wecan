@@ -10,7 +10,7 @@ class ChatMessage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['chat_room_id', 'user_id', 'message', 'message_type', 'attachment_path'];
+    protected $fillable = ['chat_room_id', 'user_id', 'message', 'message_type', 'attachment_path', 'is_read'];
     protected static function booted()
     {
         static::saving(function (ChatMessage $model) {

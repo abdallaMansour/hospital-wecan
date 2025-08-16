@@ -1,0 +1,205 @@
+<?php
+
+namespace App\Filament\Resources\ChatResource\Pages;
+
+use App\Models\ChatRoom;
+use App\Models\ChatMessage;
+use App\Models\User;
+use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+
+class CustomChatPage extends Page
+{
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    
+    protected static string $view = 'filament.pages.custom-chat';
+    
+    protected static ?string $slug = 'custom-chat';
+    
+    // Hide from navigation - only accessible via chat actions
+    protected static bool $shouldRegisterNavigation = false;
+    
+    public ?ChatRoom $chatRoom = null;
+    public ?User $otherUser = null;
+    public string $message = '';
+    public $attachment = null;
+
+    // can you hide it from navigation
+
+    public function mount(Request $request): void
+    {
+        $otherUserId = $request->get('other_user_id');
+        $hospitalId = $request->get('hospital_id', Auth::user()->hospital_id);
+        
+        if ($otherUserId) {
+            $this->otherUser = User::find($otherUserId);
+            
+            if ($this->otherUser) {
+                $this->findOrCreateChatRoom($otherUserId, $hospitalId);
+                // Mark messages as read when opening the chat
+                $this->markMessagesAsRead();
+            }
+        }
+    }
+    
+    public function updated($propertyName): void
+    {
+        // Mark messages as read when the page is updated (user is active)
+        if ($this->chatRoom) {
+            $this->markMessagesAsRead();
+        }
+    }
+    
+    public function updatedMessage(): void
+    {
+        // Mark messages as read when user starts typing
+        if ($this->chatRoom) {
+            $this->markMessagesAsRead();
+        }
+    }
+    
+    protected function findOrCreateChatRoom(int $otherUserId, int $hospitalId): void
+    {
+        $currentUser = Auth::user();
+        
+        // Determine who is the doctor and who is the patient
+        $doctorId = null;
+        $patientId = null;
+        
+        if ($currentUser->account_type === 'doctor') {
+            $doctorId = $currentUser->id;
+            $patientId = $otherUserId;
+        } else {
+            // Current user is a patient, other user is a doctor
+            $doctorId = $otherUserId;
+            $patientId = $currentUser->id;
+        }
+        
+        // Check if chat room already exists
+        $this->chatRoom = ChatRoom::where('doctor_id', $doctorId)
+            ->where('patient_id', $patientId)
+            ->where('hospital_id', $hospitalId)
+            ->first();
+            
+        if (!$this->chatRoom) {
+            // Create new chat room
+            $this->chatRoom = ChatRoom::create([
+                'patient_id' => $patientId,
+                'hospital_id' => $hospitalId,
+                'doctor_id' => $doctorId,
+                'name' => 'Doctor-Patient Chat',
+            ]);
+        }
+    }
+    
+    public function sendMessage(): void
+    {
+        if ((empty($this->message) && !$this->attachment) || !$this->chatRoom) {
+            return;
+        }
+        
+        $attachmentPath = null;
+        
+        if ($this->attachment) {
+            $attachmentPath = $this->attachment->store('chat-attachments', 'public');
+        }
+        
+        ChatMessage::create([
+            'chat_room_id' => $this->chatRoom->id,
+            'user_id' => Auth::id(),
+            'message' => $this->message,
+            'attachment_path' => $attachmentPath,
+        ]);
+        
+        $this->message = '';
+        $this->attachment = null;
+        $this->dispatch('message-sent');
+        
+        // Mark messages as read when user sends a message
+        $this->markMessagesAsRead();
+    }
+    
+    public function markMessagesAsRead(): void
+    {
+        if (!$this->chatRoom) {
+            return;
+        }
+        
+        // Mark all messages from the other user as read
+        ChatMessage::where('chat_room_id', $this->chatRoom->id)
+            ->where('user_id', '!=', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+    }
+    
+    public function getUnreadCount(): int
+    {
+        if (!$this->chatRoom) {
+            return 0;
+        }
+        
+        return ChatMessage::where('chat_room_id', $this->chatRoom->id)
+            ->where('user_id', '!=', Auth::id())
+            ->where('is_read', false)
+            ->count();
+    }
+    
+    public static function getTotalUnreadCount(): int
+    {
+        $currentUser = Auth::user();
+        
+        return ChatMessage::whereHas('chatRoom', function ($query) use ($currentUser) {
+            $query->where('doctor_id', $currentUser->id)
+                  ->orWhere('patient_id', $currentUser->id);
+        })
+        ->where('user_id', '!=', $currentUser->id)
+        ->where('is_read', false)
+        ->count();
+    }
+    
+    public function getMessages()
+    {
+        if (!$this->chatRoom) {
+            return collect();
+        }
+        
+        return ChatMessage::where('chat_room_id', $this->chatRoom->id)
+            ->with('user:id,name')
+            ->orderBy('created_at', 'asc')
+            ->get();
+    }
+    
+    public function refreshMessages()
+    {
+        // Mark messages as read when refreshing
+        $this->markMessagesAsRead();
+        
+        // This method will be called by Livewire to refresh messages
+        $this->dispatch('messages-refreshed');
+    }
+    
+    public function getTitle(): string
+    {
+        if ($this->otherUser) {
+            return 'Chat with ' . $this->otherUser->name;
+        }
+        
+        return 'Chat';
+    }
+    
+    public function formatFileSize($size): string
+    {
+        if ($size === null) return '0 B';
+        
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $i = 0;
+        
+        while ($size >= 1024 && $i < count($units) - 1) {
+            $size /= 1024;
+            $i++;
+        }
+        
+        return round($size, 2) . ' ' . $units[$i];
+    }
+}

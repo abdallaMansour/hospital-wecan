@@ -10,14 +10,15 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use App\Models\HospitalUserAttachment;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\FileUpload;
 use App\Filament\Resources\DoctorResource\Pages;
-use Filament\Forms\Components\Hidden;
-use Illuminate\Database\Eloquent\Model;
+use App\Filament\Resources\ChatResource\Pages\ChatPage;
 
 class DoctorResource extends Resource
 {
@@ -52,8 +53,8 @@ class DoctorResource extends Resource
     public static function getQuery()
     {
         return User::where(function ($q) {
-                $q->where('users.account_type', 'doctor')->orWhere('users.account_type', 'patient');
-            })
+            $q->where('users.account_type', 'doctor')->orWhere('users.account_type', 'patient');
+        })
             ->where('users.parent_id', Auth::id());
     }
 
@@ -139,12 +140,12 @@ class DoctorResource extends Resource
                         Forms\Components\TextInput::make('password')
                             ->type('password')
                             ->label(__('dashboard.password'))
-                            ->required(fn(?User $record) => $record === null)// nullable on update and set old password
+                            ->required(fn(?User $record) => $record === null) // nullable on update and set old password
                             ->maxLength(255),
                         Forms\Components\TextInput::make('password_confirmation')
                             ->type('password')
                             ->label(__('dashboard.password_confirmation'))
-                            ->required(fn(?User $record) => $record === null)// nullable on update and set old password
+                            ->required(fn(?User $record) => $record === null) // nullable on update and set old password
                             ->same('password')
                             ->maxLength(255),
 
@@ -206,6 +207,12 @@ class DoctorResource extends Resource
             ])
             ->filters([])
             ->actions([
+                Tables\Actions\Action::make('chat')
+                    ->label(__('dashboard.chat'))
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('success')
+                    ->url(fn (User $record): string => '/custom-chat?other_user_id=' . $record->id . '&hospital_id=' . Auth::user()->hospital_id)
+                    ->visible(fn (User $record): bool => $record->id !== Auth::id()), // i want open custom chat page from here only
                 Tables\Actions\ViewAction::make('show')
                     ->label(__('dashboard.view')),
                 Tables\Actions\EditAction::make('edit')
