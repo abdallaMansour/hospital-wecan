@@ -1,0 +1,2455 @@
+@media (max-width:767px) {
+    /* Custom CSS */
+    p {
+        font-size: 15px;
+    }
+
+    .pt-100 {
+        padding-top: 50px;
+    }
+
+    .pb-70 {
+        padding-bottom: 20px;
+    }
+
+    .section-title {
+        text-align: center !important;
+        margin: 0 auto 40px;
+
+        span {
+            font-size: 15px;
+        }
+
+        h2 {
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+    }
+
+    img {
+        animation: none !important;
+    }
+
+    /* App landing Page CSS Start */
+    /* Navbar CSS */
+    .navbar {
+        // background-color: #4C6170;
+        padding:5px 15px;
+        box-shadow: 0 0 10px 0 #0000006b;
+
+        .navbar-nav {
+            padding: 30px 0 20px;
+            .nav-item {
+                .nav-link {
+                    padding:0;
+                    margin:0 0 15px;
+                }
+
+                .active::before {
+                    width: 30%;
+                    right: inherit;
+                }
+            }
+        } 
+
+        .navbar-brand {
+            img {
+                max-width: 100px;
+            }
+        }
+
+        button.navbar-toggler {
+            border: 1px solid #fff;
+            background: #fff;
+            font-size: 15px;
+        }
+
+        .navbar-btn a {
+            font-size: 14px;
+            padding: 5px 15px;
+            margin-bottom:15px;
+            margin-left: 0;
+        }
+    }
+
+    /* Home CSS */
+    .main-banner {
+        height: 100%;
+        background:#4C6170;
+        
+        .banner-shape {
+            display: none;
+        }
+
+        .banner-text {
+            text-align: center;
+            padding: 120px 0 45px;
+
+            h1 {
+                font-size: 25px;
+                margin-bottom:20px;
+            }
+
+            p {
+                margin-bottom: 20px;
+            }
+
+            .banner-btn a {
+                padding: 8px 16px;
+                margin-right:10px;
+                font-size: 14px;
+            }
+        }
+
+        .banner-img {
+            position: relative;
+            z-index: 0;
+            margin: 0 auto 50px;
+            max-width: 200px;
+
+            &::after {
+                display: none;
+            }
+
+            &::before {
+                display: none;
+            }
+
+            img {
+                width: 100%;
+            }
+        }
+    }
+
+
+    /* Why Choose CSS */
+    .why-choose {
+        &::after {
+            display: none;
+        }
+
+        .section-title {
+            margin: 0 auto 50px;
+
+            p {
+                font-size: 16px;
+            }
+        }
+
+        &::before {
+            display: none;
+        }
+
+        .why-choose-text {
+            padding-top: 50px;
+
+            .media {
+                margin-bottom: 25px;
+
+                i {
+                    font-size:25px;
+                    left:10px;
+                    top: 15px;
+
+                    &::after {
+                        width: 45px;
+                        height: 45px;
+                        top: -10px;
+                        left: -10px;
+                    }
+                }
+
+                .media-body {
+                    padding-left:18px;
+                    font-size: 15px;
+
+                    h3 {
+                        font-size: 18px;
+
+                    }
+                }
+            }
+
+            .why-choose-btn {
+                margin-top: 20px;
+                text-align: center;
+
+                a {
+                    padding: 5px 10px 0px;
+                    margin-right:5px;
+
+                    i {
+                        top: 12px;
+                        position: relative;
+                        left: 0;
+                        font-size: 20px;
+                        line-height: 1;
+                        left: -40px;
+                    }
+
+                    p {
+                        font-size: 10px;
+                        padding-left: 30px;
+                    }
+
+                    h5 {
+                        font-size: 12px;
+                        padding-left: 30px;
+                    }
+                }
+            }
+        }
+
+        .why-choose-img {
+            max-width: 250px;
+            margin: auto;
+
+            &::before {
+                display: none;
+            }
+        }
+    }
+
+    /* Features CSS */
+    .feature-section {
+        .feature-card {
+            padding: 60px 20px 30px;
+        }
+    } 
+
+    /* Screenshoot CSS */
+    .screenshots-section {
+        padding-bottom: 40px;
+
+        .screenshot-slider {
+            .screenshoot-img {
+                margin-bottom: 0;
+
+                img {
+                    max-width: 100%;
+                    width: unset;
+                    margin: auto;
+                }
+            }
+        }
+
+        .screenshot-shape {
+            display: none;
+        }
+    } 
+
+
+    /* How Use CSS */
+    .how-use {
+        &::before {
+            display: none;
+        }
+
+        .section-title {
+            p {
+                font-size: 15px;
+            }
+        }
+
+        .how-use-card {
+            i {
+                font-size: 40px;
+            }
+
+            h3 {
+                font-size:20px;
+            }
+        }
+
+        p {
+            font-size: 16px;
+            padding: 0 10px;
+        }
+
+        .how-use-slider::after, .how-use-slider::before {
+            display: none;
+        }
+
+        .how-use-img img {
+            max-width: 100%;
+            width: unset;
+            margin: auto;
+        }
+    }
+
+    /* Pricing CSS */
+    .pricing-section {
+        padding-top: 40px;
+
+        .plan-list {
+            ul {
+                margin-bottom: 40px;
+
+                li {
+                    padding:0;
+                    font-size: 14px;
+
+                    a {
+                        font-size: 14px;
+                        padding: 10px 14px;
+                    }
+                }
+            } 
+        }
+
+        .price-card {
+            padding:40px 20px;
+
+            p {
+                font-size: 17px;
+            }
+
+            .price-feature {
+
+                ul {
+                    padding-left: 0;
+                    text-align: center;
+
+                    li {
+                        font-size: 16px;
+                    }
+                }
+            }
+
+            .price-btn a {
+                font-size: 15px;
+                padding: 15px 40px;
+            }
+        }
+    }
+
+    /* Testimonial CSS */
+    .testimonial-section {
+        padding-bottom: 50px;
+
+        .section-title {
+            h2 {
+                font-size: 20px;
+            }
+        }
+        .testimonial-shape {
+            display: none;
+        }
+
+        .testimonial-slider {
+
+            &::before {
+                font-size:30px;
+                top: 80px;
+                right:20px;
+            }
+
+            .testimonial-item {
+                padding: 45px 20px 45px; 
+                text-align: center;
+
+                img {
+                    margin:0 auto 10px;
+                }
+
+                p {
+                    margin:auto;
+                    max-width: 235px;
+                }
+            }
+        }
+
+        .testimonial-img {
+            .client-img {
+
+                img {
+                    animation: none;
+                }
+                :nth-child(1) {
+                    top: 15%;
+                    left: 15%;
+                    max-width: 30px;
+                }
+
+                :nth-child(2) {
+                    bottom: 10%;
+                    left: 27%;                
+                    max-width: 30px;
+                }
+
+                :nth-child(3) {
+                    top: 10%;
+                    left: 30%;
+                }
+
+                :nth-child(4) {
+                    left: 0;
+                    top: 25%;
+                    max-width: 50px;
+                    right: 0;
+                    margin: auto;
+                }
+
+                :nth-child(5) {
+                    right: 20%;
+                    top: 10%;
+                    width: 40px;
+                }
+
+                :nth-child(6) {
+                    right: 10%;
+                    bottom: 10%
+                }
+            }
+        }
+
+        .testimonial-slider {
+            .testimonial-item {
+                padding: 45px 0px 45px 0;
+            }
+
+            .owl-prev, .owl-next {
+                width: 40px;
+                height: 40px;
+                font-size: 12px !important;
+                left:-70px;
+                right:0;
+                margin: auto;
+            }
+
+            .owl-next {
+                left:0;
+                right:-35px;
+            }
+        }
+    }
+
+    /* Newsletter CSS */
+    .newsletter {
+        .newsletter-area {
+            padding: 30px;
+            border-radius:20px;
+            text-align: center;
+
+            .newsletter-text  {
+                padding-right: 0;
+
+                p {
+                    max-width: 300px;
+                    margin: 0 auto 20px;
+                }
+            }
+
+            .newsletter-form {
+
+                .form-control {
+                    margin-bottom:10px;
+                }
+
+                button {
+                    position: unset;
+                    border-radius:30px;
+
+                    &:hover {
+                        border: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Footer CSS */
+    .footer-area {
+        padding-top: 200px;
+
+        .footer-widget {
+            margin-bottom: 20px;
+
+            h3 {
+                margin-bottom: 20px;
+            }
+
+            ul {
+                li {
+                    margin-bottom:5px;
+                }
+
+                :last-child {
+                    margin-bottom: 10px;
+                }
+            }
+
+            .footer-logo {
+                img {
+                    margin-bottom: 15px;
+                }
+            }
+
+            p {
+                margin-bottom: 15px;
+            }
+
+            .footer-link {
+                margin-bottom: 30px;
+            }
+        }
+
+        .pl-90 {
+            padding-left: 0;
+        }
+
+        .copyright-area {
+            text-align: center;
+            margin-top: 10px;
+
+            p {
+                margin-bottom: 0;
+                text-align: center;
+                margin-top: 18px;
+                line-height: 20px;
+            }
+        }
+    }
+    /* App landing Page CSS End */
+
+    /* Sass landing Page CSS Start */
+    /* Banner Section CSS */
+    .banner-style-two {
+
+        .banner-text {
+            padding: 120px 0 200px;
+        }
+
+        .banner-image-two {
+            :nth-child(1) {
+                max-width: 300px;
+                bottom: 0;
+                left: 0;
+                margin: auto;
+            }
+
+            :nth-child(2) {
+                max-width: 70px;
+                border-radius: 0;
+                bottom: 0;
+                left: 0;
+                right: -160px;
+                margin: auto;
+            }
+
+            :nth-child(3) {
+                display: none;
+            }
+        }
+    
+    }
+
+    /* Trusted CSS */
+    .trusted-company {
+        padding-top: 50px;
+    }
+
+    /* Our Service CSS */
+    .service-section {
+        padding-top:20px;
+
+        &::before {
+            display: none; 
+        }
+
+        .service-card {
+            padding: 50px 5px 30px;
+
+            i {
+                margin-bottom: 30px;
+            }
+
+            h3 {
+                margin-bottom: 13px;
+                font-size: 18px;
+            }
+        }
+    }
+
+    /* Why Choose CSS */
+    .why-choose-two  {
+        padding-top: 0;
+
+        .shapes {
+            display: none;
+        }
+    }
+
+    /* Standard CSS */
+    .standard-section {
+        padding-top: 0;
+        padding-bottom: 50px;
+
+        .standard-text {
+            margin-bottom: 30px;
+        }
+
+        .standard-img {
+            &::before {
+                display: none;
+            }
+        }
+        .standard-shape {
+            display: none;
+        }
+    }
+
+    /* Our Apps CSS */
+    .our-apps {
+        .apps-shape {
+            display: none;
+        }
+
+        .our-apps-img {
+            max-width: 250px;
+            left: 0;
+            right: 0;
+            margin:0 auto 30px;
+
+            &::before {
+                display: none;
+            }
+
+            img {
+                width: 100%;
+            }
+        }
+
+        .our-apps-text {
+            text-align: center;
+
+            .our-apps-btn {
+                text-align: center;
+
+                a {
+                    width:200px;
+                    padding: 0 10px 10px;
+                    margin:0 10px;
+
+                    p {
+                        font-size: 12px;
+                        top: -5px;
+                        position: relative;
+                    }
+
+                    i {
+                        left:-60px;
+                        top: 15px;
+                    }
+
+                    h5 {
+                        font-size: 14px;
+                        top: -5px;
+                        position: relative;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Counter CSS */
+    .counter-section {
+        padding-bottom:200px;
+
+        &::before {
+            height: 100%;
+        }
+
+        .counter-img {
+
+            :nth-child(1) {
+                max-width: 300px;
+                bottom:0px;
+                margin: auto;
+                left: 0;
+                right: 0;
+            }
+            :nth-child(2) {
+                right:20%;
+                bottom:0;
+                max-width: 70px;
+            }
+        }
+
+        .counter-text {
+
+            i {
+                font-size: 30px;
+                width: 60px;
+                height: 60px;
+                line-height: 60px;
+            }
+
+            h2 {
+                font-size: 30px;
+            }
+        }
+    }
+    /* Sass landing Page CSS End */
+    
+    /* Sass landing Page Two CSS Start */
+    /* Banner CSS */
+    .main-banner-two {
+        .banner-image-three {
+            right: 0;
+            max-width: 225px;
+            z-index: 99;
+            left: 0;
+            margin: auto;
+
+            img {
+                border-radius: 0;
+            }
+
+            :nth-child(2) {
+                display: none;
+            }
+        }
+
+        .banner-text {
+            padding: 120px 0 220px;
+        }
+
+        .banner-shape-two {
+            display: none;
+        }
+    }
+
+    /* Service CSS Start */
+    .service-style-two {
+        .service-shape {
+            display: none;
+        }
+
+        .service-item {
+            h3 {
+                font-size: 18px;
+            }
+        }
+    }
+
+    /* Feature CSS */
+    .features-style-two {
+        padding-bottom: 50px;
+
+        .section-title {
+            h2 {
+                font-size: 20px;
+            }
+        }
+        .feature-text {
+            padding-left: 10px;
+        }
+
+        .featues-shape {
+            display: none;
+        }
+
+        .feature-image {
+            margin-bottom: 30px;
+        }   
+    } 
+
+    /* Keep Update CSS */
+    .keep-update {
+        .keep-shape {
+            display: none;
+        }
+
+        .keep-updating-text {       
+            .keep-btn {
+                text-align: center;
+
+                a {
+                    margin: 0 10px;
+                    i{
+                        left:-60px;   
+                    }
+                }
+            } 
+
+            p {
+                text-align: center;
+            }
+        }
+
+        .keep-img {
+            max-width: 300px;
+            margin: auto;
+
+            &::before {
+                left: 0;
+            }
+        }      
+    }
+
+    /* Price Style Two */
+    .price-style-two {
+        padding-top:50px;
+        padding-bottom:30px;
+
+        &::before {
+            background-color: #293767;
+        }
+        .price-shape {
+            display: none;
+        }
+
+        .price-card {
+            .price-feature {
+                ul {
+                    li {
+                        font-size: 14px;
+                    }
+                }
+            }
+        } 
+    }
+
+    /* Counter CSS */
+    .counter-style-two {
+        &::before {
+            display: none;
+        }
+
+        .counter-text {
+            margin-bottom: 10px;
+            padding: 20px;
+        }
+    }
+
+    /* Testimonial CSS */
+    .testimonial-style-two {
+       
+        .section-title {
+            h2 {
+                font-size: 20px;
+            }
+        }
+
+        .testimonial-slider-area {
+            &::before {
+                display: none;
+            }
+            
+            .testimonial-items  {
+                padding: 25px;
+
+                .client-info {
+                    float: none;
+                    padding-left: 0;
+                }
+
+                .client-text {
+                    padding: 0;
+                    text-align:left;
+                }
+            }
+
+            .owl-prev {
+                left: 0;
+                top: inherit;
+                font-size: 14px !important;
+                width: 40px;
+                height: 40px;
+                line-height:40px !important;
+            }
+
+            .owl-next {
+                right: 0;
+                top: inherit;
+                font-size: 14px !important;
+                width: 40px;
+                height: 40px;
+                line-height:40px !important;
+            }
+        }
+    }
+
+    /* Sass landing Page Two CSS End */
+
+    /* Personal Portfolio CSS Start */
+    /* Banner CSS */
+    .banner-style-four {
+        padding-top: 0;
+
+        .banner-text  {
+
+            span {
+                font-size: 18px;
+                margin-bottom: 10px;
+                display: inline-block;
+            }
+
+            p {
+                font-size: 16px;
+                margin-bottom: 20px;
+            }
+        }
+
+        .banner-img-two {
+            margin-bottom: 20px;
+            padding-top: 0;
+        }
+
+    }
+
+    /* About CSS */
+    .about-section {
+        .about-text {
+            padding-right: 0;
+            padding-left: 0;
+            margin-bottom: 30px;
+
+            ul {
+                li {
+                    margin-right: 0;
+                }
+            }
+
+            .about-btn {
+                text-align: center;
+
+                a {
+                    margin:0 5px;
+                    padding: 5px 20px;
+                }
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-bottom:20px;
+                margin-top: 25px;
+            }
+        }
+
+        .about-shape {
+            display: none;
+        }
+
+        .about-img {
+            .about-img-text {
+                p {
+                    &::before {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Service CSS */
+    .service-style-three {
+        .service-items {          
+            padding: 30px 10px;
+
+            i {
+                margin-bottom: 20px;
+                width: 90px;
+                height: 90px;
+                line-height: 90px;
+            }
+
+            h3 {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+        }
+    }
+    /* Software CSS */
+    .software-section  {
+        padding-bottom:50px;
+
+        .software-shape {
+            display: none;
+        }
+    }
+
+    /* Showcase CSS */
+    .show-case-section {
+        &::before {
+            display: none;
+        }
+
+        .showcase-menu {
+            ul {
+                li {
+                    display:inline-block;
+                    margin-bottom:10px;
+                    padding: 5px 10px;
+                    width: 200px;
+                }
+            }
+        }
+
+        .showcase-card {
+            img {
+                width: 100%;
+            }
+        }
+    }
+
+    /* Testimonial CSS */
+    .testimonial-style-three {
+        .testimonial-area {
+            &::after {
+                width: 100%;
+            }
+
+            .slick-prev::before, .slick-next::before {
+                display: none;
+            }
+        }
+    }
+
+    /* Contact CSS */
+    .contact-section {
+        .contact-form {
+            padding: 20px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+
+            h2 {
+                font-size: 17px;
+                margin-bottom: 26px;
+            
+            }
+
+            .form-group {
+                .form-control {
+                    height: 40px;
+                    padding: 0 20px;
+                }
+            }
+        }
+    }
+
+    /* Footer CSS */
+    .footer-style-four {
+        padding-top: 50px;
+        padding-bottom: 20px;
+
+        .footer-widget {
+            .footer-btn {
+                a {
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+
+    /* Personal Portfolio  CSS End */
+
+    /* Creative Agency  CSS Start */
+    /* Navbar CSS */
+    .nav-style-two {
+        background:linear-gradient(90deg, rgba(228, 102, 92, 1) 20%, rgba(155, 91, 163, 1) 100%);
+    }
+
+    /* Banner CSS */
+    .banner-style-three {
+        .banner-img-three {
+            animation: none;
+            max-width: 300px;
+            margin: auto;
+            right: 0;
+            left: 0;
+            position: relative;
+            z-index: 1;
+        }
+     }
+
+    /* About CSS */
+    .about-us-section {
+        .about-image {
+            margin-bottom: 30px;
+        }
+
+        .about-shape {
+            display: none;
+        }
+
+        .about-text {
+            padding-left: 0;
+            padding-right: 0;
+            text-align: center;
+
+            ul {
+                li {
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+
+    /* Process CSS */
+    .work-process {
+
+        .process-card {
+            border-radius: 10px;
+
+            &::before {
+                width: 90%;
+                height: 85%;
+                top: 12px;
+                border-radius: 10px;
+            }
+        }
+    }
+
+    /* Case Study CSS */
+    .case-study-section {
+        .case-study-slider {
+            .case-items {
+                .case-study-text { 
+                    padding: 50px 15px 30px !important;
+                    
+                    h3 {
+                        a {
+                            font-size:16px;
+                        }
+                    }
+                }
+
+                .case-img {
+                    .project-logo {
+                        width: 80px;
+                        height: 80px;
+                        bottom: -35px;
+                    }
+                }
+            }
+
+            .owl-dots {
+                bottom: -20px !important;
+            }
+        }
+    }
+
+    /* Pricing Section */
+    .price-style-three {
+        .price-card {
+            padding: 20px;
+
+            .price-feature {
+                ul {
+                    li {
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Team CSS */
+    .team-section {
+        .team-slider {
+            .team-card {
+                width: 100%;
+            }
+
+            .owl-dots {
+                bottom: 0;
+            }
+        }
+    }
+
+    /* Case Study */
+    .case-study-section {
+        .case-study-slider {
+            .owl-dots {
+                bottom: 0;
+            }
+
+            .case-items {
+                .case-study-text {
+                    padding: 70px 15px 30px;
+                }
+            }
+        }
+    }
+
+    /* Testimonial CSS */
+    .testimonial-style-four {
+        padding-top: 40px;
+        padding-bottom: 135px;
+
+        .testimonial-slider-wrapper {
+            .tsetimonial-card  {
+                padding:0 15px;
+
+                p {
+                    font-size: 14px;
+                }
+            }
+
+            &::before {
+                clip-path: none;
+                height: 155%;
+            }
+
+            .owl-prev {
+                left:15px;
+            }
+
+            .owl-next {
+                right:15px;
+            }
+        }
+    } 
+    /* Price CSS */ 
+    .price-style-three {
+        .price-card {
+            padding: 0 0 40px;
+
+            .price-feature {
+                ul {
+                    padding-left: 0;
+                }
+            }
+        }
+    }
+    /* Creative Agency  CSS End */
+}
+
+@media (min-width:768px) and (max-width:991px) {
+    /* Custom CSS */
+    p {
+        font-size: 15px;
+    }
+
+    .pt-100 {
+        padding-top: 70px;
+    }
+
+    .pb-70 {
+        padding-bottom:40px;
+    }
+
+    .section-title {
+        text-align: center !important;
+        margin: 0 auto 50px;
+
+        span {
+            font-size: 15px;
+        }
+
+        h2 {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+    }
+
+    /* Navbar CSS */
+    .navbar {
+        background-color: #4C6170;
+        padding:5px 15px;
+        box-shadow: 0 0 10px 0 #0000006b;
+
+        .navbar-nav {
+            .nav-item {
+                .nav-link {
+                    padding:0;
+                    margin:0 10px;
+                    font-size: 15px;
+                }
+            }
+        } 
+
+        .navbar-brand {
+            img {
+                max-width: 100px;
+            }
+        }
+
+        .navbar-btn a {
+            font-size: 14px;
+            padding: 5px 15px;
+            margin-left: 0;
+        }
+    }
+
+    /* Home CSS */
+    .main-banner {
+        height: 100%;
+        // background:#4C6170;
+        
+        .banner-shape {
+            display: none;
+        }
+
+        .banner-text {
+            text-align: center;
+            padding: 120px 0 40px;
+
+            h1 {
+                font-size:30px;
+                margin-bottom:20px;
+            }
+
+            p {
+                margin: 0 auto 5px;
+            }
+
+            .banner-btn a {
+                padding: 8px 16px;
+                margin-right:10px;
+                font-size: 14px;
+            }
+        }
+
+        .banner-img {
+            position: relative;
+            z-index: 0;
+            margin: 0 auto 50px;
+            max-width: 200px;
+
+            &::after {
+                display: none;
+            }
+
+            &::before {
+                display: none;
+            }
+
+            img {
+                width: 100%;
+            }
+        }
+    }
+
+    /* Why Choose CSS */
+    .why-choose {
+        &::before {
+            display: none;
+        }
+
+        &::after {
+            z-index: -1;
+        }
+
+        .section-title {
+            margin: 0 auto 50px;
+        }
+
+        .why-choose-text {
+
+            .media  {
+                i {
+                    top: 20px;
+                    left: 35px;
+                }
+
+                .media-body {
+                    max-width: 550px;
+                }
+            }
+        }
+
+        .why-choose-img {
+            position: relative;
+            max-width: 300px;
+            margin:0 auto 50px;
+        }
+    }
+
+    /* Screenshot CSS */
+    .screenshots-section {
+        padding-bottom: 60px;
+
+        .screenshot-shape {
+            display: none;
+        }
+    }
+
+    /* Price CSS */
+    .pricing-section {
+        .price-card {
+            padding:50px 20px;
+
+            .price-feature {
+                ul {
+                    padding-left:0;
+                }
+            }
+
+            .price-btn {
+                a {
+                    padding: 15px 30px;
+                }
+            }
+        }
+    }
+
+    /* How to Use */
+    .how-use {
+        .how-use-slider {
+
+            &::after {
+                display: none;
+            }
+        }
+    }
+
+    /* Testimonial CSS */
+    .testimonial-section {
+        padding-bottom: 0;
+
+        .testimonial-shape {
+            display: none;
+        }
+
+        .testimonial-slider {
+
+            &::before {
+                font-size: 70px;
+                top: 80px;
+                right:20px;
+            }
+        }
+
+        .testimonial-img {
+            .client-img {
+                :nth-child(2) {
+                    bottom: 40px;
+                    left: 28%;
+                }
+            }
+        }
+    }
+
+    /* Newsletter CSS */
+    .newsletter {
+        .newsletter-area {
+            padding: 40px;
+        }
+
+        .newsletter-text {
+            margin-bottom: 30px;
+        }
+    }
+
+    /* Footer CSS */
+    .footer-area {
+        padding-top: 220px;
+
+        .footer-widget {
+            margin-bottom: 30px;
+
+            h3 {
+                margin-bottom: 15px;
+            }
+        }
+
+        .pl-90 {
+            padding-left: 0;
+        }
+
+        .copyright-area{
+            margin-top: 40px;
+
+            img {
+                max-width: 36px;
+            }
+        }
+    }
+
+    /* Sass Landing CSS Start */
+
+    /* Banner Section CSS */
+    .banner-style-two {
+
+        .banner-text {
+            padding: 120px 0 220px;
+
+            .banner-btn {
+                margin-bottom:20px;
+            }
+        }
+
+        .banner-image-two {
+            :nth-child(1) {
+                max-width: 330px;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+            }
+
+            :nth-child(2) {
+                max-width: 70px;
+                border-radius: 0;
+                bottom: 0;
+                left: 0;
+                right: -180px;
+                margin: auto;
+            }
+
+            :nth-child(3) {
+                display: none;
+            }
+        }
+    }
+
+    /* Why Choose CSS */
+    .why-choose-two {
+        .why-choose-img {
+            max-width: 450px;
+
+            &::before {
+                display: none;
+            }
+        }
+
+        .shapes {
+            display: none;
+        }
+    }
+
+    /* Standard CSS */
+    .standard-section {
+        .standard-text {
+            margin-bottom: 30px;
+
+            .section-title {
+                margin: 0 auto 30px;
+            }
+        }
+
+        .standard-shape {
+            display: none;
+        }
+    }
+
+    /* Our Apss CSS */
+    .our-apps {
+        .our-apps-text {
+            text-align: center;
+            .section-title {
+                margin: 0 auto 30px;
+            }
+
+            .our-apps-btn {
+                a {
+                    i {
+                        left: -65px;
+                    }
+                }
+            }
+        }
+
+        .our-apps-img {
+            position: relative;
+            z-index: 0;
+            right: 0;
+            left: 0;
+            margin: 0 auto 30px;
+            max-width: 300px;
+            
+            img {
+                width: 100%;
+            }
+        }
+
+        .apps-shape {
+            display: none;
+        }    
+    }
+    /* Counter CSS */
+    .counter-section {
+        padding-bottom: 350px;
+        &::before {
+            height: 100%;
+        }
+
+        .counter-img {
+            :nth-child(1) {
+                right: 0;
+                bottom:0;
+                max-width: 560px;
+                left: 0;
+                right: 0;
+                margin: auto;
+            }
+
+            :nth-child(2) {
+                right: -200px;
+                bottom:0;
+                max-width: 110px;
+                left: 0;
+                margin: auto;
+            }
+        }
+    }
+
+    /* Pricing CSS */
+    .price-section-two {
+        padding-top: 70px;
+    }
+    /* Sass Landing CSS End */
+
+    /* Sass Landing Two CSS Start */
+    /* Banner CSS */
+    .main-banner-two {
+        .banner-image-three {
+            right: 0;
+            bottom: 0;
+            max-width: 260px;
+            left: 0;
+            margin: auto;
+
+            :nth-child(2) {
+                display: none;
+            }
+        }
+
+        .banner-text {
+            padding-bottom: 250px;
+        }
+
+        .banner-shape-two {
+            display: none;
+        }
+    }
+    /* Feature CSS */
+    .features-style-two {
+        padding-bottom: 70px;
+
+        .feature-text {
+            padding-top: 50px;
+
+            .section-title {
+                margin: 0 auto 25px;
+            }
+        }
+    }
+
+    /* Keep Upadate CSS */
+    .keep-update {
+        padding-bottom:0px;
+
+        .keep-updating-text {
+            text-align: center;
+
+            .keep-btn {
+                a {
+                    i {
+                        left: -65px;
+                    }
+                }
+            }
+        }
+
+        .keep-shape {
+            display: none;
+        }
+
+        .keep-img {
+            max-width: 500px;
+            margin: auto;
+
+            img {
+                width: 100%;
+            }
+
+            &::before {
+                display: none;
+            }
+        }
+    }
+
+    /* Price Shape CSS */
+    .price-style-two {
+        padding-top: 70px;
+        padding-bottom:50px;
+        background:#293767;
+
+        .price-shape {
+            display: none;
+        }
+    }
+
+    /* Counter CSS */
+    .counter-style-two {
+        padding-top: 40px;
+    }
+
+    /* Testimonial CSS */
+    .testimonial-style-two {
+        .testimonial-slider-area {
+
+            &::before {
+                display: none;
+            }
+
+            .owl-prev {
+                left:-30px;
+                width: 35px;
+                height: 35px;
+                line-height: 35px !important;
+                font-size: 14px !important;
+            }
+            .owl-next {
+                right:-40px;
+                width: 35px;
+                height: 35px;
+                line-height: 35px !important;
+                font-size: 14px !important;
+            }
+        } 
+    }
+
+    /* Newsletter CSS */
+    .newsletter-style-two {
+        padding-top: 30px;
+    }
+
+    /* Sass Landing Two CSS End */
+    
+    /* Personal Portfolio  CSS Start */
+    /* Navbar CSS */
+    .navbar-area {
+        .navbar-btn {
+            display: none;
+        }
+    }
+
+    /* Banner CSS */
+    .banner-style-four {
+       padding-top: 0;
+
+        .banner-text {
+            padding: 120px 0 35px;
+            margin: 0 auto;
+
+            span {
+                font-size: 20px;
+            }
+
+            h1 {
+                font-size: 60px;
+            }
+
+            p {
+                font-size: 18px;
+                margin-bottom: 40px;
+            }
+
+            .banner-btn {
+                a {
+                    padding: 15px 30px;
+                }
+            }
+        }
+    }
+
+    /* About CSS */
+    .about-section {
+        .about-img {
+
+            img {
+                width: 100%;
+            }
+
+            .about-img-text {
+
+                p {
+                    &::before {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .about-text {
+            h2 {
+                font-size: 35px;
+                margin-top: 10px;
+            }
+        }
+
+        .about-shape {
+            display: none;
+        }
+    }
+
+    /* Showcase CSS */
+    .show-case-section {
+        .showcase-menu {
+            ul {
+                li {
+                    padding: 6px 15px;
+                    font-size: 14px !important;
+                }
+            }
+        }
+    }
+    /* Testimonial CSS */
+    .testimonial-style-three {
+        .testimonial-area {
+            &::after {
+                width: 100%;
+            }
+        }
+
+        .sin-testiText p {
+            margin-top: 22px;
+            max-width: 500px;
+            margin: 22px auto;
+        }
+
+        .sin-testiImage {
+            img {
+                width: 67px;
+                height: 67px;
+            }
+        }
+
+        .slick-prev {
+            &::before {
+                color: #fff;
+                border:1px solid #fff;
+            }
+        }
+
+        .slick-next { 
+            &::before {
+                color: #fff;
+                border:1px solid #fff;
+            }
+        }
+    }
+
+    /* Contact CSS */
+    .contact-section  {
+
+        .contact-form {
+            padding: 40px;
+            margin-top: 70px;
+            margin-bottom: 70px;
+
+            h2 {
+                font-size: 30px;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                .form-control {
+                    height: 45px;
+                }
+            }
+        }
+    }
+
+    /* Footer CSS */
+    .footer-style-four {
+        padding-top: 70px;
+        padding-bottom: 40px;
+    }
+    /* Personal Personal Two CSS End */
+    
+    /* Creative Agency CSS Start */
+    /* Navbar CSS */
+    .nav-style-two {
+        background:linear-gradient(90deg, rgba(228, 102, 92, 1) 20%, rgba(155, 91, 163, 1) 100%);
+    }
+
+    /* Banner CSS */
+    .banner-style-three {
+        .banner-img-three {
+            right: 25px;
+            max-width:500px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .banner-text {
+
+            h1 {
+                font-size: 55px;
+                margin-bottom: 40px;
+            }
+            p {
+                font-size: 16px;
+                margin-bottom: 50px;
+            }
+        }
+    }
+
+    /* About CSS */
+    .about-us-section {
+        .about-image {
+            margin-bottom: 40px;
+        }
+    }
+
+    /* Case Study CSS */
+    .case-study-section {
+        .case-study-slider {
+            .case-items  {
+                .case-study-text {
+                    h3 {
+                        a {
+                           font-size: 20px; 
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* testimonial CSS */
+    .testimonial-style-four {
+        padding-top: 50px;
+
+        .testimonial-slider-wrapper {
+
+
+            .owl-next {
+                right: 0;
+            }
+
+            .owl-prev {
+                left: 0;
+            }
+
+        }
+    }
+
+    /* Pricing CSS */
+    .price-style-three {
+        .price-card {
+            padding: 20px;
+
+            .price-feature {
+                padding: 0 20px;
+            }
+        }
+    }
+
+    /* Team CSS */
+    .team-section {
+        padding-bottom: 100px;
+
+        .team-slider {
+            .team-card {
+                width: 100%;
+            }
+        }
+    
+    }
+    /* Creative Agency CSS End */
+}
+
+@media (min-width:992px) and (max-width:1199px) {
+    /* Custom CSS */
+    .section-title {
+        h2 {
+            font-size: 30px;
+        }
+    }
+    .pt-100 {
+        padding-top: 70px;
+    }
+
+    .pb-70 {
+        padding-bottom: 40px;
+    }
+
+    /* App Landing CSS End*/
+    /* Banner CSS */
+    .main-banner {
+        // background: #4C6170;
+        
+        .banner-img {
+            img {
+                max-width: 100%;
+            }
+            &::after, &::before {
+                display: none;
+            }
+        }
+        
+        .banner-text {
+            padding:0;
+
+            h1 {
+                font-size: 50px;
+            }
+        }
+
+        .banner-shape {
+            display: none;
+        }
+    }
+
+    /* How Use CSS */
+    .how-use {
+        .how-use-slider {
+            &::after {
+                display: none;
+            }
+        }
+    }
+
+    /* Pricing CSS */
+    .pricing-section {
+        .price-card {
+            padding: 50px 40px;
+
+            .price-feature {
+                ul {
+                    padding-left: 0;
+
+                    li {
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Testimonial Section */
+    .testimonial-section {
+        .testimonial-img {
+            .client-img {
+
+                :nth-child(1) {
+                    top: 50px;
+                    left: 80px;
+                    max-width: 60px;
+                }
+
+                :nth-child(2) {
+                    bottom: 30px;
+                    left: 28%;
+                }
+
+                :nth-child(4) {
+                    left: 0;
+                    right: 0;
+                    max-width: 60px;
+                    margin: auto;
+                    top: 80px;
+                }
+            }
+        }
+    }
+
+    /* Footer CSS */
+    .footer-area {
+        .footer-widget {
+            h3 {
+                margin-bottom:30px;
+            }
+
+            ul {
+                li {
+                    font-size: 15px;
+                }
+            }
+        }
+
+        .copyright-area {
+            margin-top: 70px;
+        }
+    }
+
+    /* App landing CSS End*/
+
+    /* Sass Landing CSS  Start */
+    /* Banner CSS */
+    .banner-style-two {
+        height: 100%;
+
+        .banner-text {
+            padding: 150px 0 140px;
+            max-width: 550px;
+
+            h1 {
+                font-size: 50px;
+            }
+        }
+
+        .banner-image-two {
+            :nth-child(1) {
+                bottom: 80px;
+                max-width: 500px;
+            }
+
+            :nth-child(2) {
+                bottom: 95px;
+                max-width: 90px;
+            }
+
+            :nth-child(3) {
+                display: none;
+            }
+        }
+    }
+
+    /* Why Choose CSS */
+    .why-choose-two {
+        .shapes {
+            display: none;
+        }
+    }
+
+    /* Standard CSS */
+    .standard-section {
+        .standard-shape {
+            bottom: 200px;
+        }
+    }
+
+    /* Our Apps */
+    .our-apps {
+        .apps-shape {
+            display: none;
+        }
+    }
+
+    /* Counter CSS */
+    .counter-section {
+
+        .counter-text {
+            h2 {
+                font-size: 25px;
+            }
+
+            p {
+                font-size: 13px;
+            }
+        }
+        .counter-img {
+            :nth-child(1) {
+                bottom:0px;
+                max-width:400px;
+                right: 0;
+            }
+  
+            :nth-child(2) {
+                right: 80px;
+                bottom: 0px;
+                max-width: 100px;
+            }
+            
+        }
+    }
+
+    /* Pricing Section */
+    .price-section-two {
+        padding-top: 130px;
+    }
+
+    /* Footer CSS */
+    .footer-style-two {
+        .pl-90 {
+            padding-left:20px;
+        }
+    }
+    /* Sass Landing CSS  End */
+
+    /* Sass Landing Page Two CSS Start */
+    /* Banner CSS */
+    .main-banner-two {
+        .banner-image-three {
+            max-width: 490px;
+        }
+    }
+
+    /* Feature CSS */
+    .features-style-two {
+        padding-bottom: 70px;
+    }
+
+    /* Keep CSS */
+    .keep-update {   
+        padding-bottom: 0;
+
+        .keep-shape {
+            display: none;
+        }
+    }
+
+    /* Price CSS */
+    .price-style-two {
+        padding-top: 130px;
+        padding-bottom: 130px;
+
+        .price-card  {
+            .price-feature {
+                ul {
+                    li {
+                        font-size: 16px;
+
+                        i {
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .testimonial-style-two {
+        .testimonial-slider-area {
+            .testimonial-items {
+                .client-text {
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+
+    /* Footer CSS */
+    .footer-style-three {
+        padding-top: 230px;
+    }
+
+    /* Sass Landing Page Two CSS End */
+
+    /* Personal Portfolio Two CSS Start */
+    /* Banner CSS */
+    .banner-style-four {
+        .banner-text {           
+            padding-top: 70px;
+        }
+    }
+
+    /* About CSS */
+    .about-section {
+        .about-text {
+            h2 {
+                font-size: 30px;
+            }
+
+            ul {
+                li {
+                    height: 45px;
+                    i {
+                        width: 35px;
+                        height: 35px;
+                        line-height: 35px;
+                        left: -4px;
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Software CSS */
+    .software-section {
+        padding-bottom: 70px;
+    }
+
+    /* Footer CSS */
+    .footer-style-four {
+        padding-bottom: 70px;
+
+        .footer-widget {
+            .footer-logo {
+                margin-bottom: 0;
+
+                img {
+                    margin-bottom:15px;
+                }
+            }
+
+            p {
+                font-size: 14px;
+                margin-bottom:20px;
+            }
+
+            .footer-btn {
+                a {
+                    margin-bottom:10px;
+                    margin-right: 0;
+                    padding: 10px 14px;
+                }
+            }
+        }
+
+        .pl-90 {
+            padding-left: 40px;
+        }
+    }
+    /* Personal Portfolio Two CSS End */
+
+    /* Creative Agency CSS Start */
+    /* Banner  CSS */
+    .banner-style-three {
+        height: 100%;
+
+        .banner-text {
+            padding: 150px 0;
+
+            p {
+                font-size: 15px;
+            }
+        }
+    }
+
+    /* Service CSS */
+    .service-style-four {
+        .service-card {
+            padding: 30px;
+        }
+    }
+
+
+    /* Process CSS */
+    .work-process {
+        .process-card {
+            height: 125px;
+
+            &::before {
+                top: 6px;
+            }
+
+            h3 {
+                padding-top:35px;
+            }
+        }
+    }
+
+    /* Case Stuudy CSS */
+    .case-study-section {
+        .case-study-slider {
+            .case-items {
+                .case-study-text {
+                    h3 {
+                        a {
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* Testimonial CSS */
+    .testimonial-style-four {
+        padding-top: 70px;
+    }
+
+
+    /* Pricing CSS */
+    .pricing-section {
+        .price-card {
+            padding: 20px;
+
+            .price-feature {
+                padding: 0 20px;
+            }
+        }
+    }
+
+    /* Team CSS */
+    .team-section {
+        padding-bottom: 100px;
+
+        .team-slider {
+            .team-card {
+                width: 100%;
+            }
+        }
+    
+    }
+
+    /* Footer Style Five */
+    .footer-style-five {
+        padding-top: 230px;
+    }
+
+    /* Creative Agency CSS End */
+
+}
+
+@media (min-width:1799px) {
+    /* App Landing CSS Start */
+    .main-banner {
+        height: 1000px;
+
+        .banner-shape {
+            :nth-child(1) {
+                top: 0;
+                left: -100px;
+                width: 245px;
+            }
+
+            :nth-child(2) {
+                left: 100px;
+            }
+
+            :nth-child(3) {
+                right: 150px;
+                top: 100px;
+            }
+        }
+    }
+
+    /* App Landing CSS End */
+
+    /* Sass Landing CSS Start */
+    /* Banner CSS Start */
+    .main-banner {
+        .banner-image-two {
+            :nth-child(1) {
+                bottom: 100px;
+                right: 0;
+                max-width: 900px;
+                z-index: 1;
+            }
+
+            :nth-child(2) {
+                bottom: 100px;
+                right:50px;
+            }
+
+            :nth-child(3) {
+                bottom: 55%;
+            }
+        }
+
+    }
+    
+    /* Counter CSS Start */
+    .counter-section {
+        .counter-img {
+            :nth-child(1) {
+                right: 175px;
+            } 
+
+            :nth-child(2) {
+                right: 195px;
+                bottom:0px;
+                max-width: 150px;
+            }
+        }
+    }
+
+    /* Sass Landing CSS End */
+
+    /* Sass Landing Page Two CSS Start */
+    .main-banner-two {
+        .banner-image-three {
+            max-width:700px;
+        }
+    }
+    /* Sass Landing Page Two CSS End */
+
+    /* Personal Portfoli Page CSS Start */
+    .testimonial-style-three {
+        .testimonial-area::after {
+            width: 40%;
+        }
+    }
+    /* Personal Portfoli Page CSS End */
+}

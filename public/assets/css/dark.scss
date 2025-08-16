@@ -1,0 +1,400 @@
+/*================================================
+Default CSS
+=================================================*/
+$main-color: #4C6170;
+$body-color: #ffffff;
+$heading-color: #ffffff;
+// Switch css
+.switch-box {
+    position: fixed;
+    z-index: 1;
+    left: 3%;
+    bottom: 63px;
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+
+        input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #4d4949;
+        transition: 0.4s;
+
+        &:before {
+            position: absolute;
+            content: "";
+            height: 30px;
+            width: 30px;
+            left: 2.5px;
+            bottom: 4px;
+            top: 0;
+            bottom: 0;
+            margin: auto 0;
+            transition: 0.4s;
+            box-shadow: 0 0px 15px #2020203d;
+            background: url(../../assets/img/night.png);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    }
+    input:checked + .slider {
+        background-color: #cbc1c1;
+    }
+    input:focus + .slider {
+        background-color: #4d4949;
+    }
+    input:checked + .slider:before {
+        transform: translateX(24px);
+        background: url(../../assets/img/sunny.png);
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .slider {
+        &.round {
+            border-radius: 50px;
+
+            &:before {
+                border-radius: 50%;
+            } 
+        }
+    }
+}
+// Dark Style CSS
+.theme-dark {
+    body {
+        background-color: #000000;
+        color: #f1f1f1;
+    }
+    p {
+        color: #f1f1f1 !important;
+        
+        a {
+            color: #f1f1f1 !important;
+        }
+    }
+    a {
+        color: $body-color;
+    }
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        color: $heading-color !important;
+        a {
+            color: $heading-color !important;
+        }
+    }
+   
+    //Navbar
+    .navbar-area {
+        &.is-sticky {
+            background-color: #000000;
+        }
+    }
+    .main-nav {
+        background-color: #000000;
+        border-bottom: 2px solid #0e0e0e;
+        .navbar {
+            .navbar-nav {
+                .nav-item {
+                    .nav-link {
+                        color: $body-color;
+                    }
+                }
+            }
+           
+        }
+    }
+    .nav-style-two {
+        &.is-sticky {
+            background: #000000;
+        }
+    }
+
+    //Banner
+    .main-banner {
+        &.banner-bg-one {
+            background-image: unset;
+            background-color: #0e0e0e;
+        }
+        &.banner-bg-two {
+            background-image: unset;
+            background-color: #0e0e0e;
+        }
+        &.banner-bg-three {
+            background-image: unset;
+            background-color: #0e0e0e;
+        }
+        &.banner-style-four {
+            background-color: #0e0e0e;
+        }
+    }
+    .banner-bg-four {
+        &::before {
+            background: linear-gradient(90deg, rgba(9, 9, 9, 0.85) 20%, rgba(20, 20, 20, 0.85) 100%);
+        }
+    }
+    .banner-bg-five {
+        &::before {
+            background: linear-gradient(0deg, rgba(21, 20, 20, 0.85) 25%, rgba(15, 14, 14, 0.85) 100%);
+        }
+    }
+
+    //About
+    .about-section {
+        .about-text {
+            ul {
+                li {
+                    background: #0e0e0e;
+                }
+            }
+        }
+    }
+    .about-us-section {
+        .about-text {
+            ul {
+                li {
+                    color: $body-color;
+                }
+            }
+        }
+    }
+
+
+    //Features
+    .feature-section {
+        .feature-card {
+            background: #0e0e0e;
+            &:hover {
+                background-color: $main-color;
+            }
+        }
+    }
+    .features-style-two {
+        .feature-text {
+            ul {
+                li {
+                    color: $body-color;
+                }
+            }
+        }
+    }
+    .keep-update {
+        .keep-updating-text {
+            .keep-btn {
+                a {
+                    box-shadow: 0px 0px 14px rgba(174, 171, 171, 0.15) !important;
+                }
+            }
+        }
+    }
+    
+    //Screenshots
+    .screenshots-section {
+        background: #0e0e0e;
+    }
+
+    //How Use
+    .how-use {
+        .how-use-card {
+            background: #0e0e0e;
+        }
+    }
+
+    //Services
+    .service-section {
+        .service-card {
+            background: #0e0e0e;
+            &:hover {
+                background: $main-color;
+            }
+        }
+    }
+    .service-style-two {
+        .service-item {
+            background: #0e0e0e;
+        }
+    }
+    .service-style-three {
+        .service-items {
+            background-color: #0e0e0e;
+            &:hover, &.active {
+                background-color: #874fe1;
+            }
+        }
+    }
+    .service-style-four {
+        .service-card {
+            background-color: #0e0e0e;
+        }
+    }
+
+    //Work
+    .work-process {
+        background: #0e0e0e;
+    }
+
+    //Case Study
+    .case-study-section {
+        .case-study-slider {
+            .case-items {
+                .case-study-text {
+                   background-color: #0e0e0e;
+                }
+            }
+        }
+    }
+
+    //Software
+    .software-section {
+        background: #0e0e0e;
+        .software-img {
+            .software-img-text {
+                background: #000000;
+            }
+        }
+    }
+
+    //Show Case
+    .show-case-section {
+        background: #191919;
+    }
+
+
+    //Counter
+    .counter-section {
+        &::before {
+            background: linear-gradient(0deg, #0b0b0b 0%, #080909 100%);
+        }
+    }
+
+    //Pricing
+    .pricing-section {
+        .price-card {
+            background-color: #0e0e0e;
+            &:hover, &.active-price {
+                background-color: $main-color;
+            }
+            .price-feature {
+                ul {
+                    li {
+                        color: $body-color;
+                    }
+                }
+            }
+        }
+    }
+    .price-style-two {
+        &::before {
+            background-image: unset;
+        }
+        .price-card {
+            &::before {
+                background-image: unset;
+            }
+        }
+    }
+
+    //Testimonial
+    .testimonial-style-two {
+        .testimonial-slider-area {
+            .testimonial-items {
+                background: #0e0e0e;
+            }
+            &::before {
+                background: #393838;
+            }
+        }
+    }
+    .testimonial-style-three {
+        .testimonial-area {
+            &::after {
+                background: #0e0e0e;
+            }
+        }
+    }
+    .testimonial-style-four {
+        .testimonial-slider-wrapper {
+            &::before {
+                background: #0e0e0e;
+            }
+        }
+    }
+
+    //Pricing
+    .price-style-three {
+        background: linear-gradient(90deg, #0e0e0e 0%, #242424 100%);
+    }
+
+    //NewsLetter
+    .newsletter {
+        .newsletter-area {
+            background: linear-gradient(0deg, #0e0e0e 25%, #383737 50%);
+            border-radius: 50px;
+            padding: 70px;
+            position: relative;
+        }
+    }
+    .newsletter-style-two {
+        background-color: #1a1a1a;
+        &::before {
+            background-image: unset;
+        }
+    }
+    .newsletter-two {
+        background: linear-gradient(90deg, #0e0e0e 0%, #151515 100%) !important;
+    }
+
+    //Footer
+    .footer-area {
+        background: #242424;
+    }
+
+    //contact
+    .contact-section {
+        .contact-form {
+            background: #0e0e0e;
+            .form-group {
+                .form-control {
+                    background-color: #000000;
+                    color: $body-color;
+                    &::placeholder {
+                        color: $body-color;
+                    }
+                }
+                .message-field {
+                    background-color: #000000;
+                    color: $body-color;
+                    &::placeholder {
+                        color: $body-color;
+                    }
+                }
+            }
+        }
+    }
+
+    //Top-bnt
+    .top-btn {
+        color: $body-color;
+    }
+
+    @media only screen and (max-width: 991px) {
+        .navbar {
+            background-color: #1e1e1e;
+        }
+        .nav-style-two {
+            background: linear-gradient(90deg, #121212 20%, #2c2b2c 100%);
+        }
+    }
+
+}

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use App\Filament\Pages\Auth\CustomLogin;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,17 +28,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Filament::serving(function (ServingFilament $event) {
-            $hospital_id = request()->get('hospital') ?? Cookie::get('current_hospital_id');
+            $hospital_key = request()->get('hospital') ?? Cookie::get('current_hospital_id');
 
-            $hospital = Hospital::find($hospital_id);
-    
+            $hospital = Hospital::where('key', $hospital_key)->first();
+
             if (!$hospital) {
                 $hospital = Auth::user()?->account_type === 'hospital' ? Auth::user()?->hospital : null;
-            }     
+            }
 
             if ($hospital) {
                 // set the hospital id into cookie for 30 days
-                Cookie::queue('current_hospital_id', $hospital->id, 60 * 24 * 30);
+                Cookie::queue('current_hospital_id', $hospital->key, 60 * 24 * 30);
 
                 Filament::getCurrentPanel()->brandLogo(env('ADMIN_DASHBOARD_URL') . '/storage/' . $hospital->hospital_logo)
                     ->darkModeBrandLogo(env('ADMIN_DASHBOARD_URL') . '/storage/' . $hospital->hospital_logo)

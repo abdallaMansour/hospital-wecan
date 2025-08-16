@@ -3,44 +3,30 @@
 namespace App\Filament\Resources\DoctorResource\Pages;
 
 use App\Filament\Resources\DoctorResource;
-use App\Models\HospitalUserAttachment;
-use Filament\Actions;
-use Filament\Actions\Action;
-use App\Models\User;
-use Illuminate\Support\Facades\File;
 use Filament\Resources\Pages\CreateRecord;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class CreateDoctor extends CreateRecord
 {
     protected static string $resource = DoctorResource::class;
 
-    // protected function getFormActions(): array
-    // {
-    //     return [
-    //         $this->getCreateFormAction(),
-    //         $this->getCancelFormAction(),
-    //     ];
-    // }
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        if (!empty($data['name_en'])) {
+            $data['name'] = GoogleTranslate::trans($data['name_en'], 'ar', 'en');
+        } else {
+            $data['name_en'] = GoogleTranslate::trans($data['name'], 'en', 'ar');
+        }
 
-    // protected function mutateFormDataBeforeCreate(array $data): array
-    // {
-    //     $filePath = storage_path('app/file.txt');
-    //     $content = json_encode($this->data);
-    //     File::append($filePath, $content);
-    //     return $this->data;
-    // }
+        if (!empty($data['profession_en'])) {
+            $data['profession_ar'] = GoogleTranslate::trans($data['profession_en'], 'ar', 'en');
+        } else {
+            $data['profession_en'] = GoogleTranslate::trans($data['profession_ar'], 'en', 'ar');
+        }
 
+        unset($data['profession']);
+        unset($data['password_confirmation']);
 
-
-    // protected function beginDatabaseTransaction(): void
-    // {
-    //     $email = $this->data['email'];
-    //     $foundedUser = User::where('email', $email)->first();
-    //     if ($foundedUser) {
-    //         $this->data['user_id'] = $foundedUser->id;
-    //         unset($this->data['email']);
-    //         $foundedUser->hospital_id = $this->data['hospital_id'];
-    //         $foundedUser->save();
-    //     }
-    // }
+        return $data;
+    }
 }

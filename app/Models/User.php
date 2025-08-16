@@ -17,6 +17,25 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable, HasApiTokens, Favoritable;
 
+    protected $fillable = [
+        'name',
+        'name_en',
+        'email',
+        'password',
+        'profession_ar',
+        'profession_en',
+        'country_id',
+        'contact_number',
+        'account_type',
+        'parent_id',
+        'hospital_id',
+        'profile_picture',
+        'show_info_to_patients',
+        'preferred_language',
+        'account_status',
+        'email_verified_at',
+    ];
+
     protected $appends = ['profile_picture_path'];
 
     protected $hidden = [
@@ -162,5 +181,31 @@ class User extends Authenticatable implements FilamentUser
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(User::class, 'parent_id');
+    }
+
+    public function patients(): HasMany
+    {
+        return $this->hasMany(User::class, 'parent_id')->where('account_type', 'patient');
+    }
+
+    public function doctors(): HasMany
+    {
+        return $this->hasMany(User::class, 'parent_id')->where('account_type', 'doctor');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'parent_id')->where('account_type', 'user');
     }
 }

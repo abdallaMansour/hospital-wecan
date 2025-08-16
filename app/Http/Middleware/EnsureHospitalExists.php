@@ -19,25 +19,28 @@ class EnsureHospitalExists
     public function handle(Request $request, Closure $next): Response
     {
 
-        // if (request()->path() == 'login' && request()->method() == 'GET') {
-            $hospital_key = request()->get('hospital') ?? Cookie::get('current_hospital_id');
+        $hospital_key = request()->get('hospital') ?? Cookie::get('current_hospital_id');
 
-            if (!$hospital_key)
-                return $next($request);
+        if (!$hospital_key)
+            return $next($request);
+
+        if (Auth::check() && Auth::user()->account_type === 'hospital') {
 
             $hospital = Hospital::where('key', $hospital_key)->first();
 
             if (!$hospital) {
                 Auth::logout();
-                return redirect()->to(env('APP_URL') . '/login?hospital=' . $hospital_key)->with('error', 'this hospital not found');
+                abort(404);
             }
 
             if ($hospital->account_status != 'active') {
                 Auth::logout();
-                return redirect()->to(env('APP_URL') . '/login?hospital=' . $hospital_key)->with('error', 'the hospital is not active');
+                abort(403);
             }
+        }
 
-            Cookie::queue('current_hospital_id', $hospital_key, 60 * 24 * 30);
+        
+        Cookie::queue('current_hospital_id', $hospital_key, 60 * 24 * 30);
 
         return $next($request);
     }

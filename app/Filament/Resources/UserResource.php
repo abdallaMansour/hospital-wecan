@@ -11,6 +11,7 @@ use App\Models\Hospital;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -52,6 +53,10 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\Section::make()
                     ->schema([
+                        Hidden::make('parent_id')
+                            ->default(Auth::id())
+                            ->required()
+                            ->hiddenLabel(),
 
                         FileUpload::make('profile_picture')
                             ->label(__('dashboard.profile_picture'))
@@ -59,21 +64,25 @@ class UserResource extends Resource
                             ->visibility('public')->image()
                             ->imageEditor()
                             ->maxSize(2048),
+
                         Forms\Components\TextInput::make('name')
                             ->label(__('dashboard.name'))
                             ->maxLength(255)
                             ->required(),
+
                         Forms\Components\TextInput::make('email')
                             ->label(__('dashboard.email'))
                             ->required()
                             ->email()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true),
+
                         Select::make('country_id')
                             ->label(__('dashboard.country'))
-                            ->options(Country::all()->pluck('name_ar', 'id'))
+                            ->options(Country::all()->pluck('name_' . app()->getLocale(), 'id'))
                             ->searchable()
                             ->hidden(fn(?User $record) => $record === null || $record->account_type !== 'patient'),
+
                         Select::make('account_status')
                             ->label(__('dashboard.account_status'))
                             ->options([
@@ -82,10 +91,10 @@ class UserResource extends Resource
                                 'banned' => __('dashboard.banned'),
                             ])
                             ->searchable(),
-                        // Forms\Components\TextInput::make('profession_ar')
-                        //     ->label(__('dashboard.profession_ar'))
-                        //     ->required()
-                        //     ->maxLength(255),
+                        Forms\Components\TextInput::make('profession_' . app()->getLocale())
+                            ->label(__('dashboard.profession_' . app()->getLocale()))
+                            ->required()
+                            ->maxLength(255),
                         // Forms\Components\TextInput::make('profession_en')
                         //     ->label(__('dashboard.profession_en'))
                         //     ->required()
@@ -164,20 +173,14 @@ class UserResource extends Resource
 
     public static function getHospitalId()
     {
-        $currentUser = User::find(auth()->user()->id);
-        return $currentUser->hospital_id;
+        return Auth::user()->hospital_id;
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->query(
-                User::where(
-                    'hospital_id',
-                    self::getHospitalId()
-                )->where('account_type', 'not like', 'hospital')
-                    ->where('account_type', 'not like', 'doctor')
-                    ->where('account_type', 'not like', 'patient')
+                User::where('parent_id', Auth::id())->where('account_type', 'user')
             )
             ->columns([
                 ImageColumn::make('profile_picture')->label(__('dashboard.profile_picture')),
@@ -189,7 +192,7 @@ class UserResource extends Resource
                     ->label(__('dashboard.email'))
                     ->searchable(isIndividual: true, isGlobal: false)
                     ->sortable(),
-                TextColumn::make('country.name_ar')
+                TextColumn::make('country.name_' . app()->getLocale())
                     ->label(__('dashboard.country')),
                 TextColumn::make('account_type')
                     ->label(__('dashboard.account_type'))

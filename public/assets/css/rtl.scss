@@ -1,0 +1,1231 @@
+.text-end {
+    text-align: left !important;
+}
+.me-3 {
+    margin-left: 1rem!important;
+    margin-right: unset !important;
+}
+.ms-auto {
+    margin-right: auto !important;
+    margin-left: unset !important;
+}
+.text-start {
+    text-align: right !important;
+}
+.navbar {
+    .navbar-btn {
+        a {
+            margin-right: 30px;
+            margin-left: 0;
+        }  
+    }  
+}
+.navbar-nav {
+    padding-right: 0;
+}
+.ml-auto, .mx-auto {
+    margin-right: auto!important;
+    margin-left: 0 !important;
+}
+.navbar-brand {
+    margin-right: 0;
+}
+/* App Landing Demo CSS */
+.main-banner {
+    .banner-text {
+        .banner-btn {
+            .banner-video {
+                background: #fff;
+                color: #4C6170;        
+                padding: 7px 30px;
+                box-shadow: 0 6px 13px rgba(0, 0, 0, 0.25) !important;
+
+                &:hover {
+                    background: #4C6170;
+                    color: #fff;
+                }
+                i {
+                    font-size: 20px;
+                    top: 2px;
+                }
+            }
+
+            a {
+                margin-right: 0;
+                margin-left: 20px;
+            }
+        }
+    }
+
+    .banner-img {
+        &::after {
+            left: -50px;
+            right: auto;
+        }
+
+        &::before {
+            right: 40px;
+            left: auto;
+        }
+
+        &.text-right {
+            text-align: left !important;
+        }
+    }
+
+    .banner-shape {
+
+        :nth-child(1) {
+            right: 0;
+            left: inherit;
+        }
+
+        :nth-child(2) {
+            right: 0;
+            left: inherit;
+        }
+
+        :nth-child(3) {
+            left: 0;
+            right: inherit;
+        }
+    }
+}
+
+.why-choose {
+    &::before {
+        right: 0;
+    }
+
+    .section-title {
+        text-align: right;
+    }
+
+    .why-choose-text {
+        .media {
+            i {
+                right: 0;
+                left: auto;
+            }
+
+            .media-body {
+                padding-right: 55px;
+                padding-left: 0;
+            }
+        }
+
+        .why-choose-btn a {
+            text-align: left;
+        }
+    }
+    .why-choose-img {
+        z-index: 2;
+
+        &::before {
+            left: -55px;
+            right: auto;
+        }        
+    }
+
+    . {
+        margin-right: 8.333333%;
+        margin-left: 0;
+    }
+}
+
+.why-choose {
+    .why-choose-text {
+        .why-choose-btn {
+            a {
+                margin-right: 0;
+                margin-left: 25px;
+                text-align: right;
+
+                h5 {
+                    padding-right: 40px;
+                    padding-left: 0;
+                }
+                p {
+                    padding-right: 40px;
+                    padding-left: 0;
+                }
+            }
+        }
+    }
+
+    &::before {
+        right: 0;
+        left: auto;
+    }
+}
+
+.how-use {
+    . {
+        margin-right: 16.666667%;
+        margin-left: 0;
+    }
+
+    .how-use-slider {
+        &::before {
+            right: -55px;
+            left: auto;
+        }
+    }
+
+    .how-use-card {
+        span {
+            left: 25px;
+            right: auto;
+        }  
+    }  
+}
+
+.pricing-section {
+    .price-card {
+        .price-feature {
+            ul {
+                padding-right: 30px;
+                padding-left: 0;
+                text-align: right;
+
+                li {
+                    i {
+                        margin-left: 5px;
+                        float: right;
+                        margin-right: 0;
+                        position: relative;
+                        top: 4px;
+                    }  
+                }              
+            }
+        }
+    }
+    .plan-list {
+        ul {
+            padding-right: 0;
+        }
+    }
+}
+
+.testimonial-section {
+    .testimonial-slider {
+        &::before {
+            left: 85px;
+            right: auto;
+        }
+
+        .testimonial-item {
+            padding: 45px 0px 45px 0;
+        }
+        .owl-prev {
+            left: auto;
+            right: 65px;
+        }
+
+        .owl-next {
+            left: auto;
+            right: 0;
+        }
+    }
+}
+
+.newsletter {
+    .newsletter-area {
+        .newsletter-form {
+            .form-control {
+                text-align: left;
+            }
+        }
+    }
+}
+
+.footer-area {
+    .footer-widget {
+        ul {
+            padding-right: 0;
+        }
+
+        &.pl-90 {
+            padding-right: 90px;
+            padding-left: 0;
+        }
+
+        .footer-link {
+            a {
+                margin-right: 0;
+                margin-left: 10px;
+            }
+        }
+    }
+
+    .copyright-area {
+        p {
+            text-align: left;
+        }
+        img {
+            margin-left: 10px;
+            margin-right: 0;
+        }
+    }
+}
+.top-btn {
+    left: 15px;
+    right: auto;
+}
+
+/* Sass Landing Page One */
+.banner-style-two {
+    .banner-image-two {
+        &:nth-child(1) {
+            left: 0;
+            right: inherit;
+        }
+
+        &:nth-child(2) {
+            right: inherit;
+            left:  35px;
+        }
+        & :nth-child(3) {
+            left: 35px;
+            right: auto;
+        }
+    }
+}
+
+.why-choose-two {
+    .shapes {
+        :nth-child(7) {
+            top: 260px;
+        }
+    }
+}
+
+.standard-section {
+
+    .section-title {
+        text-align: right !important;
+    }
+
+    .standard-shape {
+        animation: none;
+        left: 0;
+        right: inherit;
+        transform: rotateY(175deg)
+    }
+}
+
+.our-apps {
+    .our-apps-img {
+        &::before {
+            left: inherit;
+            right: -84px;
+        }
+    }
+
+    .our-apps-text {
+        .section-title {
+            text-align: right !important;
+        }
+
+        .our-apps-btn {
+            a {
+                margin-right: 0;
+                margin-left: 25px;
+
+                p {
+                    padding-right: 40px;
+                    padding-left: 0;
+                }
+
+                h5 {
+                    padding-right: 40px;
+                    padding-left: 0;
+                }
+            }
+        }
+    }
+
+    .apps-shape :nth-child(5) {
+        z-index: -1;
+    }
+}
+
+.counter-section {
+    .counter-img {
+        :nth-child(1) {
+            left: 50px;
+            right: inherit;
+        }
+
+        :nth-child(2) {
+            left: 95px;
+            right: inherit;
+        }
+    }
+}
+
+.testimonial-style-two {
+    .testimonial-slider-area {
+        .testimonial-items {
+            .client-text {
+                padding: 50px 170px 0px 0;
+                text-align: center;
+            }
+            .client-info {
+                float: right;
+                padding-right: 50px;
+                padding-left: 0;
+                text-align: center;
+            }
+        }
+    }
+}
+
+/* SASS Landing Page Two */
+.main-banner-two {
+    .banner-image-three {
+        left: 30px;
+        right: inherit;
+    }
+}
+
+.features-style-two {
+    .section-title {
+        &.text-left {
+            text-align: right !important;
+        }
+    }
+
+    .feature-text {
+        ul {
+            padding-right: 0;
+        }
+    }
+
+    .featues-shape img {
+        left: inherit;
+        right: 0;
+    }
+}
+
+.keep-update {
+    .keep-updating-text {
+        .section-title {
+            &.section-title {
+                text-align: right !important;
+            }
+        }
+
+        .keep-btn {
+            a {
+                margin-right: 0px;
+                margin-left: 25px;
+
+                p, h5 {
+                    padding-left: 0px;
+                    padding-right: 30px;
+                }
+
+                i {
+                    left: inherit;
+                    right: -6px;
+                    top: 22px;
+                }
+            }
+        }
+    }
+
+    .keep-shape img {
+        z-index: -1;
+    }
+}
+
+.testimonial-style-two {
+    .offset-lg-3 {
+        margin-right: 25%;
+        margin-left: 0;
+    }
+}
+
+/* Personal Portfolio Landing Page CSS */
+.banner-style-four {
+    . {
+        margin-left: 0;
+        margin-right: 8.333333%;
+    }
+}
+
+.software-section {
+    .software-shape {
+        :nth-child(3), :nth-child(1) {
+            left: 45px;
+        }
+    }
+}
+
+.about-section {
+    .about-text {
+        ul {
+            padding-right: 0;
+
+            li {
+                padding: 5px 20px 0 0;
+                margin-right: 0;
+
+                i {
+                    right: -15px;
+                    left: 0;
+                }
+            }
+        }
+
+        .about-btn {
+            a {
+                margin-right: 0px;
+                margin-left: 15px;
+            }
+        }
+    }
+
+    .about-img {
+        .about-img-text {
+            p {
+                padding: 24px 45px 24px 0;
+            }
+        }
+    }
+}
+
+.software-section {
+    .software-text {
+        padding-left: 0;
+        padding-right: 20px;
+
+        ul {
+            padding-right: 0;
+
+            li {
+                margin-right: 0;
+                margin-left: 20px;
+            }
+        }
+    }
+
+    .software-img {
+        .software-img-text {
+            p {
+                left: 0;
+                right: 75px;
+            }
+        }
+    }
+}
+
+.show-case-section {
+    .showcase-card {
+        .shoscase-hover {
+            ul {
+                padding-right: 0;
+            }
+        }
+    }
+
+    .showcase-menu {
+        ul {
+            padding-right: 0;
+        }
+    }
+}
+
+.testimonial-style-three {
+    .offset-lg-3 {
+        margin-right: 25%;
+        margin-left: 0;
+    }
+
+    .slick-initialized .slick-slide {
+        float: right;
+    }
+}
+
+/* Creative Agency Landing Page */
+.banner-style-three {
+    .banner-img-three {
+        left: 90px;
+        right: inherit;
+    }
+
+    .banner-text {
+        max-width: 580px;
+
+        p {
+            padding-left: 50px;
+        }
+
+        .banner-btn {
+            a {
+                margin-right: 0 !important;
+                margin-left: 25px;
+            }
+        }
+    }
+}
+
+.about-us-section {
+    .about-text {
+        .section-title {
+            &.text-left {
+                text-align: right !important;
+            }
+        }
+
+        ul {
+            padding-right: 0;
+        }
+    }
+
+    .about-shape {
+        img {
+            right: auto;
+            left: 0;
+            transform: rotateY(170deg);
+        }
+    }
+    .about-image {
+        &::before {
+            right: 0;
+            left: auto;
+        }
+        &::after {
+            right: 35px;
+            left: auto;
+        }
+    }
+}
+
+.work-process {
+    . {
+        margin-right: 8.333333%;
+        margin-left: 0;
+    }
+}
+
+
+.case-study-section {
+    .case-study-slider {
+        .case-items {
+            .case-img {
+                .project-logo {
+                    right: 30px;
+                    left: inherit;
+                }
+            }
+        }
+    }
+}
+
+.testimonial-style-four {
+    . {
+        margin-right: 16.666667%;
+        margin-left: 0;
+    }
+
+    .testimonial-slider-wrapper {
+        .owl-prev {
+            left: inherit;
+        }
+
+        .owl-next {
+            right: inherit;
+            left: 0;
+        }
+    }
+}
+.about-section {
+    .about-img {
+        .about-img-text {
+            left: 0;
+            right: auto;
+
+            p {
+                border-radius: 0 10px 10px 0;
+
+                &::before {
+                    border-left: 20px solid transparent;
+                    border-right: none;
+                    left: -20px;
+                    right: auto;
+                }
+            }
+            ul {
+                li {
+                    a {
+                        i {
+                            margin-left: 10px;
+                            margin-right: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.team-section {
+    .team-slider {
+        .team-card {
+            .team-img {
+                .team-hover {
+                    .team-hover-text {
+                        ul {
+                            padding-right: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.why-choose {
+    overflow: hidden;
+}
+
+/*
+Responsive CSS
+============================*/
+@media only screen and (max-width: 767px) {
+    /* App Lamding Page CSS */
+    .navbar {
+        .navbar-nav {
+            .nav-item {
+                .nav-link {
+                    &::before {
+                        right: 0;
+                        left: inherit;
+                    }
+                }
+            }
+        }
+    }
+
+    .main-banner {
+        .banner-text {
+            .banner-btn {
+                a {
+                    margin:0 !important;                
+                }
+
+                .banner-video {
+                    padding: 1px 15px 3px;
+                }
+            }
+        }
+    }
+
+    .why-choose {
+        .why-choose-text {
+            .why-choose-btn {
+                a {
+                    i {
+                        left: 0 !important;
+                    }
+                }
+            }
+            .media {
+                .media-body {
+                    padding-right: 18px !important;
+                    padding-left: 0 !important;
+                }
+            }
+        }
+    }
+
+    .screenshots-section {
+        .screenshot-slider {
+            .screenshoot-img img {
+                width: 100% !important;
+                max-width: unset !important;
+            }
+        }
+    }
+
+    .feature-section {
+        .offset-sm-3 {
+            margin-right: 0 !important;
+            margin-left: 0 !important;
+        }
+    }
+
+    .how-use {
+        . {
+            margin-right: 0;
+            margin-left: 0;
+        }
+    }
+
+    .pricing-section {
+        .plan-list {
+            ul {
+                padding-right: 0;
+            }
+        }
+        .price-card {
+            .price-feature {
+                ul {
+                    text-align: right !important;
+                }
+            }
+        }
+    }
+
+    .why-choose . {
+        margin-right: 0;
+        margin-left: inherit;
+    }
+
+    .footer-area {
+        .footer-widget.pl-90 {
+            padding-right: 0;
+            padding-left: 0;
+        }
+    }
+
+    /* SASS Landing Page One */
+    .banner-style-two .banner-image-two :nth-child(1) {
+        left: 0 !important;
+        right: auto !important;
+    }
+
+    .our-apps {
+        .our-apps-text {
+            .our-apps-btn {
+                a {
+                    text-align: right;
+
+                    i {
+                        left: 0 !important;
+                    }
+                }
+            }
+        }
+    }
+
+    .testimonial-style-two {
+        .offset-lg-3 {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        .testimonial-slider-area {
+            .testimonial-items {
+               clip-path: none;
+
+                .client-info img {
+                    margin: auto;
+                }
+                .client-info {
+                    text-align: center;
+                }
+            }
+        }
+    }
+    .banner-style-three .banner-text p {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+    }
+    
+    /* SASS Landing Page Two */
+    .keep-update {
+        .keep-updating-text {
+            .keep-btn {
+                a {
+                    text-align: right;
+
+                    p {
+                        text-align: right;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Personal Portfolio CSS */
+    .testimonial-style-three {
+        .offset-sm-1 {
+            margin-right: 0;
+            margin-left: 0;
+        }
+    }
+
+    .show-case-section {
+        .showcase-menu {
+            ul {
+                padding-right: 0;
+
+                li {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+
+
+    .testimonial-style-three {
+        .testimonial-area:hover .slick-prev::before {
+            left: 0;
+            z-index: 1000;
+        }
+
+        .testimonial-area:hover .slick-next::before {
+            right: 0;
+        }
+    }
+
+    /* Creative Agency Landing Page */
+    .work-process {
+        . {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        .offset-sm-3 {
+            margin-right: 0;
+            margin-left: 0 !important;
+        }
+    }
+
+    .testimonial-style-four {
+        .testimonial-slider-wrapper {
+            .owl-next {
+                right: inherit !important;
+                left: 0;
+            }
+
+            .owl-prev {
+                right: 0;
+            }
+        }
+
+        . {
+            margin-right: 0;
+            margin-left: 0;
+        }
+    }
+    .banner-style-three {
+        .banner-img-three {
+            left: 0;
+        }
+    }
+    .pricing-section {
+        .price-card {
+            .price-feature ul {
+                padding-right: 0;
+            }
+        }
+    }
+    .footer-area {
+        .copyright-area {
+            p {
+                text-align: center;
+            }
+        }
+    }
+
+    .banner-style-four {
+        . {
+            margin-right: 0;
+        }
+    }
+
+    .navbar .navbar-btn a {
+        margin-right: 0;
+    }
+
+    .main-banner-two .banner-image-three {
+        left: 0;
+        right: 0;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    /* App Landing Page CSS */
+    .main-banner {
+        .banner-text {
+            margin: auto;
+
+            p {
+                margin: 0px auto 25px !important;
+            }
+
+            .banner-btn {
+                .banner-video {    
+                    padding: 0px 20px 2px;
+
+                }
+
+                a {
+                    padding: 9px 20px;
+                }
+            }
+        }
+    }
+
+    .how-use {
+        . {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        .how-use-slider {
+            &::before {
+                display: none;
+            }
+        }
+    }
+
+
+    .feature-section {
+        .offset-md-3 {
+            margin-left: inherit;
+            margin-right: 25%;
+        }
+    }
+
+    .pricing-section {
+        .offset-md-3 {
+            margin-left: 0;
+            margin-right: 25%;
+        }
+    }
+
+    .footer-area {
+        .footer-widget.pl-90 {
+            padding-right: 0;
+            padding-left: 0;
+        }
+    }
+
+    /* SASS Landing Page One CSS */
+    .our-apps {
+        .our-apps-text {
+            .our-apps-btn {
+                a {
+                    text-align: right;
+                    i {
+                        right: 0;
+                    }
+                }
+            }
+        }
+    }
+
+
+    /* SASS Landing Page Two CSS */
+    .testimonial-style-two {
+        .offset-lg-3 {
+            margin-right: 0;
+            margin-left: 0;
+        }
+    }
+
+    .keep-update {
+        .keep-updating-text {
+            .keep-btn {
+                a {
+                    text-align: right;
+                }
+            }
+        }
+    }
+
+    /* Personal Portfolio CSS*/
+    .testimonial-style-three {
+        .offset-md-2 {
+            margin-right: 16.666667%;
+            margin-left: inherit;
+        }
+
+        .offset-md-1 {
+            margin-right: 8.333333% !important;
+        }
+    }
+
+    /* Creative Agency Page CSS One */
+    .work-process {
+        . {
+            margin-right: 0;
+            margin-left: 0;
+        }
+        .offset-md-3 {
+            margin-left: 0;
+            margin-right: 25%;
+        }
+    }
+
+    .testimonial-style-four {
+        . {
+            margin-right: 0;
+            margin-left: 0;
+        }
+    }
+
+    .banner-style-three {
+        .banner-img-three {
+            left: 0;
+        }
+    }
+    .pricing-section {
+        .price-card {
+            .price-feature ul {
+                padding-right: 0;
+            }
+        }
+    }
+
+    .banner-style-four {
+        . {
+            margin-right: 0;
+        }
+    }
+    .main-banner-two .banner-image-three {
+        left: 0;
+        right: 0;
+    }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+    /* App Landing Page CSS */
+    .how-use {
+        .how-use-slider {
+            &::before {
+                animation: none;
+                left: 0;
+            }
+        }
+    }
+
+    .footer-area {
+        .footer-widget {
+            ul {
+                li {
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+
+    /* SASS Landing Page CSS */
+    .counter-section {
+        .counter-img {
+            :nth-child(1) {
+                left: 50px;
+                right: inherit !important;
+            }
+
+            :nth-child(2) {
+                left: 80px;
+                bottom: 0px;
+                max-width: 100px;
+                right: inherit !important;
+            }
+        }
+    }
+
+    .footer-area {
+        .footer-widget.pl-90 {
+            padding-right: 60px;
+            padding-left: 0;
+        }
+    }
+
+    /* Portfolio Page CSS */
+    .navbar {
+        .navbar-btn {
+            a {
+                padding: 5px 10px;
+            }
+        }
+    }
+
+    .show-case-section {
+        .showcase-card  {
+            .showcsae-text {
+                padding: 25px 10px;
+            }
+        }
+    }
+
+    .contact-section {
+        .contact-form {
+            padding: 40px;
+            margin-bottom: -130px;
+        }
+    }
+
+    .footer-style-four {
+        .pl-90 {
+            padding-right: 40px !important;
+        }
+    }
+
+    /* Creative Agency Page One CSS */
+    .newsletter {
+        .newsletter-area {
+            padding: 60px;
+        }
+    }
+
+    .banner-style-two .banner-image-two :nth-child(1) {
+        left: 0 !important;
+        right: auto !important;
+    }
+    .banner-style-two .banner-image-two :nth-child(2) {
+        left: 35px !important;
+        right: auto !important;
+    }
+
+    .banner-style-three {
+        .banner-img-three {
+            left: 0;
+        }
+    }
+}
+
+@media (min-width:1799px){
+    /* App Landing Page */
+    .main-banner .banner-shape :nth-child(3) {
+        left: 150px !important;
+        top: 100px;
+        right: inherit !important;
+    }
+
+
+    /* Sass Landing Page One */
+    .banner-style-two {
+        .banner-image-two {
+            :nth-child(1) {
+                left: 0 !important;
+                right: inherit !important;
+            }
+
+            :nth-child(2) {
+                right: inherit !important;
+                left:  35px !important;
+            }
+        }
+    }
+
+    .counter-section {
+        .counter-img {
+            :nth-child(1) {
+                left: 320px !important;
+                right: inherit !important;
+            }
+
+            :nth-child(2) {
+                left: 385px !important;
+                right: inherit !important;
+            }
+        }
+    }
+
+}

@@ -19,6 +19,7 @@ return [
     'doctors' => 'Doctors',
     'doctor' => 'Doctor',
     'patients' => 'Patients',
+    'doctors_and_patients_plural' => 'Doctors & Patients',
     'patient' => 'Patient',
     'message' => 'Message',
     'media' => 'Media',

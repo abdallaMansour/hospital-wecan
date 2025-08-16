@@ -2,75 +2,59 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DoctorResource\Pages;
-use App\Filament\Resources\DoctorResource\RelationManagers;
-use App\Models\Country;
-use App\Models\HospitalUserAttachment;
-use App\Models\User;
-use App\Models\Hospital;
-use Illuminate\Support\Facades\File;
-
 use Filament\Forms;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\FileUpload;
+use App\Models\User;
+use Filament\Tables;
+use App\Models\Country;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Resource;
-use Filament\Tables;
+use App\Models\HospitalUserAttachment;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\FileUpload;
+use App\Filament\Resources\DoctorResource\Pages;
+use Filament\Forms\Components\Hidden;
+use Illuminate\Database\Eloquent\Model;
 
 class DoctorResource extends Resource
 {
-    protected static ?string $model = HospitalUserAttachment::class;
+    protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?int $navigationSort = 4;
-    public static function create($request)
-    {
-        abort(403); // Prevents access to the "Add" page
-    }
-
     public static function getNavigationLabel(): string
     {
-        return __('dashboard.doctors');
+        return __('dashboard.doctors_and_patients_plural');
     }
 
 
     public static function getHospitalId()
     {
-        $currentUser = User::find(auth()->user()->id);
-        return $currentUser->hospital_id;
+        return Auth::user()->hospital_id;
     }
 
 
     public static function getTableQuery2()
     {
         $query =
-            User::select('users.id', 'users.name', 'users.name_en', 'users.email', 'users.country_id')
-            ->where('users.account_type', 'doctor')
-            ->join('hospital_user_attachments', function ($join) {
-                $join->on('users.id', '=', 'hospital_user_attachments.user_id');
+            User::select('users.id', 'users.name', 'users.name_en', 'users.email', 'users.profession_ar', 'users.profession_en', 'users.country_id')
+            ->where(function ($q) {
+                $q->where('users.account_type', 'doctor')->orWhere('users.account_type', 'patient');
             })
-            ->where('hospital_user_attachments.hospital_id', self::getHospitalId())
-            ->where('hospital_user_attachments.status', 'approved');
+            ->where('users.parent_id', Auth::id());
         return  $query;
     }
 
     public static function getQuery()
     {
-        return User::select('users.id', 'users.name', 'users.name_en', 'users.email', 'users.country_id', 'users.profile_picture')
-            ->join('hospital_user_attachments', function ($join) {
-                $join->on('users.id', '=', 'hospital_user_attachments.user_id');
+        return User::where(function ($q) {
+                $q->where('users.account_type', 'doctor')->orWhere('users.account_type', 'patient');
             })
-            ->where('users.account_type', 'doctor')
-            ->where('hospital_user_attachments.hospital_id', self::getHospitalId())
-            ->where('hospital_user_attachments.status', 'approved');
+            ->where('users.parent_id', Auth::id());
     }
 
 
@@ -78,19 +62,24 @@ class DoctorResource extends Resource
 
     public static function getPluralModelLabel(): string
     {
-        return __('dashboard.doctors');
+        return __('dashboard.doctors_and_patients_plural');
     }
 
 
     public static function getModelLabel(): string
     {
-        return __('dashboard.doctor');
-    }
-    public static function canCreate(): bool
-    {
-        return false;
+        return __('dashboard.doctors_and_patients_plural');
     }
 
+    public static function canCreate(): bool
+    {
+        return true;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return true;
+    }
 
     public static function form(Form $form): Form
     {
@@ -98,68 +87,66 @@ class DoctorResource extends Resource
             ->schema([
                 Forms\Components\Section::make()
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        Hidden::make('parent_id')
+                            ->default(Auth::id())
+                            ->required(),
+
+                        FileUpload::make('profile_picture')
+                            ->label(__('dashboard.profile_picture'))
+                            ->columnSpan('full')
+                            ->visibility('public')
+                            ->image()
+                            ->imageEditor(),
+
+                        Forms\Components\TextInput::make(app()->getLocale() === 'ar' ? 'name' : 'name_en')
                             ->label(__('dashboard.name'))
                             ->maxLength(255)
-                            ->readOnly()
                             ->required(),
                         Forms\Components\TextInput::make('email')
                             ->label(__('dashboard.email'))
                             ->required()
                             ->email()
-                            ->readOnly()
-
                             ->maxLength(255)
                             ->unique(ignoreRecord: true),
-
-                        Select::make('country_id')
-                            ->label(__('dashboard.country'))
-                            ->options(Country::all()->pluck('name_ar', 'id'))
-                            ->disabled(),
-                        // Select::make('account_status')
-                        //     ->label(__('dashboard.account_status'))
-                        //     ->options([
-                        //         'active' => __('dashboard.active'),
-                        //         'cancelled' => __('dashboard.cancelled'),
-                        //         'banned' => __('dashboard.banned'),
-                        //     ])
-                        //     ->searchable(),
-                        // Forms\Components\TextInput::make('contact_number')
-                        //     ->label(__('dashboard.contact_number'))
-                        //     ->required()
-                        //     ->readOnly()
-                        //     ->maxLength(255),
-
-
-                        FileUpload::make('profile_picture')
-                            ->label(__('dashboard.profile_picture'))
-                            ->visibility('public')->image()
-                            ->imageEditor()
-                            ->maxSize(2048)
+                        Forms\Components\TextInput::make('profession_' . app()->getLocale())
+                            ->label(__('dashboard.profession_' . app()->getLocale()))
                             ->required()
-                            ->hidden(fn(?User $record) => $record === null || $record->account_type !== 'doctor'),
-                        Toggle::make('show_info_to_patients')
-                            ->label(__('dashboard.show_info_to_patients'))
-                            ->hidden(fn(?User $record) => $record === null || $record->account_type !== 'doctor'),
+                            ->maxLength(255),
+                        Select::make('country_id')
+                            ->required()
+                            ->label(__('dashboard.country'))
+                            ->options(Country::all()->pluck('name_' . app()->getLocale(), 'id')),
+
+                        Forms\Components\TextInput::make('contact_number')
+                            ->label(__('dashboard.contact_number'))
+                            ->required()
+                            ->maxLength(255),
+
+                        Hidden::make('show_info_to_patients')
+                            ->default(true)
+                            ->required(),
+
                         Forms\Components\Select::make('account_type')
                             ->label(__('dashboard.account_type'))
                             ->options([
-                                'hospitalAdmin' => __('dashboard.hospitalAdmin'),
                                 'doctor' => __('dashboard.doctor'),
                                 'patient' => __('dashboard.patient'),
-                                'user' => __('dashboard.user'),
-                            ]),
+                            ])
+                            ->required()
+                            ->disabled(false)
+                            ->dehydrated(true),
 
-                        // Forms\Components\TextInput::make('password')
-                        //     ->type('password')
-                        //     ->label(__('dashboard.password'))
-                        //     ->required()
-                        //     ->maxLength(255),
-                        Forms\Components\TextInput::make('hospital_id')
-                            ->default(self::getHospitalId())
-                            ->readOnly()
-                            ->extraAttributes(['style' => 'display: none;'])
-                            ->hiddenLabel(),
+                        Forms\Components\TextInput::make('password')
+                            ->type('password')
+                            ->label(__('dashboard.password'))
+                            ->required(fn(?User $record) => $record === null)// nullable on update and set old password
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('password_confirmation')
+                            ->type('password')
+                            ->label(__('dashboard.password_confirmation'))
+                            ->required(fn(?User $record) => $record === null)// nullable on update and set old password
+                            ->same('password')
+                            ->maxLength(255),
 
                     ])
                     ->columns(2)
@@ -167,10 +154,10 @@ class DoctorResource extends Resource
 
                 Forms\Components\Section::make()
                     ->schema([
-                        Forms\Components\Placeholder::make('account_type')
+                        Forms\Components\Placeholder::make('account_type_display')
                             ->label(__('dashboard.account_type'))
                             ->content(fn(User $record): ?string => $record->account_type),
-                        Forms\Components\Placeholder::make('account_type')
+                        Forms\Components\Placeholder::make('preferred_language')
                             ->label(__('dashboard.preferred_language'))
                             ->content(fn(User $record): ?string => $record->preferred_language),
                         Forms\Components\Placeholder::make('newsletter_count')
@@ -205,25 +192,26 @@ class DoctorResource extends Resource
                     ->label(__('dashboard.email'))
                     ->searchable(isIndividual: true, isGlobal: false)
                     ->sortable(),
-                TextColumn::make('country.name_ar')
-                    ->label(__('dashboard.country')),
-                Tables\Columns\TextColumn::make('contact_number')
-                    ->label(__('dashboard.phone_number'))
-                    ->searchable()
+                TextColumn::make('profession_' . app()->getLocale())
+                    ->label(__('dashboard.profession_' . app()->getLocale()))
+                    ->searchable(isIndividual: true, isGlobal: false)
                     ->sortable(),
+                TextColumn::make('account_type')
+                    ->label(__('dashboard.account_type'))
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'doctor' => 'info',
+                        'patient' => 'warning',
+                    }),
             ])
             ->filters([])
             ->actions([
                 Tables\Actions\ViewAction::make('show')
                     ->label(__('dashboard.view')),
-                // Tables\Actions\EditAction::make('edit')
-                //     ->label(__('dashboard.edit'))
-                //     ->modalHeading(__('dashboard.edit'))
-                //     ->color('primary')
-                //     ->action(function ($record) {
-                //         return redirect()->route('patient.edit', $record->id);
-                //     }),
-                // custom view
+                Tables\Actions\EditAction::make('edit')
+                    ->label(__('dashboard.edit'))
+                    ->modalHeading(__('dashboard.edit'))
+                    ->color('primary'),
                 Tables\Actions\DeleteAction::make('cancel')
                     ->label(__('dashboard.unlink'))
                     ->modalHeading(__(key: 'dashboard.unlink_doctor'))
@@ -254,8 +242,8 @@ class DoctorResource extends Resource
     {
         return [
             'index' => Pages\ListDoctors::route('/'),
-            // 'create' => Pages\CreateDoctor::route('/create'),
-            // 'edit' => Pages\EditDoctor::route('/{record}/edit'),
+            'create' => Pages\CreateDoctor::route('/create'),
+            'edit' => Pages\EditDoctor::route('/{record}/edit'),
         ];
     }
 
