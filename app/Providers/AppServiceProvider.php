@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
             $hospital = Hospital::find($hospital_id);
     
             if (!$hospital) {
-                $hospital = Auth::user()?->hospital;
+                $hospital = Auth::user()?->account_type === 'hospital' ? Auth::user()?->hospital : null;
             }     
 
             if ($hospital) {

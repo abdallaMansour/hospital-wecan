@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Hospital extends Model
 {
@@ -17,9 +18,18 @@ class Hospital extends Model
         'email',
         'contact_number',
         'country_id',
-        'city', // Changed from city_id to city
+        'city',
+        'key'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+    
+        static::creating(function ($model) {
+            $model->key = (string) Str::uuid();
+        });
+    }
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);

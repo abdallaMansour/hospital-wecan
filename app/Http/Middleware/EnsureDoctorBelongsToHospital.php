@@ -19,33 +19,7 @@ class EnsureDoctorBelongsToHospital
     public function handle(Request $request, Closure $next): Response
     {
 
-
-
-
-
-
-
-
-
-
-
-
         $hospital_id = Cookie::get('current_hospital_id');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         // $hospital = Hospital::findOrFail($request->route('hospital'));
 

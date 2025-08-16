@@ -54,14 +54,17 @@ class MessagesRelationManager extends RelationManager
                     ->label('')
                     ->formatStateUsing(function (string $state, ChatMessage $record): string {
                         $isMe = (int) $record->user_id === (int) Auth::id();
-                        $alignmentClass = $isMe ? 'justify-end' : 'justify-start';
                         $bubbleClass = $isMe
                             ? 'bg-primary-600 text-white'
                             : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100';
                         $time = optional($record->created_at)?->format('H:i');
 
                         // لو بتخزن المسار على disk عام، استخدم Storage::url
-                        $url = $record->attachment_path ? Storage::url($record->attachment_path) : null;
+                        if (Auth::id() == $record->user_id) {
+                            $url = $record->attachment_path ? Storage::url($record->attachment_path) : null;
+                        } else {
+                            $url = $record->attachment_path ? env('ADMIN_DASHBOARD_URL') . '/storage/' . $record->attachment_path : null;
+                        }
 
                         $content = match ($record->message_type) {
                             'text' => "<div class='text-sm whitespace-pre-wrap'>" . e($record->message) . "</div>",
@@ -70,7 +73,8 @@ class MessagesRelationManager extends RelationManager
                             default => "<a href='" . e($url) . "' download class='block text-blue-500 hover:text-blue-700 border-none' style='background-color: #1a2e3c;padding: 20px'>📄 Download Document</a><span class='text-sm whitespace-pre-wrap'>" . e($record->message) . "</span>",
                         };
 
-                        return "<div class='flex {$alignmentClass} w-full'>
+                        // $style = 'style="' . ($isMe ? 'margin-left: 600px' : '') . '"';
+                        return "<div class='flex'>
                                     <div class='max-w-[70%] rounded-2xl px-3 py-2 {$bubbleClass} shadow'>
                                         {$content}
                                         <div class='mt-1 text-[10px] opacity-70'>" . e($time) . "</div>

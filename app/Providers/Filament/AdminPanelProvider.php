@@ -35,6 +35,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('')
             ->profile()
             ->login()
+            ->brandLogo(asset('images/we-can-logo-light.png'))
+            ->darkModeBrandLogo(asset('images/we-can-logo-dark.png'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('images/favicon.png'))
             ->font('Cairo', provider: GoogleFontProvider::class)
             ->colors([
                 'primary' => Color::hex('#4C6170'),
@@ -61,7 +65,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 EnsureHospitalExists::class,
-                EnsureDoctorBelongsToHospital::class,
+                // EnsureDoctorBelongsToHospital::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
