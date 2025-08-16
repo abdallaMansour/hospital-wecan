@@ -192,18 +192,12 @@ class UserResource extends Resource
                     ->label(__('dashboard.email'))
                     ->searchable(isIndividual: true, isGlobal: false)
                     ->sortable(),
+                TextColumn::make('profession_' . app()->getLocale())
+                    ->label(__('dashboard.profession_' . app()->getLocale()))
+                    ->searchable(isIndividual: true, isGlobal: false)
+                    ->sortable(),
                 TextColumn::make('country.name_' . app()->getLocale())
                     ->label(__('dashboard.country')),
-                TextColumn::make('account_type')
-                    ->label(__('dashboard.account_type'))
-                    ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        'patient' => 'warning',
-                        'admin' => 'success',
-                        'doctor' => 'info',
-                        'hospital' => 'danger',
-                        'user' => 'secondary',
-                    }),
                 Tables\Columns\TextColumn::make('contact_number')
                     ->label(__('dashboard.phone_number'))
                     ->searchable()
