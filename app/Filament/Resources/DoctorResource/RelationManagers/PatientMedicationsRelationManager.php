@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\RelationManagers;
+namespace App\Filament\Resources\DoctorResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -11,9 +11,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PatientMedicationsRelationManager extends RelationManager
 {

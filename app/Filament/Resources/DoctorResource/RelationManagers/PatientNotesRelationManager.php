@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\RelationManagers;
+namespace App\Filament\Resources\DoctorResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
@@ -10,13 +10,11 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PatientHealthReportsRelationManager extends RelationManager
+class PatientNotesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'patientHealthReports';
+    protected static string $relationship = 'patientNotes';
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
@@ -25,16 +23,16 @@ class PatientHealthReportsRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('dashboard.patient_health_report');
+        return __('dashboard.patient_note');
     }
     public static function getModelLabel(): string
     {
-        return __('dashboard.patient_health_report');
+        return __('dashboard.patient_note');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('dashboard.patient_health_report');
+        return __('dashboard.patient_note');
     }
 
     public function form(Form $form): Form
@@ -45,9 +43,6 @@ class PatientHealthReportsRelationManager extends RelationManager
                     ->required()
                     ->label(__('dashboard.title'))
                     ->maxLength(255),
-                Forms\Components\TextInput::make('doctor_name')
-                    ->label(__('dashboard.doctor'))
-                    ->maxLength(255),
                 DateTimePicker::make('datetime')
                     ->required()
                     ->label(__('dashboard.datetime')),
@@ -55,10 +50,6 @@ class PatientHealthReportsRelationManager extends RelationManager
                     ->label(__('dashboard.attachments'))
                     ->visibility('public')
                     ->multiple(),
-                Textarea::make('instructions')
-                    ->rows(5)
-                    ->columnSpan(2)
-                    ->label(__('dashboard.instructions')),
                 Textarea::make('notes')
                     ->rows(5)
                     ->columnSpan(2)
@@ -72,9 +63,7 @@ class PatientHealthReportsRelationManager extends RelationManager
             ->recordTitleAttribute('title')
             ->columns([
                 Tables\Columns\TextColumn::make('title')->label(__('dashboard.title')),
-                Tables\Columns\TextColumn::make('doctor_name')->label(__('dashboard.doctor')),
                 Tables\Columns\TextColumn::make('datetime')->label(__('dashboard.datetime')),
-
             ])
             ->filters([
                 //

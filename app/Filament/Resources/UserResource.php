@@ -6,8 +6,6 @@ use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Country;
-use App\Models\Hospital;
-
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -18,11 +16,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Resources\RelationManagers\RelationManager;
-use App\Filament\Resources\UserResource\RelationManagers;
 
 class UserResource extends Resource
 {
@@ -230,21 +224,6 @@ class UserResource extends Resource
                 ]),
             ]);
     }
-    public static function getRelations(): array
-    {
-        $relations = [
-            RelationManagers\HealthTipsRelationManager::class,
-            RelationManagers\PatientMedicationsRelationManager::class,
-            RelationManagers\ChemotherapySessionsRelationManager::class,
-            RelationManagers\PatientAppointmentsRelationManager::class,
-            RelationManagers\PatientFoodsRelationManager::class,
-            RelationManagers\PatientHealthReportsRelationManager::class,
-            RelationManagers\PatientNotesRelationManager::class,
-        ];
-
-        return $relations;
-    }
-
 
     public static function getPages(): array
     {

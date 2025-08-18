@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\RelationManagers;
+namespace App\Filament\Resources\DoctorResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PatientNotesRelationManager extends RelationManager
+class PatientAppointmentsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'patientNotes';
+    protected static string $relationship = 'patientAppointments';
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
@@ -25,33 +22,33 @@ class PatientNotesRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('dashboard.patient_note');
+        return __('dashboard.patient_appointments');
     }
     public static function getModelLabel(): string
     {
-        return __('dashboard.patient_note');
+        return __('dashboard.patient_appointments');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('dashboard.patient_note');
+        return __('dashboard.patient_appointments');
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
+                Forms\Components\TextInput::make('doctor_name')
                     ->required()
-                    ->label(__('dashboard.title'))
+                    ->label(__('dashboard.doctor'))
                     ->maxLength(255),
                 DateTimePicker::make('datetime')
                     ->required()
                     ->label(__('dashboard.datetime')),
-                FileUpload::make('attachments')
-                    ->label(__('dashboard.attachments'))
-                    ->visibility('public')
-                    ->multiple(),
+                Textarea::make('instructions')
+                    ->rows(5)
+                    ->columnSpan(2)
+                    ->label(__('dashboard.instructions')),
                 Textarea::make('notes')
                     ->rows(5)
                     ->columnSpan(2)
@@ -62,10 +59,12 @@ class PatientNotesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title')
+            ->recordTitleAttribute('doctor_name')
             ->columns([
-                Tables\Columns\TextColumn::make('title')->label(__('dashboard.title')),
-                Tables\Columns\TextColumn::make('datetime')->label(__('dashboard.datetime')),
+                Tables\Columns\TextColumn::make('doctor_name')
+                    ->label(__('dashboard.doctor')),
+                Tables\Columns\TextColumn::make('datetime')
+                    ->label(__('dashboard.datetime')),
             ])
             ->filters([
                 //

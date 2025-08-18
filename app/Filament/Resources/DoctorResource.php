@@ -18,7 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\FileUpload;
 use App\Filament\Resources\DoctorResource\Pages;
-use App\Filament\Resources\ChatResource\Pages\ChatPage;
+use App\Filament\Resources\DoctorResource\RelationManagers;
 
 class DoctorResource extends Resource
 {
@@ -237,9 +237,18 @@ class DoctorResource extends Resource
                 ]),
             ]);
     }
+    
     public static function getRelations(): array
     {
-        $relations = [];
+        $relations = [
+            RelationManagers\HealthTipsRelationManager::class,
+            RelationManagers\PatientMedicationsRelationManager::class,
+            RelationManagers\ChemotherapySessionsRelationManager::class,
+            RelationManagers\PatientAppointmentsRelationManager::class,
+            RelationManagers\PatientFoodsRelationManager::class,
+            RelationManagers\PatientHealthReportsRelationManager::class,
+            RelationManagers\PatientNotesRelationManager::class,
+        ];
 
         return $relations;
     }
