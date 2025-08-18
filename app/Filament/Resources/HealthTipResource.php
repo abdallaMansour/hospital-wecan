@@ -42,7 +42,7 @@ class HealthTipResource extends Resource
 
     public static function canCreate(): bool
     {
-        return Auth::user()->type === 'doctor' || Auth::user()->type === 'admin';
+        return Auth::user()->account_type === 'doctor' || Auth::user()->account_type === 'admin';
     }
 
 
