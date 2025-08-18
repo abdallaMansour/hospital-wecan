@@ -134,8 +134,16 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('password')
                             ->type('password')
                             ->label(__('dashboard.password'))
-                            ->required()
-                            ->maxLength(255),
+                            ->required(fn(?User $record) => $record === null) // required only on create
+                            ->maxLength(255)
+                            ->dehydrated(fn($state) => filled($state)), // only save if filled
+                            Forms\Components\TextInput::make('password_confirmation')
+                            ->type('password')
+                            ->label(__('dashboard.password_confirmation'))
+                            ->required(fn(?User $record) => $record === null) // required only on create
+                            ->same('password')
+                            ->maxLength(255)
+                            ->dehydrated(false), // never save this field
                         Forms\Components\TextInput::make('hospital_id')
                             ->default(self::getHospitalId())
                             ->extraAttributes(['style' => 'display: none;'])
