@@ -40,7 +40,7 @@ class HealthTipResource extends Resource
         return __('dashboard.health_tip');
     }
 
-    public static function canCreate(): bool
+    public static function canAccess(): bool
     {
         return Auth::user()->account_type === 'doctor' || Auth::user()->account_type === 'admin';
     }
