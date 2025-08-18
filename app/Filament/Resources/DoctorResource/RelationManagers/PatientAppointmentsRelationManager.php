@@ -69,7 +69,9 @@ class PatientAppointmentsRelationManager extends RelationManager
             ->filters([
                 //
             ])
-            ->headerActions([])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
