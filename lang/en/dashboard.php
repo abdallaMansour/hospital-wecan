@@ -4,6 +4,7 @@ return [
     'administrators' => 'Administrators',
     'doctor_name' => 'Doctor Name',
     'user_not_found' => 'User not found',
+    'user_is_not_patient_or_doctor' => 'User is not a patient or doctor',
     'administrator' => 'Administrator',
     'cancer_screening_centers' => 'Cancer Screening Centers',
     'cancer_screening_center' => 'Cancer Screening Center',

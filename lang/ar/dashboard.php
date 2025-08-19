@@ -3,6 +3,7 @@
 return [
     'administrators' => 'المبادرون',
     'user_not_found' => 'المستخدم غير موجود',
+    'user_is_not_patient_or_doctor' => 'المستخدم غير مريض أو طبيب',
     'doctor_name' => 'اسم الطبيب',
     'administrator' => 'المبادر',
     'cancer_screening_centers' => 'مراكز فحص السرطان',

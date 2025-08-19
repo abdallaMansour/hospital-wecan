@@ -167,7 +167,7 @@ class DoctorResource extends Resource
 
                         Forms\Components\Placeholder::make('country')
                             ->label(__('dashboard.country'))
-                            ->content(fn(User $record): ?string => $record->country->{'name_' . app()->getLocale()}),
+                            ->content(fn(User $record): ?string => $record->country?->{'name_' . app()->getLocale()}),
 
                         Forms\Components\Placeholder::make('contact_number')
                             ->label(__('dashboard.contact_number'))
@@ -186,8 +186,8 @@ class DoctorResource extends Resource
                             ->content(fn(User $record): ?string => $record->created_at?->diffForHumans()),
                     ])
                     ->hidden(fn(?User $record) => $record === null)
-                    ->columns(2)
-                    ->columnSpan(2),
+                    ->columns(3)
+                    ->columnSpan(3),
             ])
             ->columns(3);
     }
@@ -214,9 +214,16 @@ class DoctorResource extends Resource
                 TextColumn::make('account_type')
                     ->label(__('dashboard.account_type'))
                     ->badge()
+                    ->getStateUsing(
+                        static function ($record): string {
+                            return (string) (
+                                __('dashboard.' . $record->account_type)
+                            );
+                        }
+                    )
                     ->color(fn(string $state): string => match ($state) {
-                        'doctor' => 'info',
-                        'patient' => 'warning',
+                        __('dashboard.doctor') => 'info',
+                        __('dashboard.patient') => 'warning',
                     }),
             ])
             ->filters([])

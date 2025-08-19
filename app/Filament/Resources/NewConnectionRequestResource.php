@@ -2,14 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\NewConnectionRequestResource\Pages;
-use App\Models\HospitalUserAttachment;
 use App\Models\User;
-use Filament\Forms\Components\Select;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\Hospital;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use App\Models\HospitalUserAttachment;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use App\Filament\Resources\NewConnectionRequestResource\Pages;
 
 class NewConnectionRequestResource extends Resource
 {
@@ -45,56 +49,102 @@ class NewConnectionRequestResource extends Resource
 
     public static function getQuery()
     {
-        $query = User::select(
-            'hospital_user_attachments.id as id',
-            'hospital_user_attachments.status as status'
-        )
-            ->join('hospital_user_attachments', function ($join) {
-                $join->on('users.hospital_id', '=', 'hospital_user_attachments.hospital_id')
-                    ->whereColumn('users.id', 'hospital_user_attachments.user_id');
-            })
-            ->where(function ($q) {
-                $q->where('account_type', 'patient')
-                    ->orWhere('account_type', 'doctor');
-            })
-            ->where(
-                'hospital_user_attachments.hospital_id',
-                self::getHospitalId()
-            );
-        $query = HospitalUserAttachment::where('hospital_id', self::getHospitalId());
+
+        $query = HospitalUserAttachment::where('doctor_id', Auth::id())->orWhere('hospital_id', self::getHospitalId());
         // fix the prob
         return $query;
     }
 
-    public static function getName($user_id)
+    public static function getName($record)
     {
-        $user = User::select('name')->where('id', $user_id)->first();
-        return $user ? $user->name : 'Unknown';
+        $authentication_type = Auth::user()->account_type;
+
+        if ($authentication_type === 'doctor') {
+            if ($record->user_id) {
+                $user = User::select('name')->where('id', $record->user_id)->first();
+                return $user ? $user->name : 'Unknown 1';
+            } else {
+                $user = Hospital::find($record->hospital_id)->user;
+                return $user ? $user->name : 'Unknown 1';
+            }
+        } elseif ($authentication_type === 'hospital') {
+            if ($record->doctor_id) {
+                $user = User::select('name')->where('id', $record->doctor_id)->first();
+                return $user ? $user->name : 'Unknown 2';
+            } else {
+                $user = User::select('name')->where('id', $record->user_id)->first();
+                return $user ? $user->name : 'Unknown 2';
+            }
+        }
     }
 
-    public static function getEmail($user_id)
+    public static function getEmail($record)
     {
-        $user = User::select('email')->where('id', $user_id)->first();
-        return $user ? $user->email : 'Unknown';
+        $authentication_type = Auth::user()->account_type;
+        if ($authentication_type === 'doctor') {
+            if ($record->user_id) {
+                $user = User::select('email')->where('id', $record->user_id)->first();
+                return $user ? $user->email : 'Unknown 1';
+            } else {
+                $user = Hospital::find($record->hospital_id)->user;
+                return $user ? $user->email : 'Unknown 1';
+            }
+        } elseif ($authentication_type === 'hospital') {
+            if ($record->doctor_id) {
+                $user = User::select('email')->where('id', $record->doctor_id)->first();
+                return $user ? $user->email : 'Unknown 2';
+            } else {
+                $user = User::select('email')->where('id', $record->user_id)->first();
+                return $user ? $user->email : 'Unknown 2';
+            }
+        }
     }
 
-    public static function getCountry($user_id)
+    public static function getCountry($record)
     {
-        $user = User::select('country_id')->where('id', $user_id)->with('country')->first();
-        return $user && $user->country ? $user->country->{'name_' . app()->getLocale()} : '';
+        $authentication_type = Auth::user()->account_type;
+        if ($authentication_type === 'doctor') {
+            if ($record->user_id) {
+                $user = User::select('country_id')->where('id', $record->user_id)->first();
+                return $user ? $user->country_id : 'Unknown 1';
+            } else {
+                $user = Hospital::find($record->hospital_id)->user;
+                return $user ? $user->country_id : 'Unknown 1';
+            }
+        } elseif ($authentication_type === 'hospital') {
+            if ($record->doctor_id) {
+                $user = User::select('country_id')->where('id', $record->doctor_id)->first();
+                return $user ? $user->country_id : 'Unknown 2';
+            } else {
+                $user = User::select('country_id')->where('id', $record->user_id)->first();
+                return $user ? $user->country_id : 'Unknown 2';
+            }
+        }
     }
 
 
 
-    public static function getAccountType($user_id)
+    public static function getAccountType($record)
     {
-        $user = User::select('account_type')->where('id', $user_id)->first();
-        return $user ? $user->account_type : 'Unknown';
+        $authentication_type = Auth::user()->account_type;
+        if ($authentication_type === 'doctor') {
+            if ($record->user_id) {
+                $user = User::select('account_type')->where('id', $record->user_id)->first();
+                return $user ? $user->account_type : 'Unknown 1';
+            } else {
+                $user = Hospital::find($record->hospital_id)->user;
+                return $user ? $user->account_type : 'Unknown 1';
+            }
+        } elseif ($authentication_type === 'hospital') {
+            if ($record->doctor_id) {
+                $user = User::select('account_type')->where('id', $record->doctor_id)->first();
+                return $user ? $user->account_type : 'Unknown 2';
+            } else {
+                $user = User::select('account_type')->where('id', $record->user_id)->first();
+                return $user ? $user->account_type : 'Unknown 2';
+            }
+        }
     }
-
-
-
-
 
 
     public static function table(Table $table): Table
@@ -108,7 +158,7 @@ class NewConnectionRequestResource extends Resource
                     ->getStateUsing(
                         static function ($record): string {
                             return (string) (
-                                self::getName($record->user_id)
+                                self::getName($record)
                             );
                         }
                     ),
@@ -117,7 +167,7 @@ class NewConnectionRequestResource extends Resource
                     ->getStateUsing(
                         static function ($record): string {
                             return (string) (
-                                self::getEmail($record->user_id)
+                                self::getEmail($record)
                             );
                         }
                     ),
@@ -126,7 +176,7 @@ class NewConnectionRequestResource extends Resource
                     ->getStateUsing(
                         static function ($record): string {
                             return (string) (
-                                self::getCountry($record->user_id)
+                                self::getCountry($record)
                             );
                         }
                     ),
@@ -137,13 +187,14 @@ class NewConnectionRequestResource extends Resource
                     ->getStateUsing(
                         static function ($record): string {
                             return (string) (
-                                self::getAccountType($record->user_id)
+                                __('dashboard.' . self::getAccountType($record))
                             );
                         }
                     )
                     ->color(fn(string $state): string => match ($state) {
-                        'patient' => 'warning',
-                        'doctor' => 'info',
+                        __('dashboard.patient') => 'warning',
+                        __('dashboard.doctor') => 'info',
+                        __('dashboard.hospital') => 'success',
                     }),
                 TextColumn::make('status')
                     ->label(__('dashboard.status'))
@@ -165,33 +216,55 @@ class NewConnectionRequestResource extends Resource
                     ->label(__('dashboard.add_connection_request'))
                     ->icon('heroicon-o-plus')
                     ->form([
-                        Select::make('user_id')
-                            ->label(__('dashboard.user'))
-                            ->options(User::where('account_type', 'patient')->get()->pluck('email', 'id'))
-                            ->searchable()
-                            ->required()
-                            ->reactive(),
-                        // TextInput::make('email')
-                        //     ->label('Email')
+                        // Select::make('user_id')
+                        //     ->label(__('dashboard.user'))
+                        //     ->options(User::where('account_type', 'patient')->get()->pluck('email', 'id'))
+                        //     ->searchable()
                         //     ->required()
-                        //     ->email(),
+                        //     ->reactive(),
+                        TextInput::make('email')
+                            ->label(__('dashboard.email'))
+                            ->required()
+                            ->email(),
                         Select::make('status')
-                            ->label('Status')
                             ->options([
                                 'pending' => __('dashboard.pending'),
                             ])
-                            ->default('pending')       // preselect "pending"
-                            ->disabled()
+                            ->default('pending')
+                            ->hidden()
                             ->required(),
                     ])
                     ->using(function (array $data, $model) {
-                        $user = User::find($data['user_id']);
+                        $user = User::where('email', $data['email'])->first();
 
-                        $data['account_type'] = $user->account_type;
-                        $data['sender_id'] = auth()->id();
-                        $data['hospital_id'] = self::getHospitalId();
+                        if (!$user) {
+                            return;
+                        }
 
-                        $user->update(['hospital_id' => self::getHospitalId()]);
+                        if ($user->account_type !== 'patient' && $user->account_type !== 'doctor' && $user->account_type !== 'hospital') {
+                            return;
+                        }
+
+                        $authentication_type = Auth::user()->account_type;
+
+                        if ($user->account_type === 'hospital' && $authentication_type === 'doctor') {
+                            $data['hospital_id'] = $user->hospital_id;
+                            $data['doctor_id'] = Auth::id();
+                        } elseif ($user->account_type === 'doctor' && $authentication_type === 'hospital') {
+                            $data['doctor_id'] = $user->id;
+                            $data['hospital_id'] = Auth::user()->hospital_id;
+                        } elseif ($user->account_type === 'patient' && $authentication_type === 'hospital') {
+                            $data['hospital_id'] = Auth::user()->hospital_id;
+                            $data['user_id'] = $user->id;
+                        } elseif ($user->account_type === 'patient' && $authentication_type === 'doctor') {
+                            $data['user_id'] = $user->id;
+                            $data['doctor_id'] = Auth::id();
+                        }
+
+                        $data['account_type'] = $authentication_type;
+                        $data['sender_id'] = Auth::id();
+
+                        unset($data['email']);
 
                         return $model::create($data);
                     })
@@ -202,7 +275,7 @@ class NewConnectionRequestResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->hidden(fn($record) =>
-                    $record->sender_id == auth()->id())
+                    $record->sender_id == Auth::id())
                     ->modalHeading(__('dashboard.edit_status'))
                     ->beforeFormFilled(function ($record) {
                         // $filePath = storage_path('app/file.txt');
@@ -222,7 +295,26 @@ class NewConnectionRequestResource extends Resource
                             ->required(),
                     ])
                     ->action(function ($record, $data) {
+
                         $record->update($data);
+
+                        if ($data['status'] === 'approved') {
+                            $authentication_type = Auth::user()->account_type;
+                            if ($authentication_type === 'doctor') {
+                                if ($record->user_id) {
+                                    $user = User::find($record->user_id);
+                                } else {
+                                    $user = Hospital::find($record->hospital_id)->user;
+                                }
+                            } elseif ($authentication_type === 'hospital') {
+                                if ($record->doctor_id) {
+                                    $user = User::find($record->doctor_id);
+                                } else {
+                                    $user = User::find($record->user_id);
+                                }
+                            }
+                            $user->update(['parent_id' => Auth::id()]);
+                        }
                     })
                     ->modalButton(__('dashboard.save')),
                 Tables\Actions\DeleteAction::make('cancel')
@@ -232,7 +324,16 @@ class NewConnectionRequestResource extends Resource
                     ->requiresConfirmation()
                     ->action(function ($record) {
 
-                        User::find($record->user_id)->update(['hospital_id' => NULL]);
+                        if ($record->user_id)
+                            $user = User::find($record->user_id);
+                        else if ($record->doctor_id && $record->doctor_id !== Auth::id())
+                            $user = User::find($record->doctor_id);
+                        else if ($record->hospital_id && $record->hospital_id !== Auth::user()->hospital_id)
+                            $user = Hospital::find($record->hospital_id)->user;
+
+                        if ($user)
+                            $user->update(['parent_id' => NULL]);
+
                         HospitalUserAttachment::find($record->id)
                             ->delete();
 
