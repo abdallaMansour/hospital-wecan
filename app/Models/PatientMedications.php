@@ -16,7 +16,8 @@ class PatientMedications extends Model
         'frequency',
         'frequency_per',
         'instructions',
-        'duration', // Add this line
+        'duration',
+        'month-or-day',
         'show',
     ];
     protected $attributes = [

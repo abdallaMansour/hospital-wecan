@@ -3,24 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\NewConnectionRequestResource\Pages;
-use App\Filament\Resources\NewConnectionRequestResource\RelationManagers;
-use App\Models\Country;
 use App\Models\HospitalUserAttachment;
 use App\Models\User;
-use App\Models\Hospital;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\File;
-use stdClass;
 
 class NewConnectionRequestResource extends Resource
 {
@@ -92,7 +81,7 @@ class NewConnectionRequestResource extends Resource
     public static function getCountry($user_id)
     {
         $user = User::select('country_id')->where('id', $user_id)->with('country')->first();
-        return $user && $user->country ? $user->country->name_ar : '';
+        return $user && $user->country ? $user->country->{'name_' . app()->getLocale()} : '';
     }
 
 

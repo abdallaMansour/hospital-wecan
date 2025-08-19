@@ -17,6 +17,7 @@ use App\Models\HospitalUserAttachment;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Image;
 use App\Filament\Resources\DoctorResource\Pages;
 use App\Filament\Resources\DoctorResource\RelationManagers;
 
@@ -150,30 +151,43 @@ class DoctorResource extends Resource
                             ->maxLength(255),
 
                     ])
+                    ->hidden(fn(?User $record) => $record !== null)
                     ->columns(2)
                     ->columnSpan(['lg' => fn(?User $record) => $record === null ? 3 : 2]),
 
                 Forms\Components\Section::make()
                     ->schema([
-                        Forms\Components\Placeholder::make('account_type_display')
+                        Forms\Components\Placeholder::make(app()->getLocale() === 'ar' ? 'name' : 'name_en')
+                            ->label(__('dashboard.name'))
+                            ->content(fn(User $record): ?string => $record->name),
+
+                        Forms\Components\Placeholder::make('email')
+                            ->label(__('dashboard.email'))
+                            ->content(fn(User $record): ?string => $record->email),
+
+                        Forms\Components\Placeholder::make('country')
+                            ->label(__('dashboard.country'))
+                            ->content(fn(User $record): ?string => $record->country->{'name_' . app()->getLocale()}),
+
+                        Forms\Components\Placeholder::make('contact_number')
+                            ->label(__('dashboard.contact_number'))
+                            ->content(fn(User $record): ?string => $record->contact_number),
+
+                        Forms\Components\Placeholder::make('account_type')
                             ->label(__('dashboard.account_type'))
-                            ->content(fn(User $record): ?string => $record->account_type),
+                            ->content(fn(User $record): ?string => __('dashboard.' . $record->account_type)),
+
                         Forms\Components\Placeholder::make('preferred_language')
                             ->label(__('dashboard.preferred_language'))
                             ->content(fn(User $record): ?string => $record->preferred_language),
-                        Forms\Components\Placeholder::make('newsletter_count')
-                            ->label(__('dashboard.newsletter_count'))
-                            ->content(fn(User $record): ?string => $record->healthTips()->count())
-                            ->hidden(fn(?User $record) => $record === null || $record->account_type !== 'doctor'),
+
                         Forms\Components\Placeholder::make('created_at')
                             ->label(__('dashboard.created_at'))
                             ->content(fn(User $record): ?string => $record->created_at?->diffForHumans()),
-                        Forms\Components\Placeholder::make('updated_at')
-                            ->label(__('dashboard.last_modified_at'))
-                            ->content(fn(User $record): ?string => $record->updated_at?->diffForHumans()),
                     ])
-                    ->columnSpan(['lg' => 1])
-                    ->hidden(fn(?User $record) => $record === null),
+                    ->hidden(fn(?User $record) => $record === null)
+                    ->columns(2)
+                    ->columnSpan(2),
             ])
             ->columns(3);
     }

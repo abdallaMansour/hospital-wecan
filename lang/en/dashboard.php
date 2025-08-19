@@ -67,6 +67,8 @@ return [
     'drug_image' => 'Drug Image',
     'frequency' => 'Frequency',
     'frequency_per' => 'Per',
+    'duration' => 'Duration',
+    'month-or-day' => 'Month or Day',
     'day' => 'Day',
     'week' => 'Week',
     'month' => 'Month',

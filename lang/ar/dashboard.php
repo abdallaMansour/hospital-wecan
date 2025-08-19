@@ -67,6 +67,8 @@ return [
     'drug_image' => 'صورة الدواء',
     'frequency' => 'عدد مرات التناول',
     'frequency_per' => 'لكل',
+    'duration' => 'مدة التناول',
+    'month-or-day' => 'شهر أو يوم',
     'day' => 'يوم',
     'week' => 'أسبوع',
     'month' => 'شهر',

@@ -36,6 +36,11 @@ class UserResource extends Resource
         return __('dashboard.user');
     }
 
+    public static function canAccess(): bool
+    {
+        return Auth::user()->account_type === 'admin' || Auth::user()->account_type === 'hospital';
+    }
+
     public static function getPluralModelLabel(): string
     {
         return __('dashboard.users');
