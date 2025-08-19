@@ -105,19 +105,19 @@ class NewConnectionRequestResource extends Resource
         $authentication_type = Auth::user()->account_type;
         if ($authentication_type === 'doctor') {
             if ($record->user_id) {
-                $user = User::select('country_id')->where('id', $record->user_id)->first();
-                return $user ? $user->country_id : 'Unknown 1';
+                $user = User::find($record->user_id);
+                return $user ? $user->country?->{'name_' . app()->getLocale()} : 'Unknown 1';
             } else {
                 $user = Hospital::find($record->hospital_id)->user;
-                return $user ? $user->country_id : 'Unknown 1';
+                return $user ? $user->country?->{'name_' . app()->getLocale()} : 'Unknown 1';
             }
         } elseif ($authentication_type === 'hospital') {
             if ($record->doctor_id) {
-                $user = User::select('country_id')->where('id', $record->doctor_id)->first();
-                return $user ? $user->country_id : 'Unknown 2';
+                $user = User::find($record->doctor_id);
+                return $user ? $user->country?->{'name_' . app()->getLocale()} : 'Unknown 2';
             } else {
-                $user = User::select('country_id')->where('id', $record->user_id)->first();
-                return $user ? $user->country_id : 'Unknown 2';
+                $user = User::find($record->user_id);
+                return $user ? $user->country?->{'name_' . app()->getLocale()} : 'Unknown 2';
             }
         }
     }
