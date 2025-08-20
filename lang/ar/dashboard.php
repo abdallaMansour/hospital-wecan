@@ -150,5 +150,10 @@ return [
     'day/month' => 'بوم/شهر',
     'arabic_patient_count' => 'عدد المرضى بالعربية',
     'english_patient_count' => 'عدد المرضى بالانجليزية',
-    'view' => 'عرض'
+    'view' => 'عرض',
+    'status_updated_successfully' => 'تم تحديث الحالة بنجاح',
+    'error_updating_status' => 'خطأ في تحديث الحالة',
+    'approve' => 'موافقة',
+    'reject' => 'رفض',
+    'set_pending' => 'تعيين معلق'
 ];

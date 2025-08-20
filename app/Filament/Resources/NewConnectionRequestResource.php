@@ -8,6 +8,7 @@ use App\Models\Hospital;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Select;
 use App\Models\HospitalUserAttachment;
 use Filament\Tables\Columns\TextColumn;
@@ -42,16 +43,13 @@ class NewConnectionRequestResource extends Resource
 
     public static function getHospitalId()
     {
-        // $currentUser = User::find(auth()->id());
-        // return $currentUser->hospital_id;
-        return auth()->user()->hospital_id;
+        return Auth::user()->hospital_id;
     }
 
     public static function getQuery()
     {
 
         $query = HospitalUserAttachment::where('doctor_id', Auth::id())->orWhere('hospital_id', self::getHospitalId());
-        // fix the prob
         return $query;
     }
 
@@ -122,8 +120,6 @@ class NewConnectionRequestResource extends Resource
         }
     }
 
-
-
     public static function getAccountType($record)
     {
         $authentication_type = Auth::user()->account_type;
@@ -153,44 +149,13 @@ class NewConnectionRequestResource extends Resource
             self::getQuery()
         )
             ->columns([
-                TextColumn::make('name')
-                    ->label(__('dashboard.name'))
-                    ->getStateUsing(
-                        static function ($record): string {
-                            return (string) (
-                                self::getName($record)
-                            );
-                        }
-                    ),
-                TextColumn::make('email')
-                    ->label(__('dashboard.email'))
-                    ->getStateUsing(
-                        static function ($record): string {
-                            return (string) (
-                                self::getEmail($record)
-                            );
-                        }
-                    ),
-                TextColumn::make('country')
-                    ->label(__('dashboard.country'))
-                    ->getStateUsing(
-                        static function ($record): string {
-                            return (string) (
-                                self::getCountry($record)
-                            );
-                        }
-                    ),
+                TextColumn::make('id')
+                    ->label('ID'),
+                TextColumn::make('display_name')->label(__('dashboard.name')),
+                TextColumn::make('email')->label(__('dashboard.email')),
+                TextColumn::make('country')->label(__('dashboard.country'))->searchable(),
 
-                TextColumn::make('account_type')
-                    ->label(__('dashboard.account_type'))
-                    ->badge()
-                    ->getStateUsing(
-                        static function ($record): string {
-                            return (string) (
-                                __('dashboard.' . self::getAccountType($record))
-                            );
-                        }
-                    )
+                TextColumn::make('account_type')->label(__('dashboard.account_type'))->badge()
                     ->color(fn(string $state): string => match ($state) {
                         __('dashboard.patient') => 'warning',
                         __('dashboard.doctor') => 'info',
@@ -273,50 +238,7 @@ class NewConnectionRequestResource extends Resource
 
             // form email status and custom action
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->hidden(fn($record) =>
-                    $record->sender_id == Auth::id())
-                    ->modalHeading(__('dashboard.edit_status'))
-                    ->beforeFormFilled(function ($record) {
-                        // $filePath = storage_path('app/file.txt');
-                        // $content = json_encode([
-                        //     'recordId' => $record,
-                        // ]);
-                        // File::append($filePath, $content);
-                    })
-
-                    ->form([
-                        Select::make('status')
-                            ->options([
-                                'pending' => __('dashboard.pending'),
-                                'approved' => __('dashboard.approved'),
-                                'rejected' => __('dashboard.rejected'),
-                            ])
-                            ->required(),
-                    ])
-                    ->action(function ($record, $data) {
-
-                        $record->update($data);
-
-                        if ($data['status'] === 'approved') {
-                            $authentication_type = Auth::user()->account_type;
-                            if ($authentication_type === 'doctor') {
-                                if ($record->user_id) {
-                                    $user = User::find($record->user_id);
-                                } else {
-                                    $user = Hospital::find($record->hospital_id)->user;
-                                }
-                            } elseif ($authentication_type === 'hospital') {
-                                if ($record->doctor_id) {
-                                    $user = User::find($record->doctor_id);
-                                } else {
-                                    $user = User::find($record->user_id);
-                                }
-                            }
-                            $user->update(['parent_id' => Auth::id()]);
-                        }
-                    })
-                    ->modalButton(__('dashboard.save')),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make('cancel')
                     ->label(__('dashboard.unlink'))
                     ->modalHeading(__(key: 'dashboard.unlink_doctor'))
@@ -334,8 +256,7 @@ class NewConnectionRequestResource extends Resource
                         if ($user)
                             $user->update(['parent_id' => NULL]);
 
-                        HospitalUserAttachment::find($record->id)
-                            ->delete();
+                        $record->delete();
 
                         // $filePath = storage_path('app/file.txt');
                         // $content = json_encode([
@@ -361,7 +282,7 @@ class NewConnectionRequestResource extends Resource
             'index' => Pages\NewConnectionRequestList::route('/'),
 
             // 'create' => Pages\CreateDoctor::route('/create'),
-            // 'edit' => Pages\EditStatusConnectionRequest::route('/{record}/edit'),
+            'edit' => Pages\EditStatusConnectionRequest::route('/{record}/edit'),
         ];
     }
 

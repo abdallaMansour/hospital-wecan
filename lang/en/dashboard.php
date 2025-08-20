@@ -150,5 +150,10 @@ return [
     'day/month' => 'Day/Month',
     'arabic_patient_count' => 'Arabic Patient Count',
     'english_patient_count' => 'English Patient Count',
-    'view' => 'view'
+    'view' => 'view',
+    'status_updated_successfully' => 'Status updated successfully',
+    'error_updating_status' => 'Error updating status',
+    'approve' => 'Approve',
+    'reject' => 'Reject',
+    'set_pending' => 'Set Pending'
 ];
