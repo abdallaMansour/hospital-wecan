@@ -160,6 +160,7 @@ class NewConnectionRequestResource extends Resource
                         __('dashboard.patient') => 'warning',
                         __('dashboard.doctor') => 'info',
                         __('dashboard.hospital') => 'success',
+                        default => 'gray',
                     }),
                 TextColumn::make('status')
                     ->label(__('dashboard.status'))
