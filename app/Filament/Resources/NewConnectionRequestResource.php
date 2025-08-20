@@ -239,7 +239,7 @@ class NewConnectionRequestResource extends Resource
 
             // form email status and custom action
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->hidden(fn($record) => $record->sender_id === Auth::id()),
                 Tables\Actions\DeleteAction::make('cancel')
                     ->label(__('dashboard.unlink'))
                     ->modalHeading(__(key: 'dashboard.unlink_doctor'))
