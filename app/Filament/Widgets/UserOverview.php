@@ -18,29 +18,30 @@ class UserOverview extends BaseWidget
     protected function getStats(): array
     {
         $users = User::all();
+        $auth_id = Auth::id();
 
         // Filter users to get counts for patients with preferred language set to Arabic
         $arabicPatientsCount = $users->where('account_type', 'patient')
             ->where('preferred_language', 'ar')
-            ->where('hospital_id', self::getHospitalId())
+            ->where('parent_id', $auth_id)
             ->count();
 
         // Filter users to get counts for patients with preferred language set to English
         $englishPatientsCount = $users->where('account_type', 'patient')
             ->where('preferred_language', 'en')
-            ->where('hospital_id', self::getHospitalId())
+            ->where('parent_id', $auth_id)
             ->count();
 
         // Filter users to get counts for doctors with profession set in Arabic
         $arabicDoctorsCount = $users->where('account_type', 'doctor')
             ->where('preferred_language', 'ar')
-            ->where('hospital_id', self::getHospitalId())
+            ->where('parent_id', $auth_id)
             ->count();
 
         // Filter users to get counts for doctors with profession set in English
         $englishDoctorsCount = $users->where('account_type', 'doctor')
             ->where('preferred_language', 'en')
-            ->where('hospital_id', self::getHospitalId())
+            ->where('parent_id', $auth_id)
             ->count();
 
         return [
