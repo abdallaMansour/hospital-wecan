@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class HospitalUserAttachment extends Model
 {
@@ -23,12 +24,12 @@ class HospitalUserAttachment extends Model
 
     public function getDisplayNameAttribute()
     {
-        if ($this->user_id) {
-            return $this->user?->name;
-        } elseif ($this->doctor_id) {
-            return $this->doctor?->name;
-        } elseif ($this->hospital_id) {
-            return $this->hospital?->user?->name;
+        if ($this->doctor_id && $this->user_id) {
+            return Auth::user()->account_type == 'doctor' ? $this->user?->name : $this->doctor?->name;
+        } elseif ($this->doctor_id && $this->hospital_id) {
+            return Auth::user()->account_type == 'doctor' ? $this->hospital?->user?->name : $this->doctor?->name;
+        } elseif ($this->hospital_id && $this->user_id) {
+            return Auth::user()->account_type == 'hospital' ? $this->user?->name : $this->hospital?->user?->name;
         }
 
         return 'Unknown';
@@ -36,12 +37,12 @@ class HospitalUserAttachment extends Model
 
     public function getEmailAttribute()
     {
-        if ($this->user_id) {
-            return $this->user?->email;
-        } elseif ($this->doctor_id) {
-            return $this->doctor?->email;
-        } elseif ($this->hospital_id) {
-            return $this->hospital?->user?->email;
+        if ($this->doctor_id && $this->user_id) {
+            return Auth::user()->account_type == 'doctor' ? $this->user?->email : $this->doctor?->email;
+        } elseif ($this->doctor_id && $this->hospital_id) {
+            return Auth::user()->account_type == 'doctor' ? $this->hospital?->user?->email : $this->doctor?->email;
+        } elseif ($this->hospital_id && $this->user_id) {
+            return Auth::user()->account_type == 'hospital' ? $this->user?->email : $this->hospital?->user?->email;
         }
 
         return 'Unknown';
@@ -54,7 +55,7 @@ class HospitalUserAttachment extends Model
 
     public function getAccountTypeAttribute()
     {
-        return __('dashboard.' . $this->user?->account_type);
+        return __('dashboard.' . $this->attributes['account_type']);
     }
 
 

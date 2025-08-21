@@ -50,8 +50,8 @@ class EditStatusConnectionRequest extends EditRecord
                 if ($record->user_id) {
                     $user = User::find($record->user_id);
                 } elseif ($record->hospital_id) {
-                    $hospital = Hospital::find($record->hospital_id);
-                    $user = $hospital ? $hospital->user : null;
+                    $user = Auth::user();
+                    $user->update(['parent_id' => $record->hospital?->user?->id]);
                 }
             } elseif ($authentication_type === 'hospital') {
                 if ($record->doctor_id) {
@@ -60,8 +60,8 @@ class EditStatusConnectionRequest extends EditRecord
                     $user = User::find($record->user_id);
                 }
             }
-            
-            if ($user) {
+
+            if ($authentication_type !== 'doctor' && $record->hospital_id && $user) {
                 $user->update(['parent_id' => Auth::id()]);
             }
         }
