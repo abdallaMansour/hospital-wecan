@@ -35,7 +35,8 @@ class HealthTipsRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return $ownerRecord->account_type === 'doctor';
+        // Check if the record has a doctor relationship
+        return $ownerRecord->doctor && $ownerRecord->doctor->account_type === 'doctor';
     }
 
     public function form(Form $form): Form
@@ -95,7 +96,12 @@ class HealthTipsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        // Set the user_id to the doctor_id from the parent record
+                        $data['user_id'] = $this->getOwnerRecord()->doctor_id;
+                        return $data;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

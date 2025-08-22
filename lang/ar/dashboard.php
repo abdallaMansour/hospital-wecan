@@ -157,4 +157,8 @@ return [
     'reject' => 'رفض',
     'set_pending' => 'تعيين معلق',
     'connections' => 'المرتبطين',
+    'user_information' => 'معلومات المستخدم',
+    'no_image' => 'لا يوجد صورة',
+    'not_available' => 'غير متوفر',
+    'profession' => 'المهنة',
 ];

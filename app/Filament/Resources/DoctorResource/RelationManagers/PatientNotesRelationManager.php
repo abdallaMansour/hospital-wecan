@@ -18,7 +18,8 @@ class PatientNotesRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return $ownerRecord->account_type === 'patient';
+        // Check if the record has a user relationship and the user is a patient
+        return $ownerRecord->user && $ownerRecord->user->account_type === 'patient';
     }
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
@@ -69,7 +70,12 @@ class PatientNotesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        // Set the user_id to the user_id from the parent record
+                        $data['user_id'] = $this->getOwnerRecord()->user_id;
+                        return $data;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

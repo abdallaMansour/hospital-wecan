@@ -157,4 +157,8 @@ return [
     'reject' => 'Reject',
     'set_pending' => 'Set Pending',
     'connections' => 'Connections',
+    'user_information' => 'User information',
+    'no_image' => 'No image',
+    'not_available' => 'Not available',
+    'profession' => 'Profession',
 ];
