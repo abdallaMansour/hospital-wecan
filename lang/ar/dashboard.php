@@ -155,5 +155,6 @@ return [
     'error_updating_status' => 'خطأ في تحديث الحالة',
     'approve' => 'موافقة',
     'reject' => 'رفض',
-    'set_pending' => 'تعيين معلق'
+    'set_pending' => 'تعيين معلق',
+    'connections' => 'المرتبطين',
 ];

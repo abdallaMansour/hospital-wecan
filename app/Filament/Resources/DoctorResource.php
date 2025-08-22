@@ -23,14 +23,14 @@ use App\Filament\Resources\DoctorResource\RelationManagers;
 
 class DoctorResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = HospitalUserAttachment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?int $navigationSort = 4;
     public static function getNavigationLabel(): string
     {
-        return __('dashboard.doctors_and_patients_plural');
+        return __('dashboard.connections');
     }
 
 
@@ -39,24 +39,17 @@ class DoctorResource extends Resource
         return Auth::user()->hospital_id;
     }
 
-
-    public static function getTableQuery2()
-    {
-        $query =
-            User::select('users.id', 'users.name', 'users.name_en', 'users.email', 'users.profession_ar', 'users.profession_en', 'users.country_id')
-            ->where(function ($q) {
-                $q->where('users.account_type', 'doctor')->orWhere('users.account_type', 'patient');
-            })
-            ->where('users.parent_id', Auth::id());
-        return  $query;
-    }
-
     public static function getQuery()
     {
-        return User::where(function ($q) {
-            $q->where('users.account_type', 'doctor')->orWhere('users.account_type', 'patient');
-        })
-            ->where('users.parent_id', Auth::id());
+        if (Auth::user()->account_type === 'hospital') {
+            $query = HospitalUserAttachment::where('status', 'approved')->where('hospital_id', Auth::user()->hospital_id);
+        } elseif (Auth::user()->account_type === 'doctor') {
+            $query = HospitalUserAttachment::where('status', 'approved')->where('doctor_id', Auth::user()->id);
+        } else {
+            $query = HospitalUserAttachment::where('status', 'approved')->where('doctor_id', Auth::user()->parent_id);
+        }
+
+        return $query->with('doctor', 'hospital.user');
     }
 
 
@@ -83,147 +76,187 @@ class DoctorResource extends Resource
         return true;
     }
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Section::make()
-                    ->schema([
-                        Hidden::make('parent_id')
-                            ->default(Auth::id())
-                            ->required(),
-
-                        FileUpload::make('profile_picture')
-                            ->label(__('dashboard.profile_picture'))
-                            ->columnSpan('full')
-                            ->visibility('public')
-                            ->image()
-                            ->imageEditor(),
-
-                        Forms\Components\TextInput::make(app()->getLocale() === 'ar' ? 'name' : 'name_en')
-                            ->label(__('dashboard.name'))
-                            ->maxLength(255)
-                            ->required(),
-                        Forms\Components\TextInput::make('email')
-                            ->label(__('dashboard.email'))
-                            ->required()
-                            ->email()
-                            ->maxLength(255)
-                            ->unique(ignoreRecord: true),
-                        Forms\Components\TextInput::make('profession_' . app()->getLocale())
-                            ->label(__('dashboard.profession_' . app()->getLocale()))
-                            ->required()
-                            ->maxLength(255),
-                        Select::make('country_id')
-                            ->required()
-                            ->label(__('dashboard.country'))
-                            ->options(Country::all()->pluck('name_' . app()->getLocale(), 'id')),
-
-                        Forms\Components\TextInput::make('contact_number')
-                            ->label(__('dashboard.contact_number'))
-                            ->required()
-                            ->maxLength(255),
-
-                        Hidden::make('show_info_to_patients')
-                            ->default(true)
-                            ->required(),
-
-                        Forms\Components\Select::make('account_type')
-                            ->label(__('dashboard.account_type'))
-                            ->options([
-                                'doctor' => __('dashboard.doctor'),
-                                'patient' => __('dashboard.patient'),
-                            ])
-                            ->required()
-                            ->disabled(false)
-                            ->dehydrated(true),
-
-                        Forms\Components\TextInput::make('password')
-                            ->type('password')
-                            ->label(__('dashboard.password'))
-                            ->required(fn(?User $record) => $record === null) // nullable on update and set old password
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('password_confirmation')
-                            ->type('password')
-                            ->label(__('dashboard.password_confirmation'))
-                            ->required(fn(?User $record) => $record === null) // nullable on update and set old password
-                            ->same('password')
-                            ->maxLength(255),
-
-                    ])
-                    ->hidden(fn(?User $record) => $record !== null)
-                    ->columns(2)
-                    ->columnSpan(['lg' => fn(?User $record) => $record === null ? 3 : 2]),
-
-                Forms\Components\Section::make()
-                    ->schema([
-                        Forms\Components\Placeholder::make(app()->getLocale() === 'ar' ? 'name' : 'name_en')
-                            ->label(__('dashboard.name'))
-                            ->content(fn(User $record): ?string => $record->name),
-
-                        Forms\Components\Placeholder::make('email')
-                            ->label(__('dashboard.email'))
-                            ->content(fn(User $record): ?string => $record->email),
-
-                        Forms\Components\Placeholder::make('country')
-                            ->label(__('dashboard.country'))
-                            ->content(fn(User $record): ?string => $record->country?->{'name_' . app()->getLocale()}),
-
-                        Forms\Components\Placeholder::make('contact_number')
-                            ->label(__('dashboard.contact_number'))
-                            ->content(fn(User $record): ?string => $record->contact_number),
-
-                        Forms\Components\Placeholder::make('account_type')
-                            ->label(__('dashboard.account_type'))
-                            ->content(fn(User $record): ?string => __('dashboard.' . $record->account_type)),
-
-                        Forms\Components\Placeholder::make('preferred_language')
-                            ->label(__('dashboard.preferred_language'))
-                            ->content(fn(User $record): ?string => $record->preferred_language),
-
-                        Forms\Components\Placeholder::make('created_at')
-                            ->label(__('dashboard.created_at'))
-                            ->content(fn(User $record): ?string => $record->created_at?->diffForHumans()),
-                    ])
-                    ->hidden(fn(?User $record) => $record === null)
-                    ->columns(3)
-                    ->columnSpan(3),
-            ])
-            ->columns(3);
-    }
-
     public static function table(Table $table): Table
     {
+        if (Auth::user()->account_type === 'hospital') {
+            return $table
+                ->query(self::getQuery())
+                ->columns([
+                    Tables\Columns\ImageColumn::make('doctor.profile_picture')
+                        ->label(__('dashboard.profile_picture')),
+                    TextColumn::make('name')
+                        ->label(__('dashboard.name'))
+                        ->getStateUsing(function ($record) {
+                            $locale = app()->getLocale();
+                            $nameField = $locale === 'ar' ? 'name' : 'name_en';
+                            
+                            // Check if doctor exists and has the name field
+                            if ($record->doctor && $record->doctor->$nameField) {
+                                return $record->doctor->$nameField;
+                            }
+                            
+                            // Fallback to user name
+                            if ($record->user && $record->user->$nameField) {
+                                return $record->user->$nameField;
+                            }
+                            
+                            return '';
+                        })
+                        ->searchable(isIndividual: true)
+                        ->sortable(),
+                    TextColumn::make('email')
+                        ->label(__('dashboard.email'))
+                        ->getStateUsing(function ($record) {
+                            if ($record->doctor && $record->doctor->email) {
+                                return $record->doctor->email;
+                            }
+                            
+                            if ($record->user && $record->user->email) {
+                                return $record->user->email;
+                            }
+                            
+                            return '';
+                        })
+                        ->searchable(isIndividual: true, isGlobal: false)
+                        ->sortable(),
+                    TextColumn::make('profession')
+                        ->label(__('dashboard.profession_' . app()->getLocale()))
+                        ->getStateUsing(function ($record) {
+                            $professionField = 'profession_' . app()->getLocale();
+                            
+                            if ($record->doctor && $record->doctor->$professionField) {
+                                return $record->doctor->$professionField;
+                            }
+                            
+                            if ($record->user && $record->user->$professionField) {
+                                return $record->user->$professionField;
+                            }
+                            
+                            return '';
+                        })
+                        ->searchable(isIndividual: true, isGlobal: false)
+                        ->sortable(),
+                    TextColumn::make('account_type')
+                        ->label(__('dashboard.account_type'))
+                        ->badge()
+                        ->getStateUsing(function ($record): string {
+                            $accountType = null;
+                            
+                            if ($record->doctor && $record->doctor->account_type) {
+                                $accountType = $record->doctor->account_type;
+                            } elseif ($record->user && $record->user->account_type) {
+                                $accountType = $record->user->account_type;
+                            }
+                            
+                            return $accountType ? (string) __('dashboard.' . $accountType) : '';
+                        })
+                        ->color(fn(string $state): string => match ($state) {
+                            __('dashboard.doctor') => 'info',
+                            __('dashboard.patient') => 'warning',
+                            __('dashboard.hospital') => 'success',
+                            __('dashboard.user') => 'danger',
+                            default => 'gray',
+                        }),
+                ])
+                ->filters([])
+                ->actions([
+                    Tables\Actions\Action::make('chat')
+                        ->label(__('dashboard.chat'))
+                        ->icon('heroicon-o-chat-bubble-left-right')
+                        ->color('success')
+                        ->url(fn (HospitalUserAttachment $record): string => '/custom-chat?' . ($record->doctor_id ? 'other_doctor_id=' : 'other_user_id=') . ($record->doctor_id ?? $record->user_id)),
+                        // ->visible(fn (HospitalUserAttachment $record): bool => $record->doctor_id !== Auth::id()), // i want open custom chat page from here only
+                    Tables\Actions\ViewAction::make('show')
+                        ->label(__('dashboard.view')),
+                    ]);
+                    
+        } else {
         return $table
             ->query(self::getQuery())
             ->columns([
                 Tables\Columns\ImageColumn::make('profile_picture')
-                    ->label(__('dashboard.profile_picture')),
-                TextColumn::make(app()->getLocale() === 'ar' ? 'name' : 'name_en')
+                    ->label(__('dashboard.profile_picture'))
+                    ->getStateUsing(function ($record) {
+                        if ($record->user && $record->user->profile_picture) {
+                            return $record->user->profile_picture;
+                        }
+                        
+                        if ($record->hospital && $record->hospital->user && $record->hospital->user->profile_picture) {
+                            return $record->hospital->user->profile_picture;
+                        }
+                        
+                        return null;
+                    }),
+                TextColumn::make('name')
                     ->label(__('dashboard.name'))
+                    ->getStateUsing(function ($record) {
+                        $locale = app()->getLocale();
+                        $nameField = $locale === 'ar' ? 'name' : 'name_en';
+                        
+                        if ($record->user && $record->user->$nameField) {
+                            return $record->user->$nameField;
+                        }
+                        
+                        if ($record->hospital && $record->hospital->user && $record->hospital->user->$nameField) {
+                            return $record->hospital->user->$nameField;
+                        }
+                        
+                        return '';
+                    })
                     ->searchable(isIndividual: true)
                     ->sortable(),
                 TextColumn::make('email')
                     ->label(__('dashboard.email'))
+                    ->getStateUsing(function ($record) {
+                        if ($record->user && $record->user->email) {
+                            return $record->user->email;
+                        }
+                        
+                        if ($record->hospital && $record->hospital->user && $record->hospital->user->email) {
+                            return $record->hospital->user->email;
+                        }
+                        
+                        return '';
+                    })
                     ->searchable(isIndividual: true, isGlobal: false)
                     ->sortable(),
-                TextColumn::make('profession_' . app()->getLocale())
+                TextColumn::make('profession')
                     ->label(__('dashboard.profession_' . app()->getLocale()))
+                    ->getStateUsing(function ($record) {
+                        $professionField = 'profession_' . app()->getLocale();
+                        
+                        if ($record->user && $record->user->$professionField) {
+                            return $record->user->$professionField;
+                        }
+                        
+                        if ($record->hospital && $record->hospital->user && $record->hospital->user->$professionField) {
+                            return $record->hospital->user->$professionField;
+                        }
+                        
+                        return '';
+                    })
                     ->searchable(isIndividual: true, isGlobal: false)
                     ->sortable(),
                 TextColumn::make('account_type')
                     ->label(__('dashboard.account_type'))
                     ->badge()
-                    ->getStateUsing(
-                        static function ($record): string {
-                            return (string) (
-                                __('dashboard.' . $record->account_type)
-                            );
+                    ->getStateUsing(function ($record): string {
+                        $accountType = null;
+                        
+                        if ($record->user && $record->user->account_type) {
+                            $accountType = $record->user->account_type;
+                        } elseif ($record->hospital && $record->hospital->user && $record->hospital->user->account_type) {
+                            $accountType = $record->hospital->user->account_type;
                         }
-                    )
+                        
+                        return $accountType ? (string) __('dashboard.' . $accountType) : '';
+                    })
                     ->color(fn(string $state): string => match ($state) {
                         __('dashboard.doctor') => 'info',
                         __('dashboard.patient') => 'warning',
+                        __('dashboard.hospital') => 'success',
+                        __('dashboard.user') => 'danger',
+                        default => 'gray',
                     }),
             ])
             ->filters([])
@@ -232,31 +265,13 @@ class DoctorResource extends Resource
                     ->label(__('dashboard.chat'))
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('success')
-                    ->url(fn (User $record): string => '/custom-chat?other_user_id=' . $record->id . '&hospital_id=' . Auth::user()->hospital_id)
-                    ->visible(fn (User $record): bool => $record->id !== Auth::id()), // i want open custom chat page from here only
+                    ->url(fn (HospitalUserAttachment $record): string => '/custom-chat?' . ($record->user_id ? 'other_user_id=' : 'other_hospital_id=') . ($record->user_id ?? $record->hospital_id)), // i want open custom chat page from here only
+                    // ->visible(fn (HospitalUserAttachment $record): bool => $record->user_id !== Auth::id()),
                 Tables\Actions\ViewAction::make('show')
                     ->label(__('dashboard.view')),
-                Tables\Actions\EditAction::make('edit')
-                    ->label(__('dashboard.edit'))
-                    ->modalHeading(__('dashboard.edit'))
-                    ->color('primary'),
-                Tables\Actions\DeleteAction::make('cancel')
-                    ->label(__('dashboard.unlink'))
-                    ->modalHeading(__(key: 'dashboard.unlink_doctor'))
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->action(function ($record) {
-                        // HospitalUserAttachment::where('user_id', $record->id)
-                        //     ->where('hospital_id', $record->hospital_id)
-                        //     ->delete();
-                        // User::find($record->id)->update(['hospital_id' => NULL]);
-                    })
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+                ]);
+                
+        }
     }
     
     public static function getRelations(): array

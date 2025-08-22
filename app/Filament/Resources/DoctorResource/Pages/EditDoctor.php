@@ -12,25 +12,23 @@ class EditDoctor extends EditRecord
 {
     protected static string $resource = DoctorResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getFormActions(): array
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        return [];
     }
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
         // Debug: Log the data being filled into the form
         Log::info('EditDoctor mutateFormDataBeforeFill - data:', $data);
-        
+
         // Ensure account_type is properly set
         if (isset($data['account_type'])) {
             Log::info('Account type found in data:', ['account_type' => $data['account_type']]);
         } else {
             Log::warning('Account type not found in data');
         }
-        
+
         return $data;
     }
 
@@ -48,7 +46,7 @@ class EditDoctor extends EditRecord
     {
         // Debug: Log the incoming data
         Log::info('EditDoctor mutateFormDataBeforeSave - incoming data:', $data);
-        
+
         if (!empty($data['name_en'])) {
             $data['name'] = GoogleTranslate::trans($data['name_en'], 'ar', 'en');
         } else {

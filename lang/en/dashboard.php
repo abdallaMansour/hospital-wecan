@@ -155,5 +155,6 @@ return [
     'error_updating_status' => 'Error updating status',
     'approve' => 'Approve',
     'reject' => 'Reject',
-    'set_pending' => 'Set Pending'
+    'set_pending' => 'Set Pending',
+    'connections' => 'Connections',
 ];
