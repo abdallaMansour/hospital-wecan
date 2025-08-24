@@ -9,6 +9,7 @@ use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Hospital;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class CustomChatPage extends Page
 {
@@ -238,5 +239,50 @@ class CustomChatPage extends Page
         }
 
         return round($size, 2) . ' ' . $units[$i];
+    }
+
+    public function translateMessage(Request $request)
+    {
+        try {
+            $messageId = $request->input('message_id');
+            $message = ChatMessage::find($messageId);
+            
+            if (!$message) {
+                return response()->json(['error' => 'Message not found'], 404);
+            }
+
+            $tr = new GoogleTranslate();
+            
+            // Simple language detection based on character patterns
+            $text = $message->message;
+            $arabicPattern = '/[\x{0600}-\x{06FF}]/u'; // Arabic Unicode range
+            $isArabic = preg_match($arabicPattern, $text);
+            
+            // Set target language based on detected source
+            if ($isArabic) {
+                $tr->setSource('ar');
+                $tr->setTarget('en');
+                $targetLanguage = 'English';
+                $sourceLanguage = 'Arabic';
+            } else {
+                $tr->setSource('en');
+                $tr->setTarget('ar');
+                $targetLanguage = 'العربية';
+                $sourceLanguage = 'English';
+            }
+            
+            $translatedText = $tr->translate($text);
+            
+            return response()->json([
+                'success' => true,
+                'translated_text' => $translatedText,
+                'original_text' => $message->message,
+                'source_language' => $sourceLanguage,
+                'target_language' => $targetLanguage
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Translation failed: ' . $e->getMessage()], 500);
+        }
     }
 }

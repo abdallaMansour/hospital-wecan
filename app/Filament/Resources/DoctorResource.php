@@ -465,14 +465,14 @@ class DoctorResource extends Resource
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->color('success')
                         ->url(fn(HospitalUserAttachment $record): string => '/custom-chat?' . ($record->doctor_id ? 'other_doctor_id=' : 'other_user_id=') . ($record->doctor_id ?? $record->user_id)),
-                    // ->visible(fn (HospitalUserAttachment $record): bool => $record->doctor_id !== Auth::id()), // i want open custom chat page from here only
+                        // ->visible(fn (HospitalUserAttachment $record): bool => $record->doctor_id !== Auth::id()), // i want open custom chat page from here only
                     Tables\Actions\ViewAction::make('show')
                         ->label(__('dashboard.view')),
                 ]);
         } else {
-            return $table
-                ->query(self::getQuery())
-                ->columns([
+        return $table
+            ->query(self::getQuery())
+            ->columns([
                     Tables\Columns\ImageColumn::make('profile_picture')
                         ->label(__('dashboard.profile_picture'))
                         ->getStateUsing(function ($record) {
@@ -487,7 +487,7 @@ class DoctorResource extends Resource
                             return null;
                         }),
                     TextColumn::make('name')
-                        ->label(__('dashboard.name'))
+                    ->label(__('dashboard.name'))
                         ->getStateUsing(function ($record) {
                             $locale = app()->getLocale();
                             $nameField = $locale === 'ar' ? 'name' : 'name_en';
@@ -502,10 +502,10 @@ class DoctorResource extends Resource
 
                             return '';
                         })
-                        ->searchable(isIndividual: true)
-                        ->sortable(),
+                    ->searchable(isIndividual: true)
+                    ->sortable(),
                     TextColumn::make('email')
-                        ->label(__('dashboard.email'))
+                    ->label(__('dashboard.email'))
                         ->getStateUsing(function ($record) {
                             if ($record->user && $record->user->email) {
                                 return $record->user->email;
@@ -517,10 +517,10 @@ class DoctorResource extends Resource
 
                             return '';
                         })
-                        ->searchable(isIndividual: true, isGlobal: false)
-                        ->sortable(),
+                    ->searchable(isIndividual: true, isGlobal: false)
+                    ->sortable(),
                     TextColumn::make('profession')
-                        ->label(__('dashboard.profession_' . app()->getLocale()))
+                    ->label(__('dashboard.profession_' . app()->getLocale()))
                         ->getStateUsing(function ($record) {
                             $professionField = 'profession_' . app()->getLocale();
 
@@ -534,11 +534,11 @@ class DoctorResource extends Resource
 
                             return '';
                         })
-                        ->searchable(isIndividual: true, isGlobal: false)
-                        ->sortable(),
+                    ->searchable(isIndividual: true, isGlobal: false)
+                    ->sortable(),
                     TextColumn::make('account_type')
-                        ->label(__('dashboard.account_type'))
-                        ->badge()
+                    ->label(__('dashboard.account_type'))
+                    ->badge()
                         ->getStateUsing(function ($record): string {
                             $accountType = null;
 
@@ -550,28 +550,28 @@ class DoctorResource extends Resource
 
                             return $accountType ? (string) __('dashboard.' . $accountType) : '';
                         })
-                        ->color(fn(string $state): string => match ($state) {
-                            __('dashboard.doctor') => 'info',
-                            __('dashboard.patient') => 'warning',
-                            __('dashboard.hospital') => 'success',
-                            __('dashboard.user') => 'danger',
-                            default => 'gray',
-                        }),
-                ])
-                ->filters([])
-                ->actions([
-                    Tables\Actions\Action::make('chat')
-                        ->label(__('dashboard.chat'))
-                        ->icon('heroicon-o-chat-bubble-left-right')
-                        ->color('success')
+                    ->color(fn(string $state): string => match ($state) {
+                        __('dashboard.doctor') => 'info',
+                        __('dashboard.patient') => 'warning',
+                        __('dashboard.hospital') => 'success',
+                        __('dashboard.user') => 'danger',
+                        default => 'gray',
+                    }),
+            ])
+            ->filters([])
+            ->actions([
+                Tables\Actions\Action::make('chat')
+                    ->label(__('dashboard.chat'))
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('success')
                         ->url(fn(HospitalUserAttachment $record): string => '/custom-chat?' . ($record->user_id ? 'other_user_id=' : 'other_hospital_id=') . ($record->user_id ?? $record->hospital_id)), // i want open custom chat page from here only
                     // ->visible(fn (HospitalUserAttachment $record): bool => $record->user_id !== Auth::id()),
-                    Tables\Actions\ViewAction::make('show')
-                        ->label(__('dashboard.view')),
+                Tables\Actions\ViewAction::make('show')
+                    ->label(__('dashboard.view')),
                 ]);
         }
     }
-
+    
     public static function getRelations(): array
     {
         $relations = [
