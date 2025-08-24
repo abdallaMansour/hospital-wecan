@@ -166,4 +166,8 @@ return [
     'no_image' => 'No image',
     'not_available' => 'Not available',
     'profession' => 'Profession',
+    'patient_count' => 'Patient Count',
+    'hospitals_count' => 'Hospitals Count',
+    'doctors_count' => 'Doctors Count',
+    'user_count' => 'User Count',
 ];

@@ -166,4 +166,8 @@ return [
     'Nutrition Tips' => 'نصائح التغذية',
     'Dosage Tips' => 'نصائح الجرعة',
     'Other' => 'أخرى',
+    'patient_count' => 'عدد المرضى',
+    'hospitals_count' => 'عدد المستشفيات',
+    'doctors_count' => 'عدد الأطباء',
+    'user_count' => 'عدد المستخدمين',
 ];
