@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Hidden;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -54,18 +55,24 @@ class PatientAppointmentsRelationManager extends RelationManager
                     ->rows(5)
                     ->columnSpan(2)
                     ->label(__('dashboard.notes')),
+                Hidden::make('show')->default(true),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->where('show', true))
             ->recordTitleAttribute('doctor_name')
             ->columns([
                 Tables\Columns\TextColumn::make('doctor_name')
                     ->label(__('dashboard.doctor')),
                 Tables\Columns\TextColumn::make('datetime')
                     ->label(__('dashboard.datetime')),
+                Tables\Columns\TextColumn::make('instructions')
+                    ->label(__('dashboard.instructions')),
+                Tables\Columns\TextColumn::make('notes')
+                    ->label(__('dashboard.notes')),
             ])
             ->filters([
                 //

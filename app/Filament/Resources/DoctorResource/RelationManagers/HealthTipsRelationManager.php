@@ -7,11 +7,10 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Hidden;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,20 +42,13 @@ class HealthTipsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title_ar')
-                    ->label(__('dashboard.title_ar'))
+                Forms\Components\TextInput::make('title_' . app()->getLocale())
+                    ->label(__('dashboard.title_' . app()->getLocale()))
                     ->maxLength(255),
-                Forms\Components\TextInput::make('title_en')
-                    ->label(__('dashboard.title_en'))
-                    ->maxLength(255),
-                Textarea::make('details_ar')
+                Textarea::make('details_' . app()->getLocale())
                     ->rows(5)
                     ->columnSpan(2)
-                    ->label(__('dashboard.details_ar')),
-                Textarea::make('details_en')
-                    ->rows(5)
-                    ->columnSpan(2)
-                    ->label(__('dashboard.details_en')),
+                    ->label(__('dashboard.details_' . app()->getLocale())),
                 DateTimePicker::make('publish_datetime')
                     ->required()
                     ->label(__('dashboard.publish_datetime')),
@@ -77,20 +69,23 @@ class HealthTipsRelationManager extends RelationManager
                     ->searchable(),
                 Forms\Components\TextInput::make('link')
                     ->label(__('dashboard.link')),
-                Toggle::make('visible')
-                    ->label(__('dashboard.visible'))
+                Hidden::make('visible')->default(true),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title_ar')
+            ->modifyQueryUsing(fn ($query) => $query->where('visible', true))
+            ->recordTitleAttribute('title_' . app()->getLocale())
             ->columns([
-                Tables\Columns\TextColumn::make('title_ar')->label(__('dashboard.title_ar')),
+                Tables\Columns\TextColumn::make('title_' . app()->getLocale())->label(__('dashboard.title_' . app()->getLocale())),
+                Tables\Columns\TextColumn::make('tip_type')->label(__('dashboard.tip_type'))
+                    ->getStateUsing(function ($record) {
+                        return __('dashboard.' . $record->tip_type);
+                    }),
+                Tables\Columns\TextColumn::make('link')->label(__('dashboard.link')),
                 Tables\Columns\TextColumn::make('publish_datetime')->label(__('dashboard.publish_datetime')),
-                ToggleColumn::make('visible')->label(__('dashboard.visible'))
-
             ])
             ->filters([
                 //

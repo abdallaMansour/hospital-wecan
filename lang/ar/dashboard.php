@@ -161,4 +161,9 @@ return [
     'no_image' => 'لا يوجد صورة',
     'not_available' => 'غير متوفر',
     'profession' => 'المهنة',
+    'Medication Tips' => 'نصائح حول الدواء',
+    'General Tips' => 'نصائح عامة',
+    'Nutrition Tips' => 'نصائح التغذية',
+    'Dosage Tips' => 'نصائح الجرعة',
+    'Other' => 'أخرى',
 ];

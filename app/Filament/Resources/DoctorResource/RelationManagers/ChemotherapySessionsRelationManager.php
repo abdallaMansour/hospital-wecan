@@ -3,13 +3,14 @@
 namespace App\Filament\Resources\DoctorResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Textarea;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class ChemotherapySessionsRelationManager extends RelationManager
 {
@@ -54,18 +55,24 @@ class ChemotherapySessionsRelationManager extends RelationManager
                     ->rows(5)
                     ->columnSpan(2)
                     ->label(__('dashboard.notes')),
+                Hidden::make('show')->default(true),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->where('show', true))
             ->recordTitleAttribute('session_number')
             ->columns([
                 Tables\Columns\TextColumn::make('session_number')
                     ->label(__('dashboard.session_number')),
                 Tables\Columns\TextColumn::make('session_datetime')
                     ->label(__('dashboard.datetime')),
+                Tables\Columns\TextColumn::make('instructions')
+                    ->label(__('dashboard.instructions')),
+                Tables\Columns\TextColumn::make('notes')
+                    ->label(__('dashboard.notes')),
             ])
             ->filters([
                 //

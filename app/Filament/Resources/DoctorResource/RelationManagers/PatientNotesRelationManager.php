@@ -65,6 +65,8 @@ class PatientNotesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('title')->label(__('dashboard.title')),
                 Tables\Columns\TextColumn::make('datetime')->label(__('dashboard.datetime')),
+                Tables\Columns\TextColumn::make('notes')
+                    ->label(__('dashboard.notes')),
             ])
             ->filters([
                 //

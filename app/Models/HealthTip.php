@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\Favoritable;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class HealthTip extends Model
 {
@@ -63,4 +64,24 @@ class HealthTip extends Model
         
         return $array;
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+        if (!empty($model->title_ar)) {
+            $model->title_en = GoogleTranslate::trans($model->title_ar, 'en', 'ar');
+        } elseif (!empty($model->title_en)) {
+            $model->title_ar = GoogleTranslate::trans($model->title_en, 'ar', 'en');
+        }
+
+        if (!empty($model->details_ar)) {
+            $model->details_en = GoogleTranslate::trans($model->details_ar, 'en', 'ar');
+        } elseif (!empty($model->details_en)) {
+            $model->details_ar = GoogleTranslate::trans($model->details_en, 'ar', 'en');
+        }
+    });
+}
+
 }

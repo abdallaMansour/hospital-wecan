@@ -3,15 +3,16 @@
 namespace App\Filament\Resources\DoctorResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class PatientMedicationsRelationManager extends RelationManager
 {
@@ -41,6 +42,7 @@ class PatientMedicationsRelationManager extends RelationManager
     {
         return $form
             ->schema([
+                Hidden::make('show')->default(true),
                 Forms\Components\TextInput::make('drug_name')
                     ->label(__('dashboard.drug_name'))
                     ->required()
@@ -87,6 +89,7 @@ class PatientMedicationsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->where('show', true))
             ->recordTitleAttribute('drug_name')
             ->columns([
                 ImageColumn::make('drug_image')->label(__('dashboard.drug_image')),

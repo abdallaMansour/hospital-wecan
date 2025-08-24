@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Hidden;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -56,16 +57,22 @@ class PatientFoodsRelationManager extends RelationManager
                     ->rows(5)
                     ->columnSpan(2)
                     ->label(__('dashboard.notes')),
+                Hidden::make('show')->default(true),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->where('show', true))
             ->recordTitleAttribute('food_name')
             ->columns([
                 Tables\Columns\TextColumn::make('food_name')
                     ->label(__('dashboard.food_name')),
+                Tables\Columns\TextColumn::make('instructions')
+                    ->label(__('dashboard.instructions')),
+                Tables\Columns\TextColumn::make('notes')
+                    ->label(__('dashboard.notes')),
             ])
             ->filters([
                 //
