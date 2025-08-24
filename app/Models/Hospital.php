@@ -48,6 +48,13 @@ class Hospital extends Model
             ->withPivot('status', 'sender_id');
     }
 
+    protected $appends = ['hospital_logo_path'];
+
+    public function getHospitalLogoPathAttribute($value)
+    {
+        return $this->attributes['hospital_logo'] ? (file_exists(storage_path('app/public/' . $this->attributes['hospital_logo'])) ? $this->attributes['hospital_logo'] : env('ADMIN_DASHBOARD_URL') . '/storage/' . $this->attributes['hospital_logo']) : '';
+    }
+
     public function user()
     {
         return $this->hasOne(User::class, 'hospital_id')->where('account_type', 'hospital');

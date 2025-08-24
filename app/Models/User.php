@@ -61,6 +61,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(HealthTip::class);
     }
 
+    public function cancer(): BelongsTo
+    {
+        return $this->belongsTo(Cancer::class);
+    }
+
     public function patientMedications(): HasMany
     {
         return $this->hasMany(PatientMedications::class);

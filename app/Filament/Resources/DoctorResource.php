@@ -193,45 +193,45 @@ class DoctorResource extends Resource
                 Forms\Components\Section::make(__('dashboard.user_information'))
                     ->schema([
                         Forms\Components\Placeholder::make('profile_picture')
-                        ->label(__('dashboard.profile_picture'))
-                        ->content(function ($record) {
-                            $profilePicture = null;
-                    
-                            $authentication_type = Auth::user()->account_type;
-                            if ($authentication_type === 'doctor') {
-                                if ($record->user) {
-                                    $profilePicture = $record->user->profile_picture;
-                                } elseif ($record->hospital) {
-                                    $profilePicture = $record->hospital->hospital_logo;
-                                }
-                            } elseif ($authentication_type === 'hospital') {
-                                if ($record->user) {
-                                    $profilePicture = $record->user->profile_picture;
-                                } elseif ($record->doctor) {
-                                    $profilePicture = $record->doctor->profile_picture;
-                                }
-                            }
+                            ->label(__('dashboard.profile_picture'))
+                            ->content(function ($record) {
+                                $profilePicture = null;
 
-                            if ($profilePicture) {
-                                // check if the image is in the storage folder
-                                if (Storage::exists($profilePicture)) {
-                                    $profilePicture = 'storage/' . $profilePicture;
-                                } else {
-                                    $profilePicture = env('ADMIN_DASHBOARD_URL') . '/storage/' . $profilePicture;
+                                $authentication_type = Auth::user()->account_type;
+                                if ($authentication_type === 'doctor') {
+                                    if ($record->user) {
+                                        $profilePicture = $record->user->profile_picture;
+                                    } elseif ($record->hospital) {
+                                        $profilePicture = $record->hospital->hospital_logo;
+                                    }
+                                } elseif ($authentication_type === 'hospital') {
+                                    if ($record->user) {
+                                        $profilePicture = $record->user->profile_picture;
+                                    } elseif ($record->doctor) {
+                                        $profilePicture = $record->doctor->profile_picture;
+                                    }
                                 }
-                            }
-                    
-                            return $profilePicture
-                                ? new HtmlString('<img src="' . $profilePicture . '" style="max-width: 100px; height: auto;">')
-                                : __('dashboard.no_image');
-                        }),
+
+                                if ($profilePicture) {
+                                    // check if the image is in the storage folder
+                                    if (Storage::exists($profilePicture)) {
+                                        $profilePicture = 'storage/' . $profilePicture;
+                                    } else {
+                                        $profilePicture = env('ADMIN_DASHBOARD_URL') . '/storage/' . $profilePicture;
+                                    }
+                                }
+
+                                return $profilePicture
+                                    ? new HtmlString('<img src="' . $profilePicture . '" style="max-width: 100px; height: auto;">')
+                                    : __('dashboard.no_image');
+                            }),
 
                         Forms\Components\Placeholder::make('name')
                             ->label(__('dashboard.name'))
                             ->content(function ($record) {
                                 $locale = app()->getLocale();
                                 $nameField = $locale === 'ar' ? 'name' : 'name_en';
-                                
+
                                 $authentication_type = Auth::user()->account_type;
                                 if ($authentication_type === 'doctor') {
                                     if ($record->user) {
@@ -246,7 +246,7 @@ class DoctorResource extends Resource
                                         return $record->doctor->$nameField;
                                     }
                                 }
-                                
+
                                 return __('dashboard.not_available');
                             }),
 
@@ -267,7 +267,7 @@ class DoctorResource extends Resource
                                         return $record->doctor->email;
                                     }
                                 }
-                                
+
                                 return __('dashboard.not_available');
                             }),
 
@@ -275,7 +275,7 @@ class DoctorResource extends Resource
                             ->label(__('dashboard.profession'))
                             ->content(function ($record) {
                                 $professionField = 'profession_' . app()->getLocale();
-                                
+
                                 $authentication_type = Auth::user()->account_type;
                                 if ($authentication_type === 'doctor') {
                                     if ($record->user) {
@@ -290,7 +290,7 @@ class DoctorResource extends Resource
                                         return $record->doctor->$professionField;
                                     }
                                 }
-                                
+
                                 return __('dashboard.not_available');
                             }),
 
@@ -312,7 +312,7 @@ class DoctorResource extends Resource
                                         return __('dashboard.' . $record->doctor->account_type);
                                     }
                                 }
-                                
+
                                 return __('dashboard.not_available');
                             }),
 
@@ -333,7 +333,7 @@ class DoctorResource extends Resource
                                         return $record->doctor->contact_number;
                                     }
                                 }
-                                
+
                                 return __('dashboard.not_available');
                             }),
 
@@ -354,7 +354,7 @@ class DoctorResource extends Resource
                                         return $record->doctor->country?->{'name_' . app()->getLocale()};
                                     }
                                 }
-                                
+
                                 return __('dashboard.not_available');
                             }),
 
@@ -382,8 +382,19 @@ class DoctorResource extends Resource
             return $table
                 ->query(self::getQuery())
                 ->columns([
-                    Tables\Columns\ImageColumn::make('doctor.profile_picture')
-                        ->label(__('dashboard.profile_picture')),
+                    Tables\Columns\ImageColumn::make('image')
+                        ->label(__('dashboard.image'))
+                        ->getStateUsing(function ($record) {
+                            if ($record->doctor) {
+                                return $record->doctor->profile_picture_path;
+                            }
+
+                            if ($record->user && $record->user->account_type === 'patient' && $record->user->cancer_id) {
+                                return $record->user->cancer?->cancer_image_path;
+                            }
+
+                            return null;
+                        }),
                     TextColumn::make('name')
                         ->label(__('dashboard.name'))
                         ->getStateUsing(function ($record) {
@@ -465,29 +476,33 @@ class DoctorResource extends Resource
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->color('success')
                         ->url(fn(HospitalUserAttachment $record): string => '/custom-chat?' . ($record->doctor_id ? 'other_doctor_id=' : 'other_user_id=') . ($record->doctor_id ?? $record->user_id)),
-                        // ->visible(fn (HospitalUserAttachment $record): bool => $record->doctor_id !== Auth::id()), // i want open custom chat page from here only
+                    // ->visible(fn (HospitalUserAttachment $record): bool => $record->doctor_id !== Auth::id()), // i want open custom chat page from here only
                     Tables\Actions\ViewAction::make('show')
                         ->label(__('dashboard.view')),
                 ]);
         } else {
-        return $table
-            ->query(self::getQuery())
-            ->columns([
-                    Tables\Columns\ImageColumn::make('profile_picture')
-                        ->label(__('dashboard.profile_picture'))
+            return $table
+                ->query(self::getQuery())
+                ->columns([
+                    Tables\Columns\ImageColumn::make('image')
+                        ->label(__('dashboard.image'))
                         ->getStateUsing(function ($record) {
-                            if ($record->user && $record->user->profile_picture) {
-                                return $record->user->profile_picture;
+                            if ($record->user) {
+                                if ($record->user->account_type === 'doctor') {
+                                    return $record->user->profile_picture_path;
+                                } elseif ($record->user->account_type === 'patient' && $record->user->cancer_id) {
+                                    return $record->user->cancer?->cancer_image_path;
+                                }
                             }
 
-                            if ($record->hospital && $record->hospital->user && $record->hospital->user->profile_picture) {
-                                return $record->hospital->user->profile_picture;
+                            if ($record->hospital) {
+                                return $record->hospital->hospital_logo_path;
                             }
 
                             return null;
                         }),
                     TextColumn::make('name')
-                    ->label(__('dashboard.name'))
+                        ->label(__('dashboard.name'))
                         ->getStateUsing(function ($record) {
                             $locale = app()->getLocale();
                             $nameField = $locale === 'ar' ? 'name' : 'name_en';
@@ -502,10 +517,10 @@ class DoctorResource extends Resource
 
                             return '';
                         })
-                    ->searchable(isIndividual: true)
-                    ->sortable(),
+                        ->searchable(isIndividual: true)
+                        ->sortable(),
                     TextColumn::make('email')
-                    ->label(__('dashboard.email'))
+                        ->label(__('dashboard.email'))
                         ->getStateUsing(function ($record) {
                             if ($record->user && $record->user->email) {
                                 return $record->user->email;
@@ -517,10 +532,10 @@ class DoctorResource extends Resource
 
                             return '';
                         })
-                    ->searchable(isIndividual: true, isGlobal: false)
-                    ->sortable(),
+                        ->searchable(isIndividual: true, isGlobal: false)
+                        ->sortable(),
                     TextColumn::make('profession')
-                    ->label(__('dashboard.profession_' . app()->getLocale()))
+                        ->label(__('dashboard.profession_' . app()->getLocale()))
                         ->getStateUsing(function ($record) {
                             $professionField = 'profession_' . app()->getLocale();
 
@@ -534,11 +549,11 @@ class DoctorResource extends Resource
 
                             return '';
                         })
-                    ->searchable(isIndividual: true, isGlobal: false)
-                    ->sortable(),
+                        ->searchable(isIndividual: true, isGlobal: false)
+                        ->sortable(),
                     TextColumn::make('account_type')
-                    ->label(__('dashboard.account_type'))
-                    ->badge()
+                        ->label(__('dashboard.account_type'))
+                        ->badge()
                         ->getStateUsing(function ($record): string {
                             $accountType = null;
 
@@ -550,28 +565,28 @@ class DoctorResource extends Resource
 
                             return $accountType ? (string) __('dashboard.' . $accountType) : '';
                         })
-                    ->color(fn(string $state): string => match ($state) {
-                        __('dashboard.doctor') => 'info',
-                        __('dashboard.patient') => 'warning',
-                        __('dashboard.hospital') => 'success',
-                        __('dashboard.user') => 'danger',
-                        default => 'gray',
-                    }),
-            ])
-            ->filters([])
-            ->actions([
-                Tables\Actions\Action::make('chat')
-                    ->label(__('dashboard.chat'))
-                    ->icon('heroicon-o-chat-bubble-left-right')
-                    ->color('success')
+                        ->color(fn(string $state): string => match ($state) {
+                            __('dashboard.doctor') => 'info',
+                            __('dashboard.patient') => 'warning',
+                            __('dashboard.hospital') => 'success',
+                            __('dashboard.user') => 'danger',
+                            default => 'gray',
+                        }),
+                ])
+                ->filters([])
+                ->actions([
+                    Tables\Actions\Action::make('chat')
+                        ->label(__('dashboard.chat'))
+                        ->icon('heroicon-o-chat-bubble-left-right')
+                        ->color('success')
                         ->url(fn(HospitalUserAttachment $record): string => '/custom-chat?' . ($record->user_id ? 'other_user_id=' : 'other_hospital_id=') . ($record->user_id ?? $record->hospital_id)), // i want open custom chat page from here only
                     // ->visible(fn (HospitalUserAttachment $record): bool => $record->user_id !== Auth::id()),
-                Tables\Actions\ViewAction::make('show')
-                    ->label(__('dashboard.view')),
+                    Tables\Actions\ViewAction::make('show')
+                        ->label(__('dashboard.view')),
                 ]);
         }
     }
-    
+
     public static function getRelations(): array
     {
         $relations = [
@@ -596,5 +611,4 @@ class DoctorResource extends Resource
             'edit' => Pages\EditDoctor::route('/{record}/edit'),
         ];
     }
-
 }
