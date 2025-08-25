@@ -51,7 +51,7 @@ class NewConnectionRequestResource extends Resource
     {
         $authAccount = self::authAccount();
         $authAccountType = self::authAccountType();
-        
+
         if ($authAccountType === 'hospital') {
             $query = HospitalUserAttachment::where('hospital_id', $authAccount->hospital_id);
         } elseif ($authAccountType === 'doctor') {
@@ -60,11 +60,11 @@ class NewConnectionRequestResource extends Resource
             // For users, show records where they are the sender or the target
             $query = HospitalUserAttachment::where(function ($q) use ($authAccount) {
                 $q->where('sender_id', $authAccount->id)
-                  ->orWhere('user_id', $authAccount->id)
-                  ->orWhere('doctor_id', $authAccount->id);
+                    ->orWhere('user_id', $authAccount->id)
+                    ->orWhere('doctor_id', $authAccount->id);
             });
         }
-        
+
         return $query;
     }
 
@@ -77,7 +77,7 @@ class NewConnectionRequestResource extends Resource
             'parent_id' => $user->parent_id,
             'parent_exists' => $user->parent ? true : false
         ]);
-        
+
         if ($user->account_type === 'user') {
             return $user->parent ?? $user;
         }
@@ -97,7 +97,7 @@ class NewConnectionRequestResource extends Resource
     public static function table(Table $table): Table
     {
         $query = self::getQuery();
-        
+
         // Log the query for debugging
         Log::info('NewConnectionRequest table query', [
             'sql' => $query->toSql(),
@@ -106,9 +106,9 @@ class NewConnectionRequestResource extends Resource
             'auth_account_type' => self::authAccountType(),
             'auth_account_id' => self::authAccount()->id
         ]);
-        
+
         return $table->query($query)
-            ->recordUrl(fn ($record) => null) // Disable record URL to prevent navigation issues
+            ->recordUrl(fn($record) => null) // Disable record URL to prevent navigation issues
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
@@ -144,12 +144,6 @@ class NewConnectionRequestResource extends Resource
                     ->label(__('dashboard.add_connection_request'))
                     ->icon('heroicon-o-plus')
                     ->form([
-                        // Select::make('user_id')
-                        //     ->label(__('dashboard.user'))
-                        //     ->options(User::where('account_type', 'patient')->get()->pluck('email', 'id'))
-                        //     ->searchable()
-                        //     ->required()
-                        //     ->reactive(),
                         TextInput::make('email')
                             ->label(__('dashboard.email'))
                             ->required()
@@ -162,23 +156,66 @@ class NewConnectionRequestResource extends Resource
                             ->hidden()
                             ->required(),
                     ])
-                    ->using(function (array $data, $model) {
+                    ->using(function (array $data, $model, Tables\Actions\CreateAction $action) {
                         $user = User::where('email', $data['email'])->first();
-
                         if (!$user) {
-                            return;
+                            Notification::make()
+                                ->title(__('dashboard.user_not_found'))
+                                ->danger()
+                                ->send();
+                            $action->halt();
                         }
-
 
                         $authentication_type = self::authAccountType();
 
                         if ($authentication_type === 'hospital') {
                             if ($user->account_type !== 'patient' && $user->account_type !== 'doctor') {
-                                return;
+                                Notification::make()
+                                    ->title(__('dashboard.user_not_found'))
+                                    ->danger()
+                                    ->send();
+                                $action->halt();
+                            }
+
+                            $existing_request = HospitalUserAttachment::where(function ($q) use ($user) {
+                                if ($user->account_type === 'patient') {
+                                    $q->where('user_id', $user->id);
+                                } else {
+                                    $q->where('doctor_id', $user->id);
+                                }
+                            })->where('hospital_id', self::authAccount()->hospital_id)->first();
+
+                            if ($existing_request) {
+                                Notification::make()
+                                    ->title(__('dashboard.user_already_connected'))
+                                    ->danger()
+                                    ->send();
+                                $action->halt();
                             }
                         } else {
                             if ($user->account_type !== 'patient' && $user->account_type !== 'hospital') {
-                                return;
+                                Notification::make()
+                                    ->title(__('dashboard.user_not_found'))
+                                    ->danger()
+                                    ->send();
+                                $action->halt();
+                            }
+
+                            $existing_request = HospitalUserAttachment::where(function ($q) use ($user) {
+                                if ($user->account_type === 'patient') {
+                                    $q->where('user_id', $user->id);
+                                } else {
+                                    $q->where('hospital_id', $user->hospital_id);
+                                }
+                            })->where('doctor_id', self::authAccount()->id)->exists();
+
+                            if ($existing_request) {
+                                Notification::make()
+                                    ->title(__('dashboard.user_already_connected'))
+                                    ->danger()
+                                    ->send();
+
+                                $action->halt();
                             }
                         }
 
@@ -211,7 +248,7 @@ class NewConnectionRequestResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->hidden(function ($record) {
                         $shouldHide = (self::authAccountType() === 'user' ? $record->sender_id === self::authParentId() : $record->sender_id === self::authAccount()->id);
-                        
+
                         // Log for debugging
                         Log::info('EditAction hidden check', [
                             'record_id' => $record->id,
@@ -221,7 +258,7 @@ class NewConnectionRequestResource extends Resource
                             'auth_account_id' => self::authAccount()->id,
                             'should_hide' => $shouldHide
                         ]);
-                        
+
                         return $shouldHide;
                     })
                     ->form([
@@ -237,12 +274,12 @@ class NewConnectionRequestResource extends Resource
                         // Ensure we have the correct record by re-fetching it
                         $recordId = $record->id;
                         $actualRecord = HospitalUserAttachment::find($recordId);
-                        
+
                         if (!$actualRecord) {
                             Log::error('Record not found', ['record_id' => $recordId]);
                             return;
                         }
-                        
+
                         // Log the record ID for debugging
                         Log::info('Updating HospitalUserAttachment record', [
                             'record_id' => $actualRecord->id,
@@ -293,7 +330,7 @@ class NewConnectionRequestResource extends Resource
                         // Ensure we have the correct record by re-fetching it
                         $recordId = $record->id;
                         $actualRecord = HospitalUserAttachment::find($recordId);
-                        
+
                         if (!$actualRecord) {
                             Log::error('Record not found for deletion', ['record_id' => $recordId]);
                             return;
@@ -315,7 +352,7 @@ class NewConnectionRequestResource extends Resource
                         }
 
                         $actualRecord->delete();
-                        
+
                         Log::info('HospitalUserAttachment deleted', [
                             'record_id' => $actualRecord->id,
                             'user_updated' => $user ? $user->id : null

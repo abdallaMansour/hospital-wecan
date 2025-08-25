@@ -285,18 +285,14 @@ class DoctorResource extends Resource
                 ->query(self::getQuery())
                 ->columns([
                     Tables\Columns\ImageColumn::make('image')
-                        ->label(__('dashboard.image')),
-                    // ->getStateUsing(function ($record) {
-                    //     if ($record->doctor) {
-                    //         return $record->doctor->profile_picture_path;
-                    //     }
+                        ->label(__('dashboard.image'))
+                        ->getStateUsing(function ($record) {
+                            if ($record->user && $record->user->account_type === 'patient' && $record->user->cancer_id) {
+                                return $record->user->cancer?->cancer_image_path;
+                            }
 
-                    //     if ($record->user && $record->user->account_type === 'patient' && $record->user->cancer_id) {
-                    //         return $record->user->cancer?->cancer_image_path;
-                    //     }
-
-                    //     return null;
-                    // }),
+                            return $record->image;
+                        }),
                     TextColumn::make('display_name')
                         ->label(__('dashboard.name'))
                         // ->getStateUsing(function ($record) {
@@ -387,22 +383,14 @@ class DoctorResource extends Resource
                 ->query(self::getQuery())
                 ->columns([
                     Tables\Columns\ImageColumn::make('image')
-                        ->label(__('dashboard.image')),
-                        // ->getStateUsing(function ($record) {
-                        //     if ($record->user) {
-                        //         if ($record->user->account_type === 'doctor') {
-                        //             return $record->user->profile_picture_path;
-                        //         } elseif ($record->user->account_type === 'patient' && $record->user->cancer_id) {
-                        //             return $record->user->cancer?->cancer_image_path;
-                        //         }
-                        //     }
+                        ->label(__('dashboard.image'))
+                        ->getStateUsing(function ($record) {
+                            if ($record->user && $record->user->account_type === 'patient' && $record->user->cancer_id) {
+                                return $record->user->cancer?->cancer_image_path;
+                            }
 
-                        //     if ($record->hospital) {
-                        //         return $record->hospital->hospital_logo_path;
-                        //     }
-
-                        //     return null;
-                        // }),
+                            return $record->image;
+                        }),
                     TextColumn::make('display_name')
                         ->label(__('dashboard.name'))
                         // ->getStateUsing(function ($record) {

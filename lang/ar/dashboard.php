@@ -170,4 +170,5 @@ return [
     'hospitals_count' => 'عدد المستشفيات',
     'doctors_count' => 'عدد الأطباء',
     'user_count' => 'عدد المستخدمين',
+    'user_already_connected' => 'المستخدم مرتبط بالفعل',
 ];
