@@ -16,10 +16,20 @@ class UserOverview extends BaseWidget
     {
         return Auth::user()->hospital_id;
     }
+
+    public function authAccount()
+    {
+        $user = Auth::user();
+        if ($user->account_type === 'user') {
+            return $user->parent ?? $user;
+        }
+        return $user;
+    }
+
     protected function getStats(): array
     {
         // $users = User::all();
-        $user = Auth::user();
+        $user = $this->authAccount();
 
         if ($user->account_type == 'hospital') {
             $hospital_user_attachments = HospitalUserAttachment::where('status', 'approved')->where('hospital_id', $user->hospital_id)->get();
