@@ -53,95 +53,6 @@ class NewConnectionRequestResource extends Resource
         return $query;
     }
 
-    public static function getName($record)
-    {
-        $authentication_type = Auth::user()->account_type;
-
-        if ($authentication_type === 'doctor') {
-            if ($record->user_id) {
-                $user = User::select('name')->where('id', $record->user_id)->first();
-                return $user ? $user->name : 'Unknown 1';
-            } else {
-                $user = Hospital::find($record->hospital_id)->user;
-                return $user ? $user->name : 'Unknown 1';
-            }
-        } elseif ($authentication_type === 'hospital') {
-            if ($record->doctor_id) {
-                $user = User::select('name')->where('id', $record->doctor_id)->first();
-                return $user ? $user->name : 'Unknown 2';
-            } else {
-                $user = User::select('name')->where('id', $record->user_id)->first();
-                return $user ? $user->name : 'Unknown 2';
-            }
-        }
-    }
-
-    public static function getEmail($record)
-    {
-        $authentication_type = Auth::user()->account_type;
-        if ($authentication_type === 'doctor') {
-            if ($record->user_id) {
-                $user = User::select('email')->where('id', $record->user_id)->first();
-                return $user ? $user->email : 'Unknown 1';
-            } else {
-                $user = Hospital::find($record->hospital_id)->user;
-                return $user ? $user->email : 'Unknown 1';
-            }
-        } elseif ($authentication_type === 'hospital') {
-            if ($record->doctor_id) {
-                $user = User::select('email')->where('id', $record->doctor_id)->first();
-                return $user ? $user->email : 'Unknown 2';
-            } else {
-                $user = User::select('email')->where('id', $record->user_id)->first();
-                return $user ? $user->email : 'Unknown 2';
-            }
-        }
-    }
-
-    public static function getCountry($record)
-    {
-        $authentication_type = Auth::user()->account_type;
-        if ($authentication_type === 'doctor') {
-            if ($record->user_id) {
-                $user = User::find($record->user_id);
-                return $user ? $user->country?->{'name_' . app()->getLocale()} : 'Unknown 1';
-            } else {
-                $user = Hospital::find($record->hospital_id)->user;
-                return $user ? $user->country?->{'name_' . app()->getLocale()} : 'Unknown 1';
-            }
-        } elseif ($authentication_type === 'hospital') {
-            if ($record->doctor_id) {
-                $user = User::find($record->doctor_id);
-                return $user ? $user->country?->{'name_' . app()->getLocale()} : 'Unknown 2';
-            } else {
-                $user = User::find($record->user_id);
-                return $user ? $user->country?->{'name_' . app()->getLocale()} : 'Unknown 2';
-            }
-        }
-    }
-
-    public static function getAccountType($record)
-    {
-        $authentication_type = Auth::user()->account_type;
-        if ($authentication_type === 'doctor') {
-            if ($record->user_id) {
-                $user = User::select('account_type')->where('id', $record->user_id)->first();
-                return $user ? $user->account_type : 'Unknown 1';
-            } else {
-                $user = Hospital::find($record->hospital_id)->user;
-                return $user ? $user->account_type : 'Unknown 1';
-            }
-        } elseif ($authentication_type === 'hospital') {
-            if ($record->doctor_id) {
-                $user = User::select('account_type')->where('id', $record->doctor_id)->first();
-                return $user ? $user->account_type : 'Unknown 2';
-            } else {
-                $user = User::select('account_type')->where('id', $record->user_id)->first();
-                return $user ? $user->account_type : 'Unknown 2';
-            }
-        }
-    }
-
 
     public static function table(Table $table): Table
     {
@@ -239,7 +150,7 @@ class NewConnectionRequestResource extends Resource
 
             // form email status and custom action
             ->actions([
-                Tables\Actions\EditAction::make()->hidden(fn($record) => $record->sender_id === Auth::id()),
+                Tables\Actions\EditAction::make()->hidden(fn($record) => (Auth::user()->account_type === 'user' ? $record->sender_id === Auth::user()->parent_id : $record->sender_id === Auth::id())),
                 Tables\Actions\DeleteAction::make('cancel')
                     ->label(__('dashboard.unlink'))
                     ->modalHeading(__(key: 'dashboard.unlink_doctor'))

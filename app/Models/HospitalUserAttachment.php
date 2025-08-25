@@ -23,14 +23,27 @@ class HospitalUserAttachment extends Model
         'sender_id',
     ];
 
+    public function authAccountType()
+    {
+        if (Auth::user()->account_type === 'user') {
+            return Auth::user()->parent?->account_type;
+        }
+
+        return Auth::user()->account_type;
+    }
+
     public function getDisplayNameAttribute()
     {
+        $auth_account_type = $this->authAccountType();
+        $locale = app()->getLocale();
+        $nameField = $locale === 'ar' ? 'name' : 'name_en';
+
         if ($this->doctor_id && $this->user_id) {
-            return Auth::user()->account_type == 'doctor' ? $this->user?->name : $this->doctor?->name;
+            return $auth_account_type == 'doctor' ? $this->user?->$nameField : $this->doctor?->$nameField;
         } elseif ($this->doctor_id && $this->hospital_id) {
-            return Auth::user()->account_type == 'doctor' ? $this->hospital?->user?->name : $this->doctor?->name;
+            return $auth_account_type == 'doctor' ? $this->hospital?->user?->$nameField : $this->doctor?->$nameField;
         } elseif ($this->hospital_id && $this->user_id) {
-            return Auth::user()->account_type == 'hospital' ? $this->user?->name : $this->hospital?->user?->name;
+            return $auth_account_type == 'hospital' ? $this->user?->$nameField : $this->hospital?->user?->$nameField;
         }
 
         return 'Unknown';
@@ -38,12 +51,73 @@ class HospitalUserAttachment extends Model
 
     public function getEmailAttribute()
     {
+        $auth_account_type = $this->authAccountType();
+
         if ($this->doctor_id && $this->user_id) {
-            return Auth::user()->account_type == 'doctor' ? $this->user?->email : $this->doctor?->email;
+            return $auth_account_type == 'doctor' ? $this->user?->email : $this->doctor?->email;
         } elseif ($this->doctor_id && $this->hospital_id) {
-            return Auth::user()->account_type == 'doctor' ? $this->hospital?->user?->email : $this->doctor?->email;
+            return $auth_account_type == 'doctor' ? $this->hospital?->user?->email : $this->doctor?->email;
         } elseif ($this->hospital_id && $this->user_id) {
-            return Auth::user()->account_type == 'hospital' ? $this->user?->email : $this->hospital?->user?->email;
+            return $auth_account_type == 'hospital' ? $this->user?->email : $this->hospital?->user?->email;
+        }
+
+        return 'Unknown';
+    }
+
+    public function getContactNumberAttribute()
+    {
+        $auth_account_type = $this->authAccountType();
+        if ($this->doctor_id && $this->user_id) {
+            return $auth_account_type == 'doctor' ? $this->user?->contact_number : $this->doctor?->contact_number;
+        } elseif ($this->doctor_id && $this->hospital_id) {
+            return $auth_account_type == 'doctor' ? $this->hospital?->user?->contact_number : $this->doctor?->contact_number;
+        } elseif ($this->hospital_id && $this->user_id) {
+            return $auth_account_type == 'hospital' ? $this->user?->contact_number : $this->hospital?->user?->contact_number;
+        }
+
+        return 'Unknown';
+    }
+
+    public function getAccountTypeAttribute()
+    {
+        $auth_account_type = $this->authAccountType();
+
+        if ($this->doctor_id && $this->user_id) {
+            $account_type = $auth_account_type == 'doctor' ? $this->user?->account_type : $this->doctor?->account_type;
+        } elseif ($this->doctor_id && $this->hospital_id) {
+            $account_type = $auth_account_type == 'doctor' ? $this->hospital?->user?->account_type : $this->doctor?->account_type;
+        } elseif ($this->hospital_id && $this->user_id) {
+            $account_type = $auth_account_type == 'hospital' ? $this->user?->account_type : $this->hospital?->user?->account_type;
+        }
+
+        return $account_type ? (string) __('dashboard.' . $account_type) : 'Unknown';
+    }
+
+    public function getImageAttribute()
+    {
+        $auth_account_type = $this->authAccountType();
+        if ($this->doctor_id && $this->user_id) {
+            return $auth_account_type == 'doctor' ? $this->user?->profile_picture_path : $this->doctor?->profile_picture_path;
+        } elseif ($this->doctor_id && $this->hospital_id) {
+            return $auth_account_type == 'doctor' ? $this->hospital?->hospital_logo_path : $this->doctor?->profile_picture_path;
+        } elseif ($this->hospital_id && $this->user_id) {
+            return $auth_account_type == 'hospital' ? $this->user?->profile_picture_path : $this->hospital?->hospital_logo_path;
+        }
+
+        return 'Unknown';
+    }
+
+    public function getProfessionAttribute()
+    {
+        $auth_account_type = $this->authAccountType();
+        $professionField = 'profession_' . app()->getLocale();
+
+        if ($this->doctor_id && $this->user_id) {
+            return $auth_account_type == 'doctor' ? $this->user?->$professionField : $this->doctor?->$professionField;
+        } elseif ($this->doctor_id && $this->hospital_id) {
+            return $auth_account_type == 'doctor' ? $this->hospital?->user?->$professionField : $this->doctor?->$professionField;
+        } elseif ($this->hospital_id && $this->user_id) {
+            return $auth_account_type == 'hospital' ? $this->user?->$professionField : $this->hospital?->user?->$professionField;
         }
 
         return 'Unknown';
@@ -51,12 +125,18 @@ class HospitalUserAttachment extends Model
 
     public function getCountryAttribute()
     {
-        return $this->user?->country?->{'name_' . app()->getLocale()};
-    }
+        $auth_account_type = $this->authAccountType();
+        $countryField = 'name_' . app()->getLocale();
 
-    public function getAccountTypeAttribute()
-    {
-        return __('dashboard.' . $this->attributes['account_type']);
+        if ($this->doctor_id && $this->user_id) {
+            return $auth_account_type == 'doctor' ? $this->user?->country?->$countryField : $this->doctor?->country?->$countryField;
+        } elseif ($this->doctor_id && $this->hospital_id) {
+            return $auth_account_type == 'doctor' ? $this->hospital?->user?->country?->$countryField : $this->doctor?->country?->$countryField;
+        } elseif ($this->hospital_id && $this->user_id) {
+            return $auth_account_type == 'hospital' ? $this->user?->country?->$countryField : $this->hospital?->user?->country?->$countryField;
+        }
+
+        return 'Unknown';
     }
 
     // Relationships for relation managers
