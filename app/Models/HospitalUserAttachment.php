@@ -142,7 +142,7 @@ class HospitalUserAttachment extends Model
     // Relationships for relation managers
     public function healthTips()
     {
-        return $this->hasMany(HealthTip::class, 'user_id', 'doctor_id');
+        return $this->hasMany(HealthTip::class, 'user_id', 'user_id');
     }
 
     public function patientMedications()

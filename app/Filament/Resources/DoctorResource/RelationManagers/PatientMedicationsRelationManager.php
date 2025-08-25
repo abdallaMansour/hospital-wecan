@@ -98,6 +98,8 @@ class PatientMedicationsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('frequency_per')->label(__('dashboard.frequency_per')),
                 Tables\Columns\TextColumn::make('duration')->label(__('dashboard.duration')),
                 Tables\Columns\TextColumn::make('month-or-day')->label(__('dashboard.month-or-day')),
+                Tables\Columns\TextColumn::make('logUser.name')
+                    ->label(__('dashboard.log_user')),
             ])
             ->filters([
                 //
@@ -106,7 +108,15 @@ class PatientMedicationsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         // Set the user_id to the user_id from the parent record
-                        $data['user_id'] = $this->getOwnerRecord()->user_id;
+                        $ownerRecord = $this->getOwnerRecord();
+                        $userId = $ownerRecord->user_id;
+                        
+                        // Validate that user_id is not null
+                        if (!$userId) {
+                            throw new \Exception('User ID cannot be null. Please ensure the attachment has a valid user.');
+                        }
+                        
+                        $data['user_id'] = $userId;
                         return $data;
                     }),
             ])

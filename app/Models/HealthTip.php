@@ -5,11 +5,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\Favoritable;
+use App\Traits\Loggable;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class HealthTip extends Model
 {
-    use HasFactory, Favoritable;
+    use HasFactory, Favoritable, Loggable;
+
+    protected $fillable = [
+        'publish_datetime',
+        'title_ar',
+        'title_en',
+        'details_ar',
+        'details_en',
+        'attachments',
+        'link',
+        'tip_type',
+        'user_id',
+        'visible',
+        'log_user_id',
+    ];
 
     protected $casts = [
         'attachments' => 'array',
@@ -29,6 +44,11 @@ class HealthTip extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function logUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'log_user_id');
     }
 
     public function getDoctorNameAttribute()

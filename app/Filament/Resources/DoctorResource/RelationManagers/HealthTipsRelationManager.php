@@ -34,9 +34,10 @@ class HealthTipsRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        // Check if the record has a doctor relationship
-        return $ownerRecord->doctor && $ownerRecord->doctor->account_type === 'doctor';
+        // Check if the record has a user relationship and the user is a patient
+        return $ownerRecord->user && $ownerRecord->user->account_type === 'patient';
     }
+
 
     public function form(Form $form): Form
     {
@@ -86,6 +87,8 @@ class HealthTipsRelationManager extends RelationManager
                     }),
                 Tables\Columns\TextColumn::make('link')->label(__('dashboard.link')),
                 Tables\Columns\TextColumn::make('publish_datetime')->label(__('dashboard.publish_datetime')),
+                Tables\Columns\TextColumn::make('logUser.name')
+                    ->label(__('dashboard.log_user')),
             ])
             ->filters([
                 //
@@ -93,8 +96,16 @@ class HealthTipsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
-                        // Set the user_id to the doctor_id from the parent record
-                        $data['user_id'] = $this->getOwnerRecord()->doctor_id;
+                        // Set the user_id to the user_id from the parent record
+                        $ownerRecord = $this->getOwnerRecord();
+                        $userId = $ownerRecord->user_id;
+                        
+                        // Validate that user_id is not null
+                        if (!$userId) {
+                            throw new \Exception('User ID cannot be null. Please ensure the attachment has a valid user.');
+                        }
+                        
+                        $data['user_id'] = $userId;
                         return $data;
                     }),
             ])

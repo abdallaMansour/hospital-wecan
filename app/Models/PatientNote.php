@@ -6,9 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\Favoritable;
+use App\Traits\Loggable;
+
 class PatientNote extends Model
 {
-    use HasFactory, Favoritable;
+    use HasFactory, Favoritable, Loggable;
+
+    protected $fillable = [
+        'title',
+        'datetime',
+        'notes',
+        'attachments',
+        'user_id',
+        'log_user_id',
+    ];
 
     protected $casts = [
         'attachments' => 'array'
@@ -34,5 +45,10 @@ class PatientNote extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function logUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'log_user_id');
     }
 }

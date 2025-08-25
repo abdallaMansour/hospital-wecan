@@ -213,4 +213,40 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(User::class, 'parent_id')->where('account_type', 'user');
     }
+
+    // Log relationships - records created by this user
+    public function loggedHealthTips(): HasMany
+    {
+        return $this->hasMany(HealthTip::class, 'log_user_id');
+    }
+
+    public function loggedPatientMedications(): HasMany
+    {
+        return $this->hasMany(PatientMedications::class, 'log_user_id');
+    }
+
+    public function loggedChemotherapySessions(): HasMany
+    {
+        return $this->hasMany(ChemotherapySession::class, 'log_user_id');
+    }
+
+    public function loggedPatientAppointments(): HasMany
+    {
+        return $this->hasMany(PatientAppointments::class, 'log_user_id');
+    }
+
+    public function loggedPatientFoods(): HasMany
+    {
+        return $this->hasMany(PatientFood::class, 'log_user_id');
+    }
+
+    public function loggedPatientHealthReports(): HasMany
+    {
+        return $this->hasMany(PatientHealthReport::class, 'log_user_id');
+    }
+
+    public function loggedPatientNotes(): HasMany
+    {
+        return $this->hasMany(PatientNote::class, 'log_user_id');
+    }
 }

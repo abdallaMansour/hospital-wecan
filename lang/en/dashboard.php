@@ -171,4 +171,5 @@ return [
     'doctors_count' => 'Doctors Count',
     'user_count' => 'User Count',
     'user_already_connected' => 'User already connected',
+    'log_user' => 'Log User',
 ];

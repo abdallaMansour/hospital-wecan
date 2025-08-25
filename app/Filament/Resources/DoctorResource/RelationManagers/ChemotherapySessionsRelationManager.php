@@ -73,6 +73,8 @@ class ChemotherapySessionsRelationManager extends RelationManager
                     ->label(__('dashboard.instructions')),
                 Tables\Columns\TextColumn::make('notes')
                     ->label(__('dashboard.notes')),
+                Tables\Columns\TextColumn::make('logUser.name')
+                    ->label(__('dashboard.log_user')),
             ])
             ->filters([
                 //
@@ -81,7 +83,15 @@ class ChemotherapySessionsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         // Set the user_id to the user_id from the parent record
-                        $data['user_id'] = $this->getOwnerRecord()->user_id;
+                        $ownerRecord = $this->getOwnerRecord();
+                        $userId = $ownerRecord->user_id;
+                        
+                        // Validate that user_id is not null
+                        if (!$userId) {
+                            throw new \Exception('User ID cannot be null. Please ensure the attachment has a valid user.');
+                        }
+                        
+                        $data['user_id'] = $userId;
                         return $data;
                     }),
             ])
