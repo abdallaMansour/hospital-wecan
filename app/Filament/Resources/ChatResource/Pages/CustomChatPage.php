@@ -68,7 +68,12 @@ class CustomChatPage extends Page
 
     protected function findOrCreateChatRoom($otherUserRecord): void
     {
-        $currentUser = Auth::user();
+        if (Auth::user()->account_type === 'user') {
+            $currentUser = Auth::user()->parent;
+        } else {
+            $currentUser = Auth::user();
+        }
+
 
         // Determine who is the doctor and who is the patient
         $doctorId = null;
@@ -133,6 +138,12 @@ class CustomChatPage extends Page
 
     public function sendMessage(): void
     {
+        if (Auth::user()->account_type === 'user') {
+            $currentUser = Auth::user()->parent;
+        } else {
+            $currentUser = Auth::user();
+        }
+
         if ((empty($this->message) && !$this->attachment) || !$this->chatRoom) {
             return;
         }
@@ -145,7 +156,7 @@ class CustomChatPage extends Page
 
         ChatMessage::create([
             'chat_room_id' => $this->chatRoom->id,
-            'user_id' => Auth::id(),
+            'user_id' => $currentUser->id,
             'message' => $this->message,
             'attachment_path' => $attachmentPath,
         ]);

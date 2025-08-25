@@ -1,5 +1,12 @@
 <x-filament-panels::page>
     <div class="flex flex-col h-full">
+        @php
+            if (Auth::user()->account_type === 'user') {
+                $currentUser = Auth::user()->parent;
+            } else {
+                $currentUser = Auth::user();
+            }
+        @endphp
         @if ($otherUser)
             <!-- Chat Header -->
             <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
@@ -56,9 +63,12 @@
             <!-- Messages Area -->
             <div class="flex-1 overflow-y-auto p-4 space-y-4" id="messages-container">
                 @foreach ($this->getMessages() as $message)
-                    <div class="flex {{ $message->user_id === Auth::id() ? 'justify-end' : 'justify-start' }}">
+                    @php
+                        $isMe = $currentUser->id === $message->user_id;
+                    @endphp
+                    <div class="flex {{ $isMe ? 'justify-end' : 'justify-start' }}">
                         <div
-                            class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg {{ $message->user_id === Auth::id() ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white' }}">
+                            class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg {{ $isMe ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white' }}">
                             @if ($message->attachment_path)
                                 @php
                                     $url = $message->attachment_path
@@ -104,10 +114,10 @@
                                 <p id="chat_message" class="text-sm">{{ $message->message }}</p>
                             @endif
                             <div class="flex items-center justify-between mt-1">
-                                <p class="text-xs {{ $message->user_id === Auth::id() ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} mt-1">
+                                <p class="text-xs {{ $isMe ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} mt-1">
                                     {{ $message->created_at->format('H:i') }}
                                 </p>
-                                @if ($message->user_id === Auth::id())
+                                @if ($isMe)
                                     @if ($message->is_read)
                                         <span class="text-xs text-green-500">✓✓</span>
                                     @else
@@ -116,7 +126,7 @@
                                 @endif
                             </div>
 
-                            @if ($message->user_id !== Auth::id() && $message->message)
+                            @if (!$isMe && $message->message)
                                 <div class="mt-2">
                                     <button 
                                         type="button" 

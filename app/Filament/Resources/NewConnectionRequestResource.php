@@ -15,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use App\Filament\Resources\NewConnectionRequestResource\Pages;
+use Filament\Forms\Components\Section;
 
 class NewConnectionRequestResource extends Resource
 {
@@ -53,6 +54,21 @@ class NewConnectionRequestResource extends Resource
         return $query;
     }
 
+    public static function authAccountType()
+    {
+        if (Auth::user()->account_type === 'user') {
+            return Auth::user()->parent->account_type;
+        }
+        return Auth::user()->account_type;
+    }
+
+    public static function authParentId()
+    {
+        if (Auth::user()->account_type === 'user') {
+            return Auth::user()->parent->account_type == 'hospital' ? Auth::user()->parent->hospital_id : Auth::user()->parent_id;
+        }
+        return Auth::id();
+    }
 
     public static function table(Table $table): Table
     {
@@ -118,11 +134,18 @@ class NewConnectionRequestResource extends Resource
                             return;
                         }
 
-                        if ($user->account_type !== 'patient' && $user->account_type !== 'doctor' && $user->account_type !== 'hospital') {
-                            return;
-                        }
 
-                        $authentication_type = Auth::user()->account_type;
+                        $authentication_type = self::authAccountType();
+
+                        if ($authentication_type === 'hospital') {
+                            if ($user->account_type !== 'patient' && $user->account_type !== 'doctor') {
+                                return;
+                            }
+                        } else {
+                            if ($user->account_type !== 'patient' && $user->account_type !== 'hospital') {
+                                return;
+                            }
+                        }
 
                         if ($user->account_type === 'hospital' && $authentication_type === 'doctor') {
                             $data['hospital_id'] = $user->hospital_id;
@@ -150,7 +173,46 @@ class NewConnectionRequestResource extends Resource
 
             // form email status and custom action
             ->actions([
-                Tables\Actions\EditAction::make()->hidden(fn($record) => (Auth::user()->account_type === 'user' ? $record->sender_id === Auth::user()->parent_id : $record->sender_id === Auth::id())),
+                Tables\Actions\EditAction::make()->hidden(fn($record) => (Auth::user()->account_type === 'user' ? $record->sender_id === Auth::user()->parent_id : $record->sender_id === Auth::id()))
+
+                    ->form([
+                        Select::make('status')
+                            ->options([
+                                'pending' => __('dashboard.pending'),
+                                'approved' => __('dashboard.approved'),
+                                'rejected' => __('dashboard.rejected'),
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function ($record, $data) {
+
+                        $record->update($data);
+
+                        $authentication_type = self::authAccountType();
+
+                        $user = null;
+
+                        if ($authentication_type === 'doctor') {
+                            if ($record->user_id) {
+                                $user = User::find($record->user_id);
+                            } else {
+                                $user = Hospital::find($record->hospital_id)->user;
+                            }
+                        } elseif ($authentication_type === 'hospital') {
+                            if ($record->doctor_id) {
+                                $user = User::find($record->doctor_id);
+                            } else {
+                                $user = User::find($record->user_id);
+                            }
+                        }
+
+                        if ($data['status'] === 'approved' && $user)
+                            $user->update(['parent_id' => self::authParentId()]);
+                        else if ($user)
+                            $user->update(['parent_id' => NULL]);
+
+                    })
+                    ->modalButton(__('dashboard.save')),
                 Tables\Actions\DeleteAction::make('cancel')
                     ->label(__('dashboard.unlink'))
                     ->modalHeading(__(key: 'dashboard.unlink_doctor'))
@@ -158,23 +220,22 @@ class NewConnectionRequestResource extends Resource
                     ->requiresConfirmation()
                     ->action(function ($record) {
 
-                        if ($record->user_id)
-                            $user = User::find($record->user_id);
-                        else if ($record->doctor_id && $record->doctor_id !== Auth::id())
-                            $user = User::find($record->doctor_id);
-                        else if ($record->hospital_id && $record->hospital_id !== Auth::user()->hospital_id)
-                            $user = Hospital::find($record->hospital_id)->user;
+                        // get related user
+                        $auth_account_type = self::authAccountType();
 
-                        if ($user)
+                        if ($record->doctor_id && $record->user_id) {
+                            $user = User::find($record->user_id);
+                        } else if ($record->doctor_id && $record->hospital_id) {
+                            $user = $auth_account_type == 'doctor' ? Hospital::find($record->hospital_id)->user : User::find($record->doctor_id);
+                        } else if ($record->hospital_id && $record->user_id) {
+                            $user = $auth_account_type == 'hospital' ? User::find($record->user_id) : Hospital::find($record->hospital_id)->user;
+                        }
+
+                        if ($user) {
                             $user->update(['parent_id' => NULL]);
+                        }
 
                         $record->delete();
-
-                        // $filePath = storage_path('app/file.txt');
-                        // $content = json_encode([
-                        //     'recordId' => $record->id,
-                        // ]);
-                        // File::append($filePath, $content);
                     })
             ])
             ->bulkActions([]);
@@ -194,7 +255,7 @@ class NewConnectionRequestResource extends Resource
             'index' => Pages\NewConnectionRequestList::route('/'),
 
             // 'create' => Pages\CreateDoctor::route('/create'),
-            'edit' => Pages\EditStatusConnectionRequest::route('/{record}/edit'),
+            // 'edit' => Pages\EditStatusConnectionRequest::route('/{record}/edit'),
         ];
     }
 

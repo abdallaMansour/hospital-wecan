@@ -387,86 +387,86 @@ class DoctorResource extends Resource
                 ->query(self::getQuery())
                 ->columns([
                     Tables\Columns\ImageColumn::make('image')
-                        ->label(__('dashboard.image'))
-                        ->getStateUsing(function ($record) {
-                            if ($record->user) {
-                                if ($record->user->account_type === 'doctor') {
-                                    return $record->user->profile_picture_path;
-                                } elseif ($record->user->account_type === 'patient' && $record->user->cancer_id) {
-                                    return $record->user->cancer?->cancer_image_path;
-                                }
-                            }
+                        ->label(__('dashboard.image')),
+                        // ->getStateUsing(function ($record) {
+                        //     if ($record->user) {
+                        //         if ($record->user->account_type === 'doctor') {
+                        //             return $record->user->profile_picture_path;
+                        //         } elseif ($record->user->account_type === 'patient' && $record->user->cancer_id) {
+                        //             return $record->user->cancer?->cancer_image_path;
+                        //         }
+                        //     }
 
-                            if ($record->hospital) {
-                                return $record->hospital->hospital_logo_path;
-                            }
+                        //     if ($record->hospital) {
+                        //         return $record->hospital->hospital_logo_path;
+                        //     }
 
-                            return null;
-                        }),
-                    TextColumn::make('name')
+                        //     return null;
+                        // }),
+                    TextColumn::make('display_name')
                         ->label(__('dashboard.name'))
-                        ->getStateUsing(function ($record) {
-                            $locale = app()->getLocale();
-                            $nameField = $locale === 'ar' ? 'name' : 'name_en';
+                        // ->getStateUsing(function ($record) {
+                        //     $locale = app()->getLocale();
+                        //     $nameField = $locale === 'ar' ? 'name' : 'name_en';
 
-                            if ($record->user && $record->user->$nameField) {
-                                return $record->user->$nameField;
-                            }
+                        //     if ($record->user && $record->user->$nameField) {
+                        //         return $record->user->$nameField;
+                        //     }
 
-                            if ($record->hospital && $record->hospital->user && $record->hospital->user->$nameField) {
-                                return $record->hospital->user->$nameField;
-                            }
+                        //     if ($record->hospital && $record->hospital->user && $record->hospital->user->$nameField) {
+                        //         return $record->hospital->user->$nameField;
+                        //     }
 
-                            return '';
-                        })
+                        //     return '';
+                        // })
                         ->searchable(isIndividual: true)
                         ->sortable(),
                     TextColumn::make('email')
                         ->label(__('dashboard.email'))
-                        ->getStateUsing(function ($record) {
-                            if ($record->user && $record->user->email) {
-                                return $record->user->email;
-                            }
+                        // ->getStateUsing(function ($record) {
+                        //     if ($record->user && $record->user->email) {
+                        //         return $record->user->email;
+                        //     }
 
-                            if ($record->hospital && $record->hospital->user && $record->hospital->user->email) {
-                                return $record->hospital->user->email;
-                            }
+                        //     if ($record->hospital && $record->hospital->user && $record->hospital->user->email) {
+                        //         return $record->hospital->user->email;
+                        //     }
 
-                            return '';
-                        })
+                        //     return '';
+                        // })
                         ->searchable(isIndividual: true, isGlobal: false)
                         ->sortable(),
                     TextColumn::make('profession')
                         ->label(__('dashboard.profession_' . app()->getLocale()))
-                        ->getStateUsing(function ($record) {
-                            $professionField = 'profession_' . app()->getLocale();
+                        // ->getStateUsing(function ($record) {
+                        //     $professionField = 'profession_' . app()->getLocale();
 
-                            if ($record->user && $record->user->$professionField) {
-                                return $record->user->$professionField;
-                            }
+                        //     if ($record->user && $record->user->$professionField) {
+                        //         return $record->user->$professionField;
+                        //     }
 
-                            if ($record->hospital && $record->hospital->user && $record->hospital->user->$professionField) {
-                                return $record->hospital->user->$professionField;
-                            }
+                        //     if ($record->hospital && $record->hospital->user && $record->hospital->user->$professionField) {
+                        //         return $record->hospital->user->$professionField;
+                        //     }
 
-                            return '';
-                        })
+                        //     return '';
+                        // })
                         ->searchable(isIndividual: true, isGlobal: false)
                         ->sortable(),
                     TextColumn::make('account_type')
                         ->label(__('dashboard.account_type'))
                         ->badge()
-                        ->getStateUsing(function ($record): string {
-                            $accountType = null;
+                        // ->getStateUsing(function ($record): string {
+                        //     $accountType = null;
 
-                            if ($record->user && $record->user->account_type) {
-                                $accountType = $record->user->account_type;
-                            } elseif ($record->hospital && $record->hospital->user && $record->hospital->user->account_type) {
-                                $accountType = $record->hospital->user->account_type;
-                            }
+                        //     if ($record->user && $record->user->account_type) {
+                        //         $accountType = $record->user->account_type;
+                        //     } elseif ($record->hospital && $record->hospital->user && $record->hospital->user->account_type) {
+                        //         $accountType = $record->hospital->user->account_type;
+                        //     }
 
-                            return $accountType ? (string) __('dashboard.' . $accountType) : '';
-                        })
+                        //     return $accountType ? (string) __('dashboard.' . $accountType) : '';
+                        // })
                         ->color(fn(string $state): string => match ($state) {
                             __('dashboard.doctor') => 'info',
                             __('dashboard.patient') => 'warning',
