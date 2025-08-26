@@ -10,6 +10,7 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
 use App\Filament\Widgets\UserOverview;
+use App\Filament\Widgets\UserStatsOverview;
 use Illuminate\Support\Facades\Cookie;
 use App\Filament\Pages\Auth\CustomLogin;
 use App\Filament\Resources\ChatResource\Pages\CustomChatPage;
@@ -59,7 +60,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                UserOverview::class
+                UserStatsOverview::class,
+                UserOverview::class,
             ])
             ->middleware([
                 EncryptCookies::class,

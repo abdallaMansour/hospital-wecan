@@ -7,26 +7,17 @@ use App\Models\User;
 use App\Models\ChatMessage;
 use App\Models\ChatRoom;
 use Illuminate\Support\Facades\Auth;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Widgets\TableWidget as BaseWidget;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 /**
- * UserOverview Widget
+ * UserStatsOverview Widget
  * 
  * Displays statistics about users, patients, doctors, and hospitals.
- * Now includes real-time unread messages list with automatic refresh every 30 seconds.
- * The unread messages are clickable and will redirect to the chat index when there are unread messages.
+ * Includes real-time unread messages count with automatic refresh every 30 seconds.
  */
-class UserOverview extends BaseWidget implements HasTable
+class UserStatsOverview extends BaseWidget
 {
-    use InteractsWithTable;
-
     protected static ?string $pollingInterval = '30s';
     
     protected int | string | array $columnSpan = 'full';
@@ -45,49 +36,62 @@ class UserOverview extends BaseWidget implements HasTable
         return $user;
     }
 
-    public function table(Table $table): Table
-    {
-        return $table
-            ->query($this->getUnreadMessagesQuery())
-            ->heading(__('dashboard.unread_messages'))
-            ->description(__('dashboard.new_messages_received'))
-            ->columns([
-                ImageColumn::make('user.profile_picture_path')
-                    ->label(__('dashboard.sender'))
-                    ->circular()
-                    ->defaultImageUrl('https://ui-avatars.com/api/?name=' . urlencode('User'))
-                    ->size(40),
-                TextColumn::make('user.name')
-                    ->label(__('dashboard.sender_name'))
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('message')
-                    ->label(__('dashboard.message'))
-                    ->limit(50)
-                    ->searchable(),
-                TextColumn::make('chatRoom.name')
-                    ->label(__('dashboard.chat_room'))
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->label(__('dashboard.received_at'))
-                    ->dateTime()
-                    ->sortable(),
-            ])
-            ->actions([
-                \Filament\Tables\Actions\Action::make('view_chat')
-                    ->label(__('dashboard.view_chat'))
-                    ->icon('heroicon-o-chat-bubble-left-right')
-                    ->url(fn (ChatMessage $record): string => '/custom-chat?other_user_id=' . $record->user_id)
-                    ->openUrlInNewTab(false),
-            ])
-            ->paginated(false)
-            ->defaultSort('created_at', 'desc');
-    }
-
-    private function getUnreadMessagesQuery(): Builder
+    protected function getStats(): array
     {
         $user = $this->authAccount();
 
+        if ($user->account_type == 'hospital') {
+            $hospital_user_attachments = HospitalUserAttachment::where('status', 'approved')->where('hospital_id', $user->hospital_id)->get();
+        } else if ($user->account_type == 'doctor') {
+            $hospital_user_attachments = HospitalUserAttachment::where('status', 'approved')->where('doctor_id', $user->id)->get();
+        } else {
+            $hospital_user_attachments = HospitalUserAttachment::where('status', 'approved')->where('doctor_id', $user->parent_id)->get();
+        }
+
+        $user_count = $user->users()->count();
+
+        // Filter users to get counts for patients with preferred language set to Arabic
+        $patientsCount = $hospital_user_attachments->whereNotNull('user_id')->count();
+
+        // Get unread messages count
+        $unreadMessagesCount = $this->getUnreadMessagesCount($user);
+
+        if ($user->account_type == 'hospital') {
+            $doctorsCount = $hospital_user_attachments->whereNotNull('doctor_id')->count();
+            return [
+                Stat::make(__('dashboard.doctors_count'), $doctorsCount)
+                    ->color('success'),
+                Stat::make(__('dashboard.patient_count'), $patientsCount)
+                    ->color('success'),
+                Stat::make(__('dashboard.user_count'), $user_count)
+                    ->color('success'),
+                Stat::make(__('dashboard.unread_messages'), $unreadMessagesCount)
+                    ->color($this->getUnreadMessagesColor($unreadMessagesCount))
+                    ->description(__('dashboard.new_messages_received'))
+                    ->url($unreadMessagesCount > 0 ? '/doctors' : null)
+                    ->icon('heroicon-o-chat-bubble-left-right'),
+            ];
+        } else {
+            // Filter users to get counts for doctors with profession set in Arabic
+            $hospitalsCount = $hospital_user_attachments->whereNotNull('hospital_id')->count();
+            return [
+                Stat::make(__('dashboard.patient_count'), $patientsCount)
+                    ->color('success'),
+                Stat::make(__('dashboard.hospitals_count'), $hospitalsCount)
+                    ->color('success'),
+                Stat::make(__('dashboard.user_count'), $user_count)
+                    ->color('success'),
+                Stat::make(__('dashboard.unread_messages'), $unreadMessagesCount)
+                    ->color($this->getUnreadMessagesColor($unreadMessagesCount))
+                    ->description(__('dashboard.new_messages_received'))
+                    ->url($unreadMessagesCount > 0 ? '/doctors' : null)
+                    ->icon('heroicon-o-chat-bubble-left-right'),
+            ];
+        }
+    }
+
+    private function getUnreadMessagesCount($user): int
+    {
         $hospital_user_attachments = HospitalUserAttachment::where('status', 'approved')->where(function ($q) use ($user) {
             if ($user->account_type == 'doctor') {
                 $q->where('doctor_id', $user->id);
@@ -129,13 +133,10 @@ class UserOverview extends BaseWidget implements HasTable
         })
             ->pluck('id');
 
-        return ChatMessage::query()
-            ->whereIn('chat_room_id', $chatRoomIds)
+        return ChatMessage::whereIn('chat_room_id', $chatRoomIds)
             ->where('user_id', '!=', $user->id)
             ->where('is_read', false)
-            ->with(['user', 'chatRoom'])
-            ->latest()
-            ->limit(10);
+            ->count();
     }
 
     private function getUnreadMessagesColor(int $count): string
