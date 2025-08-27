@@ -18,6 +18,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
+
 class HealthTipResource extends Resource
 {
     protected static ?string $model = HealthTip::class;
@@ -48,22 +49,17 @@ class HealthTipResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $locale = app()->getLocale();
+
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title_ar')
-                    ->label(__('dashboard.title_ar'))
+                Forms\Components\TextInput::make('title_' . $locale)
+                    ->label(__('dashboard.title_' . $locale))
                     ->maxLength(255),
-                Forms\Components\TextInput::make('title_en')
-                    ->label(__('dashboard.title_en'))
-                    ->maxLength(255),
-                Textarea::make('details_ar')
+                Textarea::make('details_' . $locale)
                     ->rows(5)
                     ->columnSpan(2)
-                    ->label(__('dashboard.details_ar')),
-                Textarea::make('details_en')
-                    ->rows(5)
-                    ->columnSpan(2)
-                    ->label(__('dashboard.details_en')),
+                    ->label(__('dashboard.details_' . $locale)),
                 DateTimePicker::make('publish_datetime')
                     ->required()
                     ->label(__('dashboard.publish_datetime')),
@@ -93,10 +89,12 @@ class HealthTipResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $locale = app()->getLocale();
+
         return $table
             ->query(HealthTip::query()->where('user_id', Auth::id()))
             ->columns([
-                Tables\Columns\TextColumn::make('title_ar')->label(__('dashboard.title_ar')),
+                Tables\Columns\TextColumn::make('title_' . $locale)->label(__('dashboard.title_' . $locale)),
                 Tables\Columns\TextColumn::make('publish_datetime')->label(__('dashboard.publish_datetime')),
                 ToggleColumn::make('visible')->label(__('dashboard.visible'))
             ])
