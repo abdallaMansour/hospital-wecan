@@ -11,12 +11,12 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 /**
- * UserStatsOverview Widget
+ * StatsOverview Widget
  * 
  * Displays statistics about users, patients, doctors, and hospitals.
  * Includes real-time unread messages count with automatic refresh every 30 seconds.
  */
-class UserStatsOverview extends BaseWidget
+class StatsOverview extends BaseWidget
 {
     protected static ?string $pollingInterval = '30s';
     
