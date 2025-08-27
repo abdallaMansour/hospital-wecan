@@ -245,82 +245,85 @@ class NewConnectionRequestResource extends Resource
 
             // form email status and custom action
             ->actions([
-                Tables\Actions\EditAction::make()
+                // Approve Action - Show when status is pending
+                Tables\Actions\Action::make('approve')
+                    ->label(__('dashboard.approve'))
+                    ->color('success')
+                    ->icon('heroicon-o-check')
                     ->hidden(function ($record) {
                         $shouldHide = (self::authAccountType() === 'user' ? $record->sender_id === self::authParentId() : $record->sender_id === self::authAccount()->id);
-
-                        // Log for debugging
-                        Log::info('EditAction hidden check', [
-                            'record_id' => $record->id,
-                            'record_sender_id' => $record->sender_id,
-                            'auth_account_type' => self::authAccountType(),
-                            'auth_parent_id' => self::authParentId(),
-                            'auth_account_id' => self::authAccount()->id,
-                            'should_hide' => $shouldHide
-                        ]);
-
-                        return $shouldHide;
+                        return $shouldHide || $record->status !== 'pending';
                     })
-                    ->form([
-                        Select::make('status')
-                            ->options([
-                                'pending' => __('dashboard.pending'),
-                                'approved' => __('dashboard.approved'),
-                                'rejected' => __('dashboard.rejected'),
-                            ])
-                            ->required(),
-                    ])
-                    ->action(function ($record, $data) {
-                        // Ensure we have the correct record by re-fetching it
-                        $recordId = $record->id;
-                        $actualRecord = HospitalUserAttachment::find($recordId);
+                    ->requiresConfirmation()
+                    ->modalHeading(__('dashboard.approve_connection'))
+                    ->modalDescription(__('dashboard.are_you_sure_approve_connection'))
+                    ->action(function ($record) {
+                        self::updateConnectionStatus($record, 'approved');
+                    }),
 
-                        if (!$actualRecord) {
-                            Log::error('Record not found', ['record_id' => $recordId]);
-                            return;
-                        }
-
-                        // Log the record ID for debugging
-                        Log::info('Updating HospitalUserAttachment record', [
-                            'record_id' => $actualRecord->id,
-                            'record_data' => $actualRecord->toArray(),
-                            'new_status' => $data['status'],
-                            'original_record_id' => $record->id
-                        ]);
-
-                        $actualRecord->update($data);
-
-                        $authentication_type = self::authAccountType();
-
-                        $user = null;
-
-                        if ($authentication_type === 'doctor') {
-                            if ($actualRecord->user_id) {
-                                $user = User::find($actualRecord->user_id);
-                            } else {
-                                $user = Hospital::find($actualRecord->hospital_id)->user;
-                            }
-                        } elseif ($authentication_type === 'hospital') {
-                            if ($actualRecord->doctor_id) {
-                                $user = User::find($actualRecord->doctor_id);
-                            } else {
-                                $user = User::find($actualRecord->user_id);
-                            }
-                        }
-
-                        if ($data['status'] === 'approved' && $user) {
-                            $user->update(['parent_id' => self::authParentId()]);
-                        } else if ($user) {
-                            $user->update(['parent_id' => NULL]);
-                        }
-
-                        // Log the result
-                        Log::info('HospitalUserAttachment update completed', [
-                            'record_id' => $actualRecord->id,
-                            'user_updated' => $user ? $user->id : null
-                        ]);
+                // Reject Action - Show when status is pending
+                Tables\Actions\Action::make('reject')
+                    ->label(__('dashboard.reject'))
+                    ->color('danger')
+                    ->icon('heroicon-o-x-mark')
+                    ->hidden(function ($record) {
+                        $shouldHide = (self::authAccountType() === 'user' ? $record->sender_id === self::authParentId() : $record->sender_id === self::authAccount()->id);
+                        return $shouldHide || $record->status !== 'pending';
                     })
-                    ->modalButton(__('dashboard.save')),
+                    ->requiresConfirmation()
+                    ->modalHeading(__('dashboard.reject_connection'))
+                    ->modalDescription(__('dashboard.are_you_sure_reject_connection'))
+                    ->action(function ($record) {
+                        self::updateConnectionStatus($record, 'rejected');
+                    }),
+
+                // Set to Pending Action - Show when status is approved or rejected
+                Tables\Actions\Action::make('set_pending')
+                    ->label(__('dashboard.set_pending'))
+                    ->color('warning')
+                    ->icon('heroicon-o-clock')
+                    ->hidden(function ($record) {
+                        $shouldHide = (self::authAccountType() === 'user' ? $record->sender_id === self::authParentId() : $record->sender_id === self::authAccount()->id);
+                        return $shouldHide || $record->status === 'pending';
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading(__('dashboard.set_pending_connection'))
+                    ->modalDescription(__('dashboard.are_you_sure_set_pending_connection'))
+                    ->action(function ($record) {
+                        self::updateConnectionStatus($record, 'pending');
+                    }),
+
+                // Approve from Rejected Action - Show when status is rejected
+                Tables\Actions\Action::make('approve_from_rejected')
+                    ->label(__('dashboard.approve'))
+                    ->color('success')
+                    ->icon('heroicon-o-check')
+                    ->hidden(function ($record) {
+                        $shouldHide = (self::authAccountType() === 'user' ? $record->sender_id === self::authParentId() : $record->sender_id === self::authAccount()->id);
+                        return $shouldHide || $record->status !== 'rejected';
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading(__('dashboard.approve_connection'))
+                    ->modalDescription(__('dashboard.are_you_sure_approve_connection'))
+                    ->action(function ($record) {
+                        self::updateConnectionStatus($record, 'approved');
+                    }),
+
+                // Reject from Approved Action - Show when status is approved
+                Tables\Actions\Action::make('reject_from_approved')
+                    ->label(__('dashboard.reject'))
+                    ->color('danger')
+                    ->icon('heroicon-o-x-mark')
+                    ->hidden(function ($record) {
+                        $shouldHide = (self::authAccountType() === 'user' ? $record->sender_id === self::authParentId() : $record->sender_id === self::authAccount()->id);
+                        return $shouldHide || $record->status !== 'approved';
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading(__('dashboard.reject_connection'))
+                    ->modalDescription(__('dashboard.are_you_sure_reject_connection'))
+                    ->action(function ($record) {
+                        self::updateConnectionStatus($record, 'rejected');
+                    }),
                 Tables\Actions\DeleteAction::make('cancel')
                     ->label(__('dashboard.unlink'))
                     ->modalHeading(__(key: 'dashboard.unlink_doctor'))
@@ -384,5 +387,66 @@ class NewConnectionRequestResource extends Resource
     {
         // return ['name', 'email'];
         return [];
+    }
+
+    /**
+     * Update connection status and handle user parent_id updates
+     */
+    private static function updateConnectionStatus($record, $newStatus)
+    {
+        // Ensure we have the correct record by re-fetching it
+        $recordId = $record->id;
+        $actualRecord = HospitalUserAttachment::find($recordId);
+
+        if (!$actualRecord) {
+            Log::error('Record not found', ['record_id' => $recordId]);
+            return;
+        }
+
+        // Log the record ID for debugging
+        Log::info('Updating HospitalUserAttachment record', [
+            'record_id' => $actualRecord->id,
+            'record_data' => $actualRecord->toArray(),
+            'new_status' => $newStatus,
+            'original_record_id' => $record->id
+        ]);
+
+        $actualRecord->update(['status' => $newStatus]);
+
+        $authentication_type = self::authAccountType();
+
+        $user = null;
+
+        if ($authentication_type === 'doctor') {
+            if ($actualRecord->user_id) {
+                $user = User::find($actualRecord->user_id);
+            } else {
+                $user = Hospital::find($actualRecord->hospital_id)->user;
+            }
+        } elseif ($authentication_type === 'hospital') {
+            if ($actualRecord->doctor_id) {
+                $user = User::find($actualRecord->doctor_id);
+            } else {
+                $user = User::find($actualRecord->user_id);
+            }
+        }
+
+        if ($newStatus === 'approved' && $user) {
+            $user->update(['parent_id' => self::authParentId()]);
+        } else if ($user) {
+            $user->update(['parent_id' => NULL]);
+        }
+
+        // Log the result
+        Log::info('HospitalUserAttachment update completed', [
+            'record_id' => $actualRecord->id,
+            'user_updated' => $user ? $user->id : null
+        ]);
+
+        // Show success notification
+        Notification::make()
+            ->title(__('dashboard.status_updated_successfully'))
+            ->success()
+            ->send();
     }
 }
