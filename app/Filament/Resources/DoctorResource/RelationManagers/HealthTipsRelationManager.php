@@ -13,6 +13,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class HealthTipsRelationManager extends RelationManager
 {
@@ -38,6 +39,15 @@ class HealthTipsRelationManager extends RelationManager
         return $ownerRecord->user && $ownerRecord->user->account_type === 'patient';
     }
 
+    public function canEdit(Model $record): bool
+    {
+        return $record->log_user_id === Auth::id();
+    }
+
+    public function canDelete(Model $record): bool
+    {
+        return $record->log_user_id === Auth::id();
+    }
 
     public function form(Form $form): Form
     {
@@ -110,6 +120,7 @@ class HealthTipsRelationManager extends RelationManager
                     }),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

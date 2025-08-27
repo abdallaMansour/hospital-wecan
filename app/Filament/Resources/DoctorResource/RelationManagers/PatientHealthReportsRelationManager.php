@@ -12,6 +12,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class PatientHealthReportsRelationManager extends RelationManager
 {
@@ -35,6 +36,16 @@ class PatientHealthReportsRelationManager extends RelationManager
     public static function getPluralModelLabel(): string
     {
         return __('dashboard.patient_health_report');
+    }
+
+    public function canEdit(Model $record): bool
+    {
+        return $record->log_user_id === Auth::id();
+    }
+
+    public function canDelete(Model $record): bool
+    {
+        return $record->log_user_id === Auth::id();
     }
 
     public function form(Form $form): Form
@@ -103,6 +114,7 @@ class PatientHealthReportsRelationManager extends RelationManager
                     }),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

@@ -179,5 +179,5 @@ return [
     'received_at' => 'تم الاستلام في',
     'view_chat' => 'عرض الدردشة',
     'user_already_connected' => 'المستخدم مرتبط بالفعل',
-    'log_user' => 'المستخدم المسجل',
+    'log_user' => 'مدخل البيانات',
 ];

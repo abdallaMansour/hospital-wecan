@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Filament\Resources\RelationManagers\RelationManager;
+use Illuminate\Support\Facades\Auth;
 
 class PatientMedicationsRelationManager extends RelationManager
 {
@@ -36,6 +37,16 @@ class PatientMedicationsRelationManager extends RelationManager
     public static function getPluralModelLabel(): string
     {
         return __('dashboard.patient_medications');
+    }
+
+    public function canEdit(Model $record): bool
+    {
+        return $record->log_user_id === Auth::id();
+    }
+
+    public function canDelete(Model $record): bool
+    {
+        return $record->log_user_id === Auth::id();
     }
 
     public function form(Form $form): Form
@@ -95,9 +106,13 @@ class PatientMedicationsRelationManager extends RelationManager
                 ImageColumn::make('drug_image')->label(__('dashboard.drug_image')),
                 Tables\Columns\TextColumn::make('drug_name')->label(__('dashboard.drug_name')),
                 Tables\Columns\TextColumn::make('frequency')->label(__('dashboard.frequency')),
-                Tables\Columns\TextColumn::make('frequency_per')->label(__('dashboard.frequency_per')),
+                Tables\Columns\TextColumn::make('frequency_per')
+                    ->label(__('dashboard.frequency_per'))
+                    ->formatStateUsing(fn ($state) => __('dashboard.' . $state)),
                 Tables\Columns\TextColumn::make('duration')->label(__('dashboard.duration')),
-                Tables\Columns\TextColumn::make('month-or-day')->label(__('dashboard.month-or-day')),
+                Tables\Columns\TextColumn::make('month-or-day')
+                    ->label(__('dashboard.month-or-day'))
+                    ->formatStateUsing(fn ($state) => __('dashboard.' . $state)),
                 Tables\Columns\TextColumn::make('logUser.name')
                     ->label(__('dashboard.log_user')),
             ])
@@ -121,6 +136,7 @@ class PatientMedicationsRelationManager extends RelationManager
                     }),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

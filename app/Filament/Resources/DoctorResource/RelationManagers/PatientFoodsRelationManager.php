@@ -11,6 +11,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class PatientFoodsRelationManager extends RelationManager
 {
@@ -35,6 +36,16 @@ class PatientFoodsRelationManager extends RelationManager
     public static function getPluralModelLabel(): string
     {
         return __('dashboard.patient_food');
+    }
+
+    public function canEdit(Model $record): bool
+    {
+        return $record->log_user_id === Auth::id();
+    }
+
+    public function canDelete(Model $record): bool
+    {
+        return $record->log_user_id === Auth::id();
     }
 
     public function form(Form $form): Form
@@ -96,6 +107,7 @@ class PatientFoodsRelationManager extends RelationManager
                     }),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
