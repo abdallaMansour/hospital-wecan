@@ -14,6 +14,7 @@ use App\Filament\Widgets\UserStatsOverview;
 use Illuminate\Support\Facades\Cookie;
 use App\Filament\Pages\Auth\CustomLogin;
 use App\Filament\Resources\ChatResource\Pages\CustomChatPage;
+use App\Filament\Pages\Profile;
 use Filament\Http\Middleware\Authenticate;
 use App\Http\Middleware\EnsureHospitalExists;
 use Filament\FontProviders\GoogleFontProvider;
@@ -36,7 +37,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('')
-            ->profile()
+            ->profile(Profile::class)
             ->login()
             // ->renderHook(
             //     'panels::auth.login.form.after',

@@ -120,6 +120,8 @@ return [
     'full_name' => 'الاسم الكامل',
     'password' => 'كلمة المرور',
     'password_confirmation' => 'اعادة كلمة المرور',
+    'current_password' => 'كلمة المرور الحالية',
+    'new_password' => 'كلمة المرور الجديدة',
     'new_connection_requests' => 'طلبات الارتباط الجديدة',
     'patient_name' => 'اسم المريض',
     'patient_email' => 'البريد الالكتروني للمريض',
@@ -185,4 +187,6 @@ return [
     'approve_connection' => 'موافقة الارتباط',
     'reject_connection' => 'رفض الارتباط',
     'set_pending_connection' => 'تعيين الارتباط معلق',
+    'profile_updated_successfully' => 'تم تحديث الملف الشخصي بنجاح',
+    'current_password_incorrect' => 'كلمة المرور الحالية غير صحيحة',
 ];

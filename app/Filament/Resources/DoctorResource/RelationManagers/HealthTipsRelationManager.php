@@ -35,8 +35,7 @@ class HealthTipsRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        // Check if the record has a user relationship and the user is a patient
-        return $ownerRecord->user && $ownerRecord->user->account_type === 'patient' && Auth::user()->account_type === 'doctor';
+        return false;
     }
 
     public function canEdit(Model $record): bool

@@ -125,6 +125,8 @@ return [
     'full_name' => 'Full Name',
     'password' => 'Password',
     'password_confirmation' => 'Confirm Password',
+    'current_password' => 'Current Password',
+    'new_password' => 'New Password',
     'new_connection_requests' => 'New Connection Requests',
     'patient_name' => 'Patient Name',
     'patient_email' => 'Patient Email',
@@ -185,4 +187,6 @@ return [
     'approve_connection' => 'Approve Connection',
     'reject_connection' => 'Reject Connection',
     'set_pending_connection' => 'Set Pending Connection',
+    'profile_updated_successfully' => 'Profile updated successfully',
+    'current_password_incorrect' => 'Current password is incorrect',
 ];

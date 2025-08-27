@@ -260,23 +260,6 @@ class NewConnectionRequestResource extends Resource
                     ->action(function ($record) {
                         self::updateConnectionStatus($record, 'approved');
                     }),
-
-                // Reject Action - Show when status is pending
-                Tables\Actions\Action::make('reject')
-                    ->label(__('dashboard.reject'))
-                    ->color('danger')
-                    ->icon('heroicon-o-x-mark')
-                    ->hidden(function ($record) {
-                        $shouldHide = (self::authAccountType() === 'user' ? $record->sender_id === self::authParentId() : $record->sender_id === self::authAccount()->id);
-                        return $shouldHide || $record->status !== 'pending';
-                    })
-                    ->requiresConfirmation()
-                    ->modalHeading(__('dashboard.reject_connection'))
-                    ->modalDescription(__('dashboard.are_you_sure_reject_connection'))
-                    ->action(function ($record) {
-                        self::updateConnectionStatus($record, 'rejected');
-                    }),
-
                 // Set to Pending Action - Show when status is approved or rejected
                 Tables\Actions\Action::make('set_pending')
                     ->label(__('dashboard.set_pending'))
@@ -309,21 +292,6 @@ class NewConnectionRequestResource extends Resource
                         self::updateConnectionStatus($record, 'approved');
                     }),
 
-                // Reject from Approved Action - Show when status is approved
-                Tables\Actions\Action::make('reject_from_approved')
-                    ->label(__('dashboard.reject'))
-                    ->color('danger')
-                    ->icon('heroicon-o-x-mark')
-                    ->hidden(function ($record) {
-                        $shouldHide = (self::authAccountType() === 'user' ? $record->sender_id === self::authParentId() : $record->sender_id === self::authAccount()->id);
-                        return $shouldHide || $record->status !== 'approved';
-                    })
-                    ->requiresConfirmation()
-                    ->modalHeading(__('dashboard.reject_connection'))
-                    ->modalDescription(__('dashboard.are_you_sure_reject_connection'))
-                    ->action(function ($record) {
-                        self::updateConnectionStatus($record, 'rejected');
-                    }),
                 Tables\Actions\DeleteAction::make('cancel')
                     ->label(__('dashboard.unlink'))
                     ->modalHeading(__(key: 'dashboard.unlink_doctor'))
